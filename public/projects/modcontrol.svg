@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#11151d"/>
+  <rect x="70" y="75" width="1060" height="650" rx="28" fill="#171d28" stroke="#2b3545" stroke-width="2"/>
+  <rect x="108" y="118" width="984" height="62" rx="14" fill="#202838"/>
+  <circle cx="142" cy="149" r="8" fill="#9df56a"/>
+  <text x="166" y="157" fill="#f7f7f4" font-family="Arial" font-size="22" font-weight="700">MODCONTROL / LIVE</text>
+  <rect x="108" y="220" width="300" height="220" rx="18" fill="#202838"/>
+  <rect x="430" y="220" width="662" height="220" rx="18" fill="#202838"/>
+  <rect x="108" y="462" width="472" height="215" rx="18" fill="#202838"/>
+  <rect x="602" y="462" width="490" height="215" rx="18" fill="#202838"/>
+  <path d="M468 382 C535 330 570 370 640 298 S760 320 845 270 S945 315 1040 250" fill="none" stroke="#6d8cff" stroke-width="6"/>
+  <circle cx="1040" cy="250" r="10" fill="#9df56a"/>
+  <text x="138" y="278" fill="#8090a7" font-family="Arial" font-size="18">TEMPERATURA</text>
+  <text x="138" y="360" fill="#f7f7f4" font-family="Arial" font-size="68" font-weight="700">72.4°</text>
+  <text x="138" y="520" fill="#8090a7" font-family="Arial" font-size="18">ESTADO DE MÁQUINA</text>
+  <text x="138" y="590" fill="#9df56a" font-family="Arial" font-size="38" font-weight="700">OPERATIVA</text>
+  <text x="635" y="520" fill="#8090a7" font-family="Arial" font-size="18">MQTT / SENSOR FEED</text>
+  <rect x="635" y="555" width="400" height="16" rx="8" fill="#2b3545"/>
+  <rect x="635" y="555" width="310" height="16" rx="8" fill="#6d8cff"/>
+  <rect x="635" y="598" width="400" height="16" rx="8" fill="#2b3545"/>
+  <rect x="635" y="598" width="225" height="16" rx="8" fill="#9df56a"/>
+</svg>
