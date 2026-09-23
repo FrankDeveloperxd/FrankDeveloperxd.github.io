@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://frankdeveloperxd.github.io/sitemap.xml

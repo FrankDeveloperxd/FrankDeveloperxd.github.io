@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" fill="none">
+  <rect width="1200" height="760" rx="32" fill="#0B1118"/>
+  <rect x="20" y="20" width="1160" height="720" rx="28" fill="url(#bg)" stroke="rgba(255,255,255,.07)"/>
+  <g opacity="0.38">
+    <path d="M 80 20 V 740" stroke="#1A2940" stroke-width="2"/><path d="M 160 20 V 740" stroke="#1A2940" stroke-width="2"/><path d="M 240 20 V 740" stroke="#1A2940" stroke-width="2"/><path d="M 320 20 V 740" stroke="#1A2940" stroke-width="2"/><path d="M 400 20 V 740" stroke="#1A2940" stroke-width="2"/><path d="M 480 20 V 740" stroke="#1A2940" stroke-width="2"/><path d="M 560 20 V 740" stroke="#1A2940" stroke-width="2"/><path d="M 640 20 V 740" stroke="#1A2940" stroke-width="2"/><path d="M 720 20 V 740" stroke="#1A2940" stroke-width="2"/><path d="M 800 20 V 740" stroke="#1A2940" stroke-width="2"/><path d="M 880 20 V 740" stroke="#1A2940" stroke-width="2"/><path d="M 960 20 V 740" stroke="#1A2940" stroke-width="2"/><path d="M 1040 20 V 740" stroke="#1A2940" stroke-width="2"/><path d="M 1120 20 V 740" stroke="#1A2940" stroke-width="2"/>
+    <path d="M 20 80 H 1180" stroke="#1A2940" stroke-width="2"/><path d="M 20 160 H 1180" stroke="#1A2940" stroke-width="2"/><path d="M 20 240 H 1180" stroke="#1A2940" stroke-width="2"/><path d="M 20 320 H 1180" stroke="#1A2940" stroke-width="2"/><path d="M 20 400 H 1180" stroke="#1A2940" stroke-width="2"/><path d="M 20 480 H 1180" stroke="#1A2940" stroke-width="2"/><path d="M 20 560 H 1180" stroke="#1A2940" stroke-width="2"/><path d="M 20 640 H 1180" stroke="#1A2940" stroke-width="2"/><path d="M 20 720 H 1180" stroke="#1A2940" stroke-width="2"/>
+  </g>
+  <circle cx="1000" cy="170" r="160" fill="#7c5cff" opacity="0.22"/>
+  <circle cx="180" cy="580" r="130" fill="#89ff73" opacity="0.12"/>
+  <rect x="64" y="70" width="1072" height="58" rx="14" fill="#182434"/>
+  <circle cx="92" cy="99" r="8" fill="#89ff73"/>
+  <text x="116" y="106" fill="#F5F7FB" font-size="28" font-family="Inter, Arial, sans-serif" font-weight="700">JARVIS REMINDER</text>
+  <text x="74" y="220" fill="#7c5cff" font-size="22" font-family="monospace">OVERVIEW</text>
+  <text x="74" y="330" fill="#F5F7FB" font-size="82" font-family="Inter, Arial, sans-serif" font-weight="800">Jarvis Reminder</text>
+  <text x="74" y="402" fill="#A1ADBD" font-size="30" font-family="monospace">Mobile · Recordatorios · Flutter</text>
+  <rect x="74" y="520" width="280" height="120" rx="18" fill="#152131" stroke="#30405A"/>
+  <path d="M110 602 C 150 552, 210 620, 270 552" stroke="#7c5cff" stroke-width="8" stroke-linecap="round" fill="none"/>
+  <rect x="390" y="520" width="280" height="120" rx="18" fill="#152131" stroke="#30405A"/>
+  <rect x="435" y="572" width="170" height="10" rx="5" fill="#7c5cff"/>
+  <rect x="435" y="610" width="110" height="10" rx="5" fill="#89ff73"/>
+  <rect x="706" y="520" width="250" height="120" rx="18" fill="#152131" stroke="#30405A"/>
+  <circle cx="831" cy="580" r="32" stroke="#7c5cff" stroke-width="8"/>
+  <circle cx="831" cy="580" r="9" fill="#89ff73"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#101A2A"/>
+      <stop offset="1" stop-color="#0B1118"/>
+    </linearGradient>
+  </defs>
+</svg>

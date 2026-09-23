@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#10141b"/>
+  <path d="M0 590 L270 430 L470 520 L720 310 L1200 485" fill="none" stroke="#283243" stroke-width="22"/>
+  <path d="M90 40 L280 800 M420 0 L640 800 M760 0 L920 800" stroke="#1b2330" stroke-width="3"/>
+  <path d="M0 180 L1200 340 M0 420 L1200 610" stroke="#1b2330" stroke-width="3"/>
+  <circle cx="718" cy="312" r="28" fill="#ff5a5f"/>
+  <circle cx="718" cy="312" r="58" fill="none" stroke="#ff5a5f" opacity=".25" stroke-width="18"/>
+  <circle cx="268" cy="432" r="18" fill="#6d8cff"/>
+  <circle cx="960" cy="415" r="18" fill="#9df56a"/>
+  <rect x="70" y="70" width="425" height="170" rx="26" fill="#171d28" stroke="#2b3545"/>
+  <text x="105" y="116" fill="#8090a7" font-family="Arial" font-size="18">FLOTA / TIEMPO REAL</text>
+  <text x="105" y="170" fill="#f7f7f4" font-family="Arial" font-size="46" font-weight="700">12 unidades activas</text>
+  <text x="105" y="210" fill="#9df56a" font-family="Arial" font-size="20">WebSocket conectado</text>
+  <rect x="790" y="560" width="340" height="160" rx="26" fill="#171d28" stroke="#2b3545"/>
+  <text x="825" y="612" fill="#8090a7" font-family="Arial" font-size="18">UNIDAD A-07</text>
+  <text x="825" y="660" fill="#f7f7f4" font-family="Arial" font-size="32" font-weight="700">En ruta</text>
+  <text x="825" y="698" fill="#ff5a5f" font-family="Arial" font-size="18">ETA 06:42 min</text>
+</svg>
