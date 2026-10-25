@@ -99,7 +99,24 @@ function App(){
  const [pathname,setPathname]=useState(window.location.pathname);
  useEffect(()=>{const onPop=()=>setPathname(window.location.pathname); window.addEventListener('popstate',onPop);return()=>window.removeEventListener('popstate',onPop)},[]);
  const inLabs=/^\/labs(?:\/|$)/.test(pathname);
- function navigateLabs(e){e.preventDefault();window.history.pushState({},'', '/labs');setPathname('/labs');window.scrollTo(0,0);setMenu(false)}
+ function navigateLabs(e) {
+  e.preventDefault();
+
+  if (window.location.pathname !== "/labs") {
+    window.history.pushState({}, "", "/labs");
+  }
+
+  // Comunicar el cambio a todos los componentes
+  window.dispatchEvent(new PopStateEvent("popstate"));
+
+  setPathname("/labs");
+  setMenu(false);
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+}
  function navigateHome(e, sectionId) {
     e.preventDefault();
 
