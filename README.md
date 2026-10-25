@@ -1,16 +1,38 @@
-# React + Vite
+# FrankLabs — versión modular
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Arranque
 
-Currently, two official plugins are available:
+```powershell
+npm install
+npm run dev
+```
+Visita `/labs`; home `/` conserva el portafolio. Para validar: `npm run build` y `npm run typecheck`.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Estructura
+- `src/main.jsx`: portafolio heredado (sin cambio visual; pendiente separación futura).
+- `src/labs/LabsPage.tsx`: catálogo y navegación de FrankLabs.
+- `src/labs/registry.ts`: registro centralizado de herramientas (nombre, ícono, URL).
+- `src/labs/modules/qr/`: generador QR local.
+- `src/labs/modules/archivosTemporales/`: selección local; SIN transferencia remota aún.
+- `src/labs/modules/imagenes/`: conversión local mediante canvas.
+- `src/labs/modules/audio/`: reproducción local.
+- `src/labs/modules/kanban/`: tablero con persistencia localStorage.
+- `src/labs/modules/notas/`: notas con persistencia localStorage.
+- `src/labs/modules/espacios/`: espacios y proyectos con persistencia localStorage.
+- `src/labs/shared/`: navegación e iconos.
+- `src/services/firebase.ts`: adaptador Firebase opcional, NO conectado por defecto.
 
-## React Compiler
+## Añadir nueva herramienta
+1. Crear `src/labs/modules/nuevaHerramienta/NuevaHerramienta.jsx` y `index.js`.
+2. Registrar sus metadatos en `src/labs/registry.ts`.
+3. Añadir su import y entrada a `pages` en `src/labs/LabsPage.tsx`.
+4. Probar la ruta `/labs/nueva-herramienta`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Firebase: seguridad
+En el frontend solo son públicas las claves de configuración del SDK. **Nunca** introducir claves privadas de service account ni secretos. Antes de guardar información remota: crear proyecto en Firebase Console, habilitar Authentication, diseñar Security Rules basadas en usuario autenticado y membresía por organización, App Check, límites y monitoreo. No permitir `allow read, write: if true` en producción. `.env.local` está ignorado.
 
-## Expanding the ESLint configuration
+## Nota sobre GitHub Pages
+La navegación directa a `/labs/...` en GitHub Pages requiere manejo de fallback o despliegue con soporte SPA (por ejemplo Cloudflare Pages). La prueba con Vite local sí dispone de fallback.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Alcance actual
+Kanban, notas y espacios persisten **solo en este navegador**, no entre dispositivos. El módulo de archivos temporales no sube nada todavía. El audio reproduce archivos locales, no convierte formatos. Todo esto necesita desarrollo backend adicional.
