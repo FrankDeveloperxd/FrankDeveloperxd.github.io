@@ -161,6 +161,7 @@ function App(){
     <div className="scroll-progress" aria-hidden="true"/>
     <header className="site-header"><div className="container header-inner">
       <a className="logo" href="/">Frank <span className="logo-dot">Bernaola</span></a>
+      
       <button className="mobile-menu" aria-label="Abrir menú" aria-expanded={menu} onClick={()=>setMenu(!menu)}>Menú</button>
       <nav
         className={menu ? "open" : ""}
