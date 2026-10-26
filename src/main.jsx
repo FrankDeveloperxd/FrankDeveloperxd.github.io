@@ -2,6 +2,8 @@ import LabsPage from './labs/LabsPage.tsx';
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './style.css';
+import './portfolio-responsive.css';
+import './labs-responsive.css';
 
 const projects = [
   { name:'MODCONTROL', group:'Monitoreo industrial', desc:'App para visualizar variables, sensores y alertas desde dispositivos conectados.', color:'blue', art:'monitor', tags:['Android','MQTT'] },

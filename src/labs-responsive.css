@@ -1,0 +1,52 @@
+/* FrankLabs responsive layer — load AFTER labs.css */
+.labs-page { overflow-x: clip; }
+.labs-shell { width: min(1190px, calc(100% - 2 * clamp(16px, 4vw, 28px))); }
+.labs-page *, .labs-page *::before, .labs-page *::after { min-width: 0; }
+.labs-tool-heading p, .labs-tool p, .note p, .space-project strong { overflow-wrap: anywhere; }
+.labtool-panel, .labtool-display, .kanban-wrap, .notes-layout, .spaces-layout { max-width: 100%; }
+.labtool-display img, .labtool-display canvas { max-width: 100%; height: auto; }
+.labtool-panel input[type='file'] { max-width: 100%; }
+@media (max-width: 1000px) {
+  .labs-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .labtool-layout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .spaces-layout { grid-template-columns: minmax(200px, .7fr) minmax(0, 1.3fr); }
+  .kanban-grid { gap: 10px; }
+  .kanban-lane { padding: 12px; }
+  .notes-layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 740px) {
+  .labs-page { padding: 30px 0 60px; }
+  .labs-catalog-header { flex-direction: column; align-items: stretch; gap: 20px; }
+  .labs-search { width: 100%; min-width: 0; }
+  .labs-tool-heading { align-items: flex-start; gap: 14px; }
+  .labs-tool-heading h1 { font-size: clamp(28px, 6.5vw, 44px); }
+  .labs-tool-heading .labs-tool-icon { flex-shrink: 0; width: 56px; height: 56px; }
+  .labtool-layout, .spaces-layout { grid-template-columns: 1fr; }
+  .spaces-layout { gap: 16px; }
+  .space-sidebar { border-right: 0; border-bottom: 1px solid #e0e7f5; padding: 0 0 20px; }
+  .kanban-grid { grid-template-columns: 1fr; gap: 14px; }
+  .kanban-lane { min-height: 170px; }
+  .kanban-wrap, .notes-layout, .spaces-layout { padding: 18px; }
+  .labtool-panel, .labtool-display { padding: 20px; min-height: 260px; }
+}
+@media (max-width: 520px) {
+  .labs-shell { width: calc(100% - 32px); }
+  .labs-cards { grid-template-columns: 1fr; gap: 12px; }
+  .labs-tool { min-height: 170px; padding: 20px; }
+  .labs-card-head { margin-bottom: 15px; }
+  .labs-tool-heading { flex-wrap: wrap; }
+  .labs-tool-heading h1 { font-size: clamp(26px, 8vw, 36px); }
+  .labs-breadcrumb { gap: 8px; flex-wrap: wrap; line-height: 1.5; margin-bottom: 22px; }
+  .labtool-panel, .labtool-display, .kanban-wrap, .notes-layout, .spaces-layout { border-radius: 18px; padding: 15px; }
+  .labtool-panel input:not([type='color']):not([type='range']), .labtool-panel select, .labtool-panel textarea, .task-form input { font-size: 16px; }
+  .labtool-display>img:not(.result-image) { width: min(100%, 250px); }
+  .task-form { display: flex; flex-direction: column; align-items: stretch; }
+  .task-form > * { width: 100%; }
+  .note-list { grid-template-columns: 1fr; }
+  .space-project { width: 100%; min-width: 0; }
+  .spaces-content h2 { font-size: clamp(25px, 8vw, 34px); }
+  .labs-bottom-nav button, .labs-breadcrumb button { min-height: 42px; }
+}
+@media (hover: none) {
+  .labs-tool:hover, .labs-tool:hover .labs-tool-icon, .labs-tool:hover .labs-card-arrow { transform: none; }
+}

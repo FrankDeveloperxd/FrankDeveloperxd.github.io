@@ -1,0 +1,99 @@
+/* Frank Portfolio — responsive layer. Load AFTER style.css. */
+:root { --mobile-gutter: clamp(16px, 4vw, 32px); }
+html { scroll-padding-top: 84px; }
+body { min-width: 0; overflow-x: clip; }
+img, video, canvas { max-width: 100%; }
+.container { width: min(1260px, calc(100% - 2 * var(--mobile-gutter))); }
+.header-inner, .hero-grid, .about-grid, .bird-feature-layout, .detail-hero,
+.detail-columns, .project, .tools-grid, .journey-mosaic { min-width: 0; }
+.hero-copy, .hero-portrait, .bird-feature-copy, .bird-photo,
+.project-details, .project-image, .about-copy { min-width: 0; }
+.hero h1, .bird-feature h2, .section h2, .detail-copy h1 { overflow-wrap: break-word; }
+.hero-portrait img { max-width: 100%; }
+@media (max-width: 1100px) {
+  .header-inner { gap: 18px; }
+  .header-inner nav { gap: 17px; }
+  .hero-grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 18px; }
+  .hero h1 { font-size: clamp(43px, 5.8vw, 72px); }
+  .journey-mosaic { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tools-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .bird-feature-layout { grid-template-columns: minmax(0, 53%) minmax(0, 47%); }
+  .bird-photo { height: min(45vw, 480px); min-height: 0; }
+}
+@media (max-width: 800px) {
+  .header-inner { position: relative; min-height: 68px; gap: 12px; }
+  .logo { font-size: clamp(18px, 3vw, 22px); white-space: nowrap; }
+  .mobile-menu { display: inline-flex !important; align-items: center; justify-content: center; min-height: 44px; min-width: 62px; margin-left: auto; }
+  .header-inner > nav { display: none !important; position: absolute; top: calc(100% + 1px); left: calc(-1 * var(--mobile-gutter)); right: calc(-1 * var(--mobile-gutter)); margin: 0; padding: 14px var(--mobile-gutter) 20px; background: #fff; border-bottom: 1px solid #dce4f3; box-shadow: 0 16px 24px #142b5717; flex-direction: column; align-items: stretch; gap: 0; z-index: 65; }
+  .header-inner > nav.open { display: flex !important; }
+  .header-inner > nav a { display: flex; align-items: center; min-height: 46px; font-size: 15px; }
+  .nav-github { display: none !important; }
+  .hero-grid { display: flex; flex-direction: column; min-height: 0; gap: 0; }
+  .hero-copy { width: 100%; padding: 48px 0 14px; }
+  .hero h1 { font-size: clamp(42px, 8.4vw, 68px); max-width: 680px; }
+  .hero-portrait { height: clamp(290px, 58vw, 470px); width: min(100%, 490px); align-self: center; transform: none !important; }
+  .orbit-stage { width: min(100%, 450px); height: 90%; }
+  .section-top, .tools-heading { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .section-top > p { max-width: 630px; margin: 0; }
+  .projects-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .project:first-child { grid-column: 1 / -1; }
+  .about-grid { grid-template-columns: 1fr; gap: 20px; }
+  .bird-feature-layout { display: flex; flex-direction: column; min-height: 0; gap: 0; }
+  .bird-photo { order: 1; width: 100%; height: clamp(245px, 50vw, 460px); min-height: 0; background-size: contain !important; }
+  .bird-feature-copy { order: 2; width: 100%; padding: 16px 0 44px; }
+  .detail-hero, .detail-columns { grid-template-columns: 1fr; }
+  .detail-art { min-height: 270px; }
+  .detail-copy { padding: clamp(20px, 5vw, 42px); }
+  .lab-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  :root { --mobile-gutter: 16px; }
+  .site-header { backdrop-filter: blur(8px); }
+  .hero-copy { padding: 40px 0 8px; }
+  .hero h1 { font-size: clamp(37px, 11vw, 58px); line-height: 1.09; letter-spacing: -.055em; }
+  .eyebrow { margin-bottom: 14px; }
+  .hero-lede { font-size: 15px; line-height: 1.65; }
+  .hero-actions { gap: 10px; }
+  .hero-actions .btn { min-height: 46px; padding: 12px 15px; }
+  .hero-portrait { height: clamp(265px, 81vw, 390px); }
+  .orbit-stage { height: 92%; }
+  .section { padding-block: 50px !important; }
+  .section h2, .contact h2 { font-size: clamp(32px, 8.5vw, 46px); }
+  .projects-grid { grid-template-columns: 1fr; gap: 16px; }
+  .project:first-child { grid-column: auto; display: block; min-height: 0; }
+  .project:first-child .project-image, .project-image { height: 200px; }
+  .project:first-child .project-details { padding: 20px; }
+  .project:first-child h3 { font-size: 22px; }
+  .tools-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .tool-card { min-height: 158px; padding: 16px 12px; }
+  .tool-card strong { font-size: 17px !important; }
+  .tool-card small { font-size: 12px !important; }
+  .tool-icon { width: 46px; height: 46px; }
+  .lab-grid { grid-template-columns: 1fr; }
+  .lab-graphic { height: 150px !important; }
+  .journey-mosaic { grid-template-columns: 1fr; }
+  .journey-tile { min-height: 0; padding: 22px; }
+  .bird-feature-copy h2 { font-size: clamp(35px, 9vw, 48px); }
+  .bird-photo { height: clamp(200px, 60vw, 330px); }
+  .detail-modules { grid-template-columns: 1fr; }
+  .detail-footer { flex-direction: column; align-items: stretch; }
+  .contact { padding: 58px 0 !important; }
+  .contact-actions { flex-direction: column; align-items: stretch; }
+  .contact-actions .btn { width: 100%; }
+  .footer-inner { flex-direction: column; text-align: center; align-items: center; }
+  .whatsapp-float { right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); width: 48px; height: 48px; }
+}
+@media (max-width: 370px) {
+  .logo { font-size: 18px; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-actions .btn { width: 100%; }
+  .tools-grid { grid-template-columns: 1fr; }
+}
+@media (hover: none), (pointer: coarse) {
+  .hero-portrait, .orbit-stage { transform: none !important; }
+  .project:hover, .lab-card:hover, .journey-tile:hover { transform: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
