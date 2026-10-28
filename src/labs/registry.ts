@@ -1,4 +1,4 @@
-export type ToolId = 'qr' | 'files' | 'images' | 'audio' | 'kanban' | 'notes' | 'spaces';
+export type ToolId = 'qr' | 'files' | 'images' | 'audio' | 'kanban' | 'notes' | 'spaces' | 'bloc';
 export type ToolDefinition = { id: ToolId; title: string; desc: string; icon: string; tone: string };
 export const tools: ToolDefinition[] = [
  {id:'qr',title:'Generador QR',desc:'Enlaces, texto y conexiones Wi-Fi en un código personalizable.',icon:'qr',tone:'blue'},
@@ -7,5 +7,6 @@ export const tools: ToolDefinition[] = [
  {id:'audio',title:'Audio y formatos',desc:'Escucha y revisa tus archivos de audio desde el navegador.',icon:'music',tone:'cyan'},
  {id:'kanban',title:'Tablero Kanban',desc:'Organiza proyectos y mueve tus tareas a medida que avanzas.',icon:'kanban',tone:'green'},
  {id:'notes',title:'Notas y bloques',desc:'Escribe, ordena y guarda ideas.',icon:'notes',tone:'pink'},
+ {id:'bloc',title:'Bloc libre',desc:'Comparte notas y archivos mediante un enlace editable.',icon:'notes',tone:'violet'},
  {id:'spaces',title:'Mis espacios',desc:'Organizaciones, proyectos y módulos en un solo lugar.',icon:'space',tone:'dark'}
 ];
