@@ -198,7 +198,7 @@ function App(){
           <p className="hero-lede">Entre aplicaciones, experimentos y buenas ideas. Este es mi espacio para compartir lo que aprendo y lo que hago.</p>
           <div className="hero-actions"><a className="btn btn-primary" href="#proyectos">Explorar mis proyectos <Arrow/></a><a className="btn btn-secondary" href="#sobre-mi">Conóceme</a></div><div className="hero-quick"><span className="quick-separator">·</span></div>
         </div>
-        <div className="hero-portrait" aria-label="Retrato provisional"><div className="orbit-stage"><div className="orbit-disc"/><div className="orbit-ring"/><div className="orbit-satellite"/><div className="orbit-highlight"/></div><img src="/media/portrait/Photo_dev.png" alt="Fotografía provisional; aquí irá el retrato de Frank"/></div>
+        <div className="hero-portrait" aria-label="Retrato provisional"><div className="orbit-stage"><div className="orbit-disc"/><div className="orbit-ring"/><div className="orbit-satellite"/><div className="orbit-highlight"/></div><img src="/media/portrait/Retrato_profesional.png" alt="Fotografía provisional; aquí irá el retrato de Frank"/></div>
       </div></section>
       <ExplodedView/>
       <section id="proyectos" className="work section"><div className="container">
