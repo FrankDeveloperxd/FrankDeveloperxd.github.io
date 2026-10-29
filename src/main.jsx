@@ -1,3 +1,4 @@
+import { smoothScrollToTop } from "./smoothScrollToTop.js";
 import LabsPage from './labs/LabsPage.tsx';
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -7,21 +8,21 @@ import './labs-responsive.css';
 
 const projects = [
   { name:'MODCONTROL', group:'Monitoreo industrial', desc:'App para visualizar variables, sensores y alertas desde dispositivos conectados.', color:'blue', art:'monitor', tags:['Android','MQTT'] },
-  { name:'Plancito', group:'Eventos', desc:'Producto para descubrir, organizar y gestionar eventos con un flujo más claro.', color:'violet', art:'events', tags:['Web','Móvil'] },
-  { name:'Ambulancias en tiempo real', group:'Geolocalización', desc:'Representación de unidades, estados y ubicación en tiempo real dentro de un mapa.', color:'green', art:'map', tags:['Mapas','Realtime'] },
-  { name:'Hetwin', group:'Asistente de voz', desc:'Asistente de escritorio por voz para ejecutar acciones y automatizar tareas.', color:'cyan', art:'voice', tags:['Python','Automatización'] },
-  { name:'Remove Background', group:'Visión por computadora', desc:'Herramienta para eliminar fondo de imágenes y generar recortes rápidos.', color:'orange', art:'cutout', tags:['Imagen','IA'] },
-  { name:'Heatmap', group:'Análisis visual', desc:'Exploración visual mediante mapas de calor para estudiar atención e interacción.', color:'pink', art:'heat', tags:['Python','Visualización'] },
+  { name:'Plancito', group:'Eventos', desc:'Producto para descubrir, organizar y gestionar eventos con un flujo m├ís claro.', color:'violet', art:'events', tags:['Web','M├│vil'] },
+  { name:'Ambulancias en tiempo real', group:'Geolocalizaci├│n', desc:'Representaci├│n de unidades, estados y ubicaci├│n en tiempo real dentro de un mapa.', color:'green', art:'map', tags:['Mapas','Realtime'] },
+  { name:'Hetwin', group:'Asistente de voz', desc:'Asistente de escritorio por voz para ejecutar acciones y automatizar tareas.', color:'cyan', art:'voice', tags:['Python','Automatizaci├│n'] },
+  { name:'Remove Background', group:'Visi├│n por computadora', desc:'Herramienta para eliminar fondo de im├ígenes y generar recortes r├ípidos.', color:'orange', art:'cutout', tags:['Imagen','IA'] },
+  { name:'Heatmap', group:'An├ílisis visual', desc:'Exploraci├│n visual mediante mapas de calor para estudiar atenci├│n e interacci├│n.', color:'pink', art:'heat', tags:['Python','Visualizaci├│n'] },
 ];
 
 
 const projectDetails = {
- 'MODCONTROL': {slug:'modcontrol', overview:'Exploración de monitoreo industrial desde una aplicación móvil: variables, estados y alertas en una interfaz de lectura rápida.', challenges:['Leer variables de proceso sin sobrecargar la pantalla','Conectar la interfaz con mensajes MQTT','Organizar alertas y estados de equipos'], modules:['Aplicación Android','Mensajería MQTT','Visualización','Sensores y dispositivos'], stage:'Prototipo técnico'},
- 'Plancito': {slug:'plancito', overview:'Plataforma personal para descubrir eventos y facilitar la organización, con experiencias diferenciadas para asistentes y organizadores.', challenges:['Exploración de eventos y lugares','Gestión de eventos y asistentes','Diseñar una experiencia clara para móvil y web'], modules:['Explorar eventos','Página de evento','Organización','Asistencia'], stage:'Producto en desarrollo'},
- 'Ambulancias en tiempo real': {slug:'ambulancias', overview:'Concepto de seguimiento de unidades sobre mapas, visualización de sus estados y actualizaciones en tiempo real.', challenges:['Ubicar unidades geográficamente','Presentar cambios de estado','Mantener información legible sobre mapas'], modules:['Mapa','Unidades','Estados','Actualizaciones'], stage:'Exploración técnica'},
+ 'MODCONTROL': {slug:'modcontrol', overview:'Exploraci├│n de monitoreo industrial desde una aplicaci├│n m├│vil: variables, estados y alertas en una interfaz de lectura r├ípida.', challenges:['Leer variables de proceso sin sobrecargar la pantalla','Conectar la interfaz con mensajes MQTT','Organizar alertas y estados de equipos'], modules:['Aplicaci├│n Android','Mensajer├¡a MQTT','Visualizaci├│n','Sensores y dispositivos'], stage:'Prototipo t├®cnico'},
+ 'Plancito': {slug:'plancito', overview:'Plataforma personal para descubrir eventos y facilitar la organizaci├│n, con experiencias diferenciadas para asistentes y organizadores.', challenges:['Exploraci├│n de eventos y lugares','Gesti├│n de eventos y asistentes','Dise├▒ar una experiencia clara para m├│vil y web'], modules:['Explorar eventos','P├ígina de evento','Organizaci├│n','Asistencia'], stage:'Producto en desarrollo'},
+ 'Ambulancias en tiempo real': {slug:'ambulancias', overview:'Concepto de seguimiento de unidades sobre mapas, visualizaci├│n de sus estados y actualizaciones en tiempo real.', challenges:['Ubicar unidades geogr├íficamente','Presentar cambios de estado','Mantener informaci├│n legible sobre mapas'], modules:['Mapa','Unidades','Estados','Actualizaciones'], stage:'Exploraci├│n t├®cnica'},
  'Hetwin': {slug:'hetwin', overview:'Asistente de escritorio basado en voz y automatizaciones locales para ejecutar tareas y obtener respuestas habladas.', challenges:['Reconocer activaciones por voz','Vincular comandos con acciones','Producir respuestas claras mediante audio'], modules:['Entrada de voz','Intenciones','Acciones','Audio'], stage:'Prototipo personal'},
- 'Remove Background': {slug:'remove-background', overview:'Herramienta experimental para separar sujetos del fondo de sus fotografías y producir recortes reutilizables.', challenges:['Seleccionar una imagen','Procesar la separación del fondo','Exportar el resultado'], modules:['Entrada','Procesamiento','Vista previa','Exportación'], stage:'Experimento'},
- 'Heatmap': {slug:'heatmap', overview:'Estudio de visualización de atención e interacción mediante mapas de calor y métricas exploratorias.', challenges:['Recoger puntos de interacción','Representar intensidad espacial','Interpretar patrones visuales'], modules:['Captura','Procesamiento','Mapa de calor','Análisis'], stage:'Experimento'}
+ 'Remove Background': {slug:'remove-background', overview:'Herramienta experimental para separar sujetos del fondo de sus fotograf├¡as y producir recortes reutilizables.', challenges:['Seleccionar una imagen','Procesar la separaci├│n del fondo','Exportar el resultado'], modules:['Entrada','Procesamiento','Vista previa','Exportaci├│n'], stage:'Experimento'},
+ 'Heatmap': {slug:'heatmap', overview:'Estudio de visualizaci├│n de atenci├│n e interacci├│n mediante mapas de calor y m├®tricas exploratorias.', challenges:['Recoger puntos de interacci├│n','Representar intensidad espacial','Interpretar patrones visuales'], modules:['Captura','Procesamiento','Mapa de calor','An├ílisis'], stage:'Experimento'}
 };
 const slugOf = (p) => projectDetails[p.name].slug;
 
@@ -99,7 +100,90 @@ function Journey(){const items=[
 function App(){
  const [route,setRoute]=useState(window.location.hash);
  const [pathname,setPathname]=useState(window.location.pathname);
- useEffect(()=>{const onPop=()=>setPathname(window.location.pathname); window.addEventListener('popstate',onPop);return()=>window.removeEventListener('popstate',onPop)},[]);
+ const [showBackToTop, setShowBackToTop] = useState(false);
+
+ useEffect(() => {
+   const onScroll = () => setShowBackToTop(window.scrollY > 350);
+   onScroll();
+   window.addEventListener("scroll", onScroll, { passive: true });
+   return () => window.removeEventListener("scroll", onScroll);
+ }, []);
+
+ function scrollBackToTop() {
+   const start = window.scrollY;
+   if (start <= 0) return;
+
+   if (window.__backToTopCancel) {
+     window.__backToTopCancel();
+   }
+
+   const root = document.documentElement;
+   const body = document.body;
+
+   const previous = [root, body].map(el => ({
+     el,
+     value: el.style.getPropertyValue("scroll-behavior"),
+     priority: el.style.getPropertyPriority("scroll-behavior")
+   }));
+
+   previous.forEach(({el}) => {
+     el.style.setProperty("scroll-behavior", "auto", "important");
+   });
+
+   let frame = 0;
+   let cancelled = false;
+
+   function cleanup() {
+     if (cancelled) return;
+     cancelled = true;
+     cancelAnimationFrame(frame);
+
+     previous.forEach(({el,value,priority}) => {
+       if (value) {
+         el.style.setProperty("scroll-behavior", value, priority);
+       } else {
+         el.style.removeProperty("scroll-behavior");
+       }
+     });
+
+     window.__backToTopCancel = null;
+   }
+
+   window.__backToTopCancel = cleanup;
+
+   const duration = 2000;
+   const began = performance.now();
+
+   function animate(now) {
+     if (cancelled) return;
+
+     const t = Math.min((now - began) / duration, 1);
+
+     // Comienza rapido y desacelera gradualmente.
+     const eased = 1 - Math.pow(1 - t, 2.2);
+
+     window.scrollTo({
+       top: start * (1 - eased),
+       behavior: "instant"
+     });
+
+     if (t < 1) {
+       frame = requestAnimationFrame(animate);
+     } else {
+       window.scrollTo({ top: 0, behavior: "instant" });
+       cleanup();
+     }
+   }
+
+   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+     window.scrollTo({ top: 0, behavior: "instant" });
+     cleanup();
+     return;
+   }
+
+   frame = requestAnimationFrame(animate);
+ }
+ useEffect(()=>{const onPop=()=>{setPathname(window.location.pathname);setRoute(window.location.hash);}; window.addEventListener('popstate',onPop);return()=>window.removeEventListener('popstate',onPop)},[]);
  const inLabs=/^\/labs(?:\/|$)/.test(pathname);
  function navigateLabs(e) {
   e.preventDefault();
@@ -120,26 +204,63 @@ function App(){
   });
 }
  function navigateHome(e, sectionId) {
-    e.preventDefault();
+   e.preventDefault();
 
-    // Regresar al portafolio principal
-    window.history.pushState({}, '', `/#${sectionId}`);
+   const destination = `/#${sectionId}`;
 
-    // Actualizar la página mostrada por React
-    setPathname('/');
-    setRoute(`#${sectionId}`);
-    setMenu(false);
+   if (window.location.pathname + window.location.hash !== destination) {
+     window.history.pushState({}, "", destination);
+   }
 
-    // Esperar a que React muestre el contenido
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        document.getElementById(sectionId)?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      });
-    });
-  }
+   setMenu(false);
+   setPathname("/");
+   setRoute(`#${sectionId}`);
+
+   window.dispatchEvent(new PopStateEvent("popstate"));
+ }
+
+ // Desplazarse solo después de que React haya mostrado la sección.
+ useEffect(() => {
+   if (pathname !== "/") return;
+
+   const id = window.location.hash.slice(1);
+
+   if (!["sobre-mi", "contacto", "proyectos", "inicio"].includes(id)) {
+     return;
+   }
+
+   let frame1;
+   let frame2;
+
+   frame1 = requestAnimationFrame(() => {
+     frame2 = requestAnimationFrame(() => {
+       const target = document.getElementById(id);
+
+       if (!target) return;
+
+       const header = document.querySelector(".site-header, header");
+       const headerHeight = header
+         ? header.getBoundingClientRect().height
+         : 0;
+
+       const top =
+         target.getBoundingClientRect().top +
+         window.scrollY -
+         headerHeight -
+         12;
+
+       window.scrollTo({
+         top: Math.max(0, top),
+         behavior: "smooth"
+       });
+     });
+   });
+
+   return () => {
+     cancelAnimationFrame(frame1);
+     cancelAnimationFrame(frame2);
+   };
+ }, [pathname, route]);
  useEffect(()=>{const update=()=>setRoute(window.location.hash);window.addEventListener("hashchange",update);return()=>window.removeEventListener("hashchange",update)},[]);
  const detailSlug=route.startsWith("#/project/")?route.slice(10):null;
  const activeProject=projects.find(p=>slugOf(p)===detailSlug);
@@ -214,6 +335,29 @@ function App(){
       <Journey/>
       <section id="contacto" className="contact"><div className="container contact-inner reveal"><p className="section-label">Sigamos en contacto</p><h2>¿Conversamos?</h2><p>Si te interesó alguno de mis proyectos o tienes una idea para compartir, conversemos.</p><div className="contact-actions"><a href="https://github.com/FrankDeveloperxd" target="_blank" rel="noopener noreferrer" className="btn btn-primary">Mi GitHub <Arrow/></a><a className="btn btn-secondary" href="https://wa.me/51968949651?text=Hola%20Frank%2C%20vi%20tu%20portafolio" target="_blank" rel="noopener noreferrer">WhatsApp <WhatsApp/></a></div></div></section>
     </main>}
+    {showBackToTop && (
+      <button
+        type="button"
+        className="back-to-top"
+        onClick={smoothScrollToTop}
+        aria-label="Volver arriba"
+        title="Volver arriba"
+      >
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="m6 14 6-6 6 6"/>
+        </svg>
+      </button>
+    )}
     <a className="whatsapp-float" href="https://wa.me/51968949651?text=Hola%20Frank%2C%20vi%20tu%20portafolio" target="_blank" rel="noopener noreferrer" aria-label="Escribir por WhatsApp"><WhatsApp/></a>
     <footer><div className="container footer-inner"><span>© 2026 Frank Bernaola</span><span>Hecho con curiosidad y código.</span></div></footer>
   </>

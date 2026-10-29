@@ -50,3 +50,571 @@
 @media (hover: none) {
   .labs-tool:hover, .labs-tool:hover .labs-tool-icon, .labs-tool:hover .labs-card-arrow { transform: none; }
 }
+
+/* FRANKLABS RESPONSIVE GLOBAL V2026 */
+
+.labs-page,
+.labs-shell,
+.labs-catalog-header,
+.labs-tool-heading,
+.labtool-layout {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.labs-page * {
+  box-sizing: border-box;
+}
+
+.labs-page img,
+.labs-page canvas,
+.labs-page video {
+  max-width: 100%;
+  height: auto;
+}
+
+.labs-page button,
+.labs-page input,
+.labs-page textarea,
+.labs-page select {
+  max-width: 100%;
+}
+
+.labs-page h1,
+.labs-page h2,
+.labs-page h3,
+.labs-page p {
+  overflow-wrap: break-word;
+}
+
+.labs-cards > *,
+.labtool-layout > *,
+.labs-tool-heading > * {
+  min-width: 0;
+}
+
+.labs-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+}
+
+/* QR STUDIO - GLOBAL */
+.labs-page .qrmini {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.labs-page .qrmini-layout {
+  min-width: 0;
+}
+
+.labs-page .qrmini-layout > * {
+  min-width: 0;
+}
+
+.labs-page .qrmini-editor,
+.labs-page .qrmini-preview {
+  max-width: 100%;
+}
+
+.labs-page .qrmini-preview-stage {
+  width: 100%;
+  min-width: 0;
+}
+
+.labs-page .qrmini-preview-stage img {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.labs-page .qrmini textarea,
+.labs-page .qrform-field input,
+.labs-page .qrform-field textarea,
+.labs-page .qrform-field select {
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* TABLET */
+@media (min-width: 601px) and (max-width: 1024px) {
+
+  .labs-shell {
+    width: calc(100% - 48px);
+    max-width: 100%;
+  }
+
+  .labs-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .labtool-layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .labs-page .qrmini-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .labs-page .qrmini-preview {
+    position: static;
+  }
+
+  .labs-page .qrmini-preview-stage {
+    max-width: 520px;
+    margin-inline: auto;
+  }
+}
+
+/* CELULAR */
+@media (max-width: 600px) {
+
+  .labs-shell {
+    width: calc(100% - 32px);
+    max-width: 100%;
+    margin-inline: auto;
+  }
+
+  .labs-page {
+    padding-top: 26px;
+    padding-bottom: 55px;
+  }
+
+  .labs-catalog-header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+  }
+
+  .labs-search {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .labs-cards,
+  .labtool-layout,
+  .spaces-layout,
+  .notes-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .labs-tool-heading {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .labs-tool-heading h1 {
+    font-size: clamp(26px, 7.5vw, 38px);
+  }
+
+  .labs-breadcrumb {
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .labtool-panel,
+  .labtool-display,
+  .notes-layout,
+  .kanban-wrap,
+  .spaces-layout {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  /* QR Studio */
+  .labs-page .qrmini-heading h2 {
+    font-size: clamp(27px, 8vw, 39px);
+  }
+
+  .labs-page .qrmini-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .labs-page .qrmini-editor,
+  .labs-page .qrmini-preview {
+    width: 100%;
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .labs-page .qrmini-preview {
+    position: static;
+    top: auto;
+  }
+
+  .labs-page .qrmini-title h3 {
+    font-size: 17px;
+  }
+
+  .labs-page .qrmini-themes {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .labs-page .qrmini-colors {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .labs-page .qrtypes-selector {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .labs-page .qrtypes-selector button {
+    min-height: 78px;
+  }
+
+  .labs-page .qrmini-sizes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .labs-page .qrmini-sizes button {
+    min-width: 0;
+    padding: 11px 5px;
+    font-size: 12px;
+  }
+
+  .labs-page .qrmini-preview-stage {
+    aspect-ratio: 1;
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .labs-page .qrmini-preview-stage img {
+    padding: 8px;
+    border-radius: 12px;
+  }
+
+  .labs-page .qrcontext {
+    padding: 12px;
+  }
+
+  .labs-page .qrcontext-primary {
+    overflow-wrap: anywhere;
+  }
+
+  /* Evitar zoom automatico al seleccionar formularios en iPhone */
+  .labs-page input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+  .labs-page textarea,
+  .labs-page select {
+    font-size: 16px;
+  }
+
+  /* Kanban y demás herramientas */
+  .labs-page .kanban-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .labs-page .task-form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .labs-page .task-form > * {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+
+  .labs-shell {
+    width: calc(100% - 24px);
+  }
+
+  .labs-page .qrmini-editor,
+  .labs-page .qrmini-preview {
+    padding: 12px;
+  }
+
+  .labs-page .qrmini-sizes button {
+    font-size: 11px;
+  }
+}
+
+
+/* QR MOBILE POLISH V2 */
+
+/* Tablet */
+@media (min-width: 601px) and (max-width: 950px) {
+  .labs-page:has(.qrmini) .qrmini-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+
+  .labs-page:has(.qrmini) .qrmini-preview {
+    position: static;
+  }
+
+  .labs-page:has(.qrmini) .qrtypes-selector {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Celular */
+@media (max-width: 600px) {
+
+  .labs-page:has(.qrmini) {
+    padding: 18px 0 54px;
+  }
+
+  .labs-page:has(.qrmini) .labs-shell {
+    width: calc(100% - 28px);
+    max-width: 480px;
+    margin-inline: auto;
+  }
+
+  /* Navegación compacta: todo en una línea */
+  .labs-page:has(.qrmini) .labs-breadcrumb {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 7px;
+    min-width: 0;
+    margin-bottom: 18px;
+    white-space: nowrap;
+    font-size: 11px;
+  }
+
+  .labs-page:has(.qrmini) .labs-breadcrumb button {
+    width: auto;
+    min-width: 0;
+    min-height: 36px;
+    padding: 5px 0;
+    flex-direction: row;
+    flex-shrink: 0;
+    gap: 5px;
+    font-size: 11px;
+  }
+
+  .labs-page:has(.qrmini) .labs-breadcrumb button svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+  }
+
+  .labs-page:has(.qrmini) .labs-breadcrumb > span {
+    display: inline-block;
+    min-width: 0;
+    max-width: none;
+    font-size: 11px;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  /* Encabezado */
+  .labs-page:has(.qrmini) .labs-tool-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 17px;
+  }
+
+  .labs-page:has(.qrmini) .labs-tool-heading .labs-tool-icon {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border-radius: 12px;
+  }
+
+  .labs-page:has(.qrmini) .labs-tool-heading h1 {
+    font-size: clamp(21px, 6vw, 27px);
+    margin: 0 0 3px;
+    letter-spacing: -.045em;
+    line-height: 1.13;
+  }
+
+  .labs-page:has(.qrmini) .labs-tool-heading p {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  /* Título del editor */
+  .labs-page .qrmini-heading {
+    margin-bottom: 17px;
+  }
+
+  .labs-page .qrmini-heading span {
+    font-size: 10px;
+    letter-spacing: .08em;
+  }
+
+  .labs-page .qrmini-heading h2 {
+    font-size: clamp(26px, 7.5vw, 34px);
+    line-height: 1.13;
+    letter-spacing: -.05em;
+    margin: 7px 0;
+  }
+
+  .labs-page .qrmini-heading p {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  /* Editor y resultado */
+  .labs-page .qrmini-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 15px;
+  }
+
+  .labs-page .qrmini-editor,
+  .labs-page .qrmini-preview {
+    width: 100%;
+    min-width: 0;
+    padding: 15px;
+    border-radius: 19px;
+  }
+
+  .labs-page .qrmini-preview {
+    position: static;
+  }
+
+  .labs-page .qrmini-title {
+    gap: 9px;
+    margin-bottom: 13px;
+  }
+
+  .labs-page .qrmini-title h3 {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+
+  .labs-page .qrmini-number {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+  }
+
+  .labs-page .qrmini-block {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+
+  /* Tipos de QR, dos columnas simétricas */
+  .labs-page .qrtypes-selector {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+
+  .labs-page .qrtypes-selector button {
+    min-width: 0;
+    width: 100%;
+    min-height: 72px;
+    padding: 10px 6px;
+    border-radius: 13px;
+    gap: 6px;
+  }
+
+  .labs-page .qrtypes-selector button svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .labs-page .qrtypes-selector button strong {
+    font-size: 12px;
+  }
+
+  /* Séptima opción ocupa la fila completa */
+  .labs-page .qrtypes-selector button:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    min-height: 60px;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  /* Tarjeta contextual */
+  .labs-page .qrcontext {
+    padding: 12px;
+    border-radius: 15px;
+    margin-bottom: 16px;
+  }
+
+  .labs-page .qrcontext-header {
+    margin-bottom: 10px;
+  }
+
+  .labs-page .qrcontext-demo {
+    min-height: 90px;
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .labs-page .qrcontext-primary {
+    font-size: 12px;
+  }
+
+  /* Vista previa */
+  .labs-page .qrmini-preview-stage {
+    padding: 12px;
+    margin: 14px 0;
+    border-radius: 15px;
+  }
+
+  .labs-page .qrmini-preview-stage img {
+    width: 100%;
+    height: auto;
+    padding: 8px;
+    border-radius: 11px;
+  }
+
+  .labs-page .qrmini-download {
+    min-height: 48px;
+  }
+
+  /* Evitar que WhatsApp flotante tape los formularios de QR */
+  body:has(.labs-page .qrmini) .whatsapp-float {
+    width: 42px;
+    height: 42px;
+    right: 10px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+
+  body:has(.labs-page .qrmini) .back-to-top {
+    right: 10px !important;
+    bottom: calc(66px + env(safe-area-inset-bottom, 0px)) !important;
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+  }
+}
+
+/* Pantallas de 320px */
+@media (max-width: 360px) {
+  .labs-page:has(.qrmini) .labs-shell {
+    width: calc(100% - 20px);
+  }
+
+  .labs-page:has(.qrmini) .labs-breadcrumb {
+    gap: 5px;
+    font-size: 10px;
+  }
+
+  .labs-page:has(.qrmini) .labs-breadcrumb button,
+  .labs-page:has(.qrmini) .labs-breadcrumb > span {
+    font-size: 10px;
+  }
+
+  .labs-page .qrmini-editor,
+  .labs-page .qrmini-preview {
+    padding: 12px;
+  }
+}

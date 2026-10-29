@@ -1,0 +1,11 @@
+.qrtemp{display:grid;gap:12px;margin:12px 0 18px}
+.qrtemp-upload{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:22px;border:2px dashed #98aef0;border-radius:18px;background:#f5f8ff;color:#194dcd;cursor:pointer;text-align:center}
+.qrtemp-upload input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.qrtemp-upload>span{font-size:30px;line-height:1.2}
+.qrtemp-upload strong{font-size:14px}.qrtemp-upload small{font-size:11px;color:#667999}
+.qrtemp-result{border:1px solid #bce9d0;border-radius:15px;padding:14px;background:#f0fff6;color:#174c34}
+.qrtemp-result>strong{font-size:13px}.qrtemp-result p{font-size:12px;margin:5px 0 12px;color:#456855}
+.qrtemp-actions{display:flex;gap:9px;flex-wrap:wrap}
+.qrtemp-actions button,.qrtemp-actions a{font:700 12px inherit;font-size:12px;padding:9px 12px;border:1px solid #83c8a1;background:#fff;color:#176044;border-radius:10px;cursor:pointer;text-decoration:none}
+.qrtemp-error{color:#b4233d;font-size:12px;margin:0}
+@media(max-width:550px){.qrtemp-upload{padding:16px}.qrtemp-actions>*{flex:1;text-align:center}}

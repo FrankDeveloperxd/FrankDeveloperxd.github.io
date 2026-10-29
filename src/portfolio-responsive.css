@@ -97,3 +97,663 @@ img, video, canvas { max-width: 100%; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
   .reveal { opacity: 1 !important; transform: none !important; }
 }
+
+/* Contacto: texto e icono de WhatsApp blancos */
+.contact .contact-actions a.btn-secondary,
+.contact .contact-actions a.btn-secondary:visited,
+.contact .contact-actions a.btn-secondary:hover,
+.contact .contact-actions a.btn-secondary:focus-visible {
+  background: #19bf69 !important;
+  border-color: #19bf69 !important;
+  color: #ffffff !important;
+  text-decoration: none;
+}
+
+.contact .contact-actions a.btn-secondary svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+  stroke: #ffffff !important;
+  flex-shrink: 0;
+}
+
+.contact .contact-actions a.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* Mantener anclajes visibles bajo el encabezado */
+#sobre-mi,
+#contacto,
+#proyectos,
+#inicio {
+  scroll-margin-top: 100px;
+}
+
+@media (max-width: 600px) {
+  .contact .contact-actions a.btn-secondary {
+    width: 100%;
+    max-width: 360px;
+    min-height: 48px;
+  }
+}
+
+/* Boton flotante para volver arriba */
+.back-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 92px;
+  z-index: 100;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(27, 83, 190, .16);
+  border-radius: 50%;
+  background: #ffffff;
+  color: #1957ed;
+  box-shadow: 0 8px 28px rgba(10, 35, 85, .17);
+  cursor: pointer;
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    background .25s ease;
+}
+
+.back-to-top:hover {
+  transform: translateY(-4px);
+  background: #eef4ff;
+  box-shadow: 0 12px 30px rgba(10, 35, 85, .23);
+}
+
+.back-to-top:focus-visible {
+  outline: 3px solid #77a4ff;
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .back-to-top {
+    right: 18px;
+    bottom: 88px;
+    width: 46px;
+    height: 46px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top {
+    transition: none;
+  }
+}
+
+/* ==================================================
+   BACK TO TOP - RESPONSIVE FINAL
+   ================================================== */
+
+.back-to-top {
+  position: fixed !important;
+  right: 24px !important;
+  bottom: 94px !important;
+
+  z-index: 1001 !important;
+
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  border-radius: 50%;
+
+  background: #ffffff;
+  color: #1957ed;
+
+  border: 1px solid rgba(27, 83, 190, .16);
+  box-shadow: 0 8px 28px rgba(10, 35, 85, .17);
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    background .25s ease;
+}
+
+.back-to-top svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.back-to-top:hover {
+  transform: translateY(-3px);
+  background: #eef4ff;
+  box-shadow: 0 12px 30px rgba(10, 35, 85, .23);
+}
+
+.back-to-top:focus-visible {
+  outline: 3px solid #77a4ff;
+  outline-offset: 4px;
+}
+
+/* Tablet: entre 601 y 1024 px */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .back-to-top {
+    right: 20px !important;
+    bottom: 88px !important;
+
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+  }
+
+  .back-to-top svg {
+    width: 21px;
+    height: 21px;
+  }
+}
+
+/* Celular */
+@media (max-width: 600px) {
+  .back-to-top {
+    right: 18px !important;
+
+    bottom: calc(82px + env(safe-area-inset-bottom, 0px)) !important;
+
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+
+    box-shadow: 0 5px 18px rgba(10, 35, 85, .17);
+  }
+
+  .back-to-top svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .back-to-top:hover {
+    transform: none;
+  }
+}
+
+/* Celulares pequeños */
+@media (max-width: 360px) {
+  .back-to-top {
+    right: 12px !important;
+    bottom: calc(78px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* En pantallas táctiles no aplicar hover persistente */
+@media (hover: none) {
+  .back-to-top:hover {
+    transform: none;
+  }
+
+  .back-to-top:active {
+    transform: scale(.95);
+  }
+}
+
+/* Respetar preferencia de movimiento reducido en la UI */
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top {
+    transition: none !important;
+  }
+}
+
+/* FRANK RESPONSIVE GLOBAL V2026 */
+
+html {
+  max-width: 100%;
+}
+
+body, #root {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+.container,
+.header-inner,
+.hero-grid,
+.about-grid,
+.projects-grid,
+.detail-hero,
+.detail-columns,
+.bird-feature-layout,
+.journey-mosaic,
+.contact-inner {
+  min-width: 0;
+}
+
+img, picture, video, canvas, svg {
+  max-width: 100%;
+}
+
+img, video {
+  height: auto;
+}
+
+.hero-copy,
+.hero-portrait,
+.about-copy,
+.about-grid > *,
+.project,
+.project-details,
+.detail-copy,
+.detail-art,
+.bird-feature-copy {
+  min-width: 0;
+}
+
+.hero h1,
+.section h2,
+.contact h2,
+.about-copy h2,
+.detail-copy h1 {
+  overflow-wrap: break-word;
+}
+
+.project p,
+.about-copy p,
+.detail-copy p,
+.contact-inner p {
+  overflow-wrap: anywhere;
+}
+
+/* TABLET */
+@media (min-width: 601px) and (max-width: 1024px) {
+
+  :root {
+    --mobile-gutter: clamp(22px, 3.5vw, 36px);
+  }
+
+  .header-inner {
+    gap: 14px;
+  }
+
+  .hero-grid {
+    gap: 22px;
+  }
+
+  .hero-copy {
+    max-width: 100%;
+  }
+
+  .hero h1 {
+    font-size: clamp(43px, 6vw, 68px);
+  }
+
+  .hero-portrait {
+    max-width: 100%;
+    margin-inline: auto;
+  }
+
+  .projects-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .about-grid,
+  .detail-columns {
+    gap: 24px;
+  }
+
+  .detail-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .detail-copy {
+    padding: 30px;
+  }
+
+  .detail-art {
+    min-height: 290px;
+  }
+
+  .tools-grid,
+  .lab-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .journey-mosaic {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bird-feature-layout {
+    min-height: 0;
+  }
+
+  .bird-photo {
+    background-size: contain !important;
+    background-position: center !important;
+  }
+
+  .contact-actions {
+    flex-wrap: wrap;
+  }
+}
+
+/* CELULAR Y TABLET VERTICAL */
+@media (max-width: 800px) {
+
+  .site-header {
+    width: 100%;
+  }
+
+  .header-inner {
+    min-width: 0;
+  }
+
+  .header-inner > nav.open {
+    width: auto;
+    max-height: calc(100dvh - 75px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .hero-grid,
+  .about-grid,
+  .detail-hero,
+  .detail-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero-copy,
+  .about-copy,
+  .detail-copy {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .hero-portrait {
+    width: min(100%, 490px);
+    max-width: 100%;
+    margin-inline: auto;
+  }
+
+  .hero-portrait img {
+    display: block;
+    width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .about-grid > *,
+  .bird-feature-layout > * {
+    max-width: 100%;
+  }
+
+  .bird-photo {
+    width: 100%;
+    background-size: contain !important;
+    background-position: center center !important;
+  }
+
+  .project-mockup,
+  .project-mockup svg,
+  .detail-art svg {
+    max-width: 100%;
+  }
+
+  .contact-inner {
+    max-width: 100%;
+  }
+}
+
+/* CELULAR */
+@media (max-width: 600px) {
+
+  :root {
+    --mobile-gutter: 16px;
+  }
+
+  .container {
+    width: calc(100% - 32px);
+    max-width: 100%;
+    margin-inline: auto;
+  }
+
+  .logo {
+    min-width: 0;
+    font-size: clamp(17px, 4.6vw, 21px);
+  }
+
+  .logo-mascota {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+  }
+
+  .mobile-menu {
+    min-height: 44px;
+    flex-shrink: 0;
+  }
+
+  .hero-grid {
+    gap: 8px;
+  }
+
+  .hero-copy {
+    padding-top: 36px;
+    padding-bottom: 10px;
+  }
+
+  .hero h1 {
+    font-size: clamp(34px, 9.5vw, 54px);
+    line-height: 1.12;
+  }
+
+  .hero-lede {
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .hero-actions .btn {
+    min-height: 46px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .hero-portrait {
+    width: min(100%, 380px);
+    height: clamp(250px, 80vw, 380px);
+    overflow: hidden;
+  }
+
+  .section-top {
+    gap: 12px;
+  }
+
+  .section h2,
+  .contact h2 {
+    font-size: clamp(29px, 8vw, 43px);
+    line-height: 1.15;
+  }
+
+  .projects-grid,
+  .about-grid,
+  .journey-mosaic,
+  .detail-columns,
+  .detail-modules {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .project {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .project-image {
+    height: clamp(175px, 55vw, 225px);
+  }
+
+  .project-details {
+    padding: 19px;
+  }
+
+  .project h3 {
+    font-size: clamp(19px, 5.5vw, 25px);
+  }
+
+  .detail-main {
+    padding-top: 22px;
+    padding-bottom: 50px;
+  }
+
+  .detail-hero {
+    border-radius: 18px;
+  }
+
+  .detail-copy {
+    padding: 23px 18px;
+  }
+
+  .detail-copy h1 {
+    font-size: clamp(32px, 9vw, 50px);
+  }
+
+  .detail-art {
+    min-height: 200px;
+  }
+
+  .detail-columns {
+    gap: 20px;
+    padding-block: 35px;
+  }
+
+  .detail-module {
+    min-width: 0;
+    padding: 17px;
+  }
+
+  .detail-footer {
+    gap: 16px;
+  }
+
+  .bird-feature-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .bird-photo {
+    order: 1;
+    min-height: 0;
+    height: clamp(200px, 68vw, 330px);
+    background-size: contain !important;
+  }
+
+  .bird-feature-copy {
+    order: 2;
+    padding: 15px 0 40px;
+  }
+
+  .bird-feature-copy h2 {
+    font-size: clamp(32px, 8.5vw, 45px);
+  }
+
+  .tools-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .tool-card {
+    min-width: 0;
+    padding: 15px 11px;
+  }
+
+  .tool-card strong {
+    overflow-wrap: anywhere;
+  }
+
+  .journey-mosaic {
+    gap: 12px;
+  }
+
+  .journey-tile {
+    min-height: 0;
+    padding: 20px;
+  }
+
+  .contact {
+    padding-block: 55px !important;
+  }
+
+  .contact-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .contact-actions .btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 48px;
+    width: 100%;
+  }
+
+  .footer-inner {
+    gap: 10px;
+    text-align: center;
+  }
+}
+
+/* CELULARES MUY PEQUEÑOS */
+@media (max-width: 380px) {
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+  }
+
+  .tools-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .project-details {
+    padding: 16px;
+  }
+
+  .logo {
+    font-size: 17px;
+  }
+}
+
+/* Evitar efectos hover persistentes en pantallas táctiles */
+@media (hover: none) {
+
+  .project:hover,
+  .lab-card:hover,
+  .journey-tile:hover {
+    transform: none !important;
+  }
+}
+
