@@ -1,85 +1,472 @@
-import React, { useEffect, useRef, useState } from 'react';
-import QRCode from 'qrcode';
-import './qr.css';
+import React, { useEffect, useState } from "react";
+import QRCode from "qrcode";
+import "./qr.css";
 
-const escapeWifi = value => String(value).replace(/([\\;,:"])/g, '\\$1');
-const escapeVCard = value => String(value).replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/([;,])/g, '\\$1');
+const themes = [
+  { name: "Clásico", dark: "#14213d", light: "#ffffff" },
+  { name: "Azul", dark: "#1559ff", light: "#ffffff" },
+  { name: "Violeta", dark: "#6534dc", light: "#ffffff" },
+  { name: "Verde", dark: "#086b58", light: "#ffffff" },
+  { name: "Dorado", dark: "#765017", light: "#fff9ed" },
+  { name: "Nocturno", dark: "#ffffff", light: "#111b32" },
+];
 
-function encode(form, type) {
-  if (type === 'url') return form.url.trim();
-  if (type === 'text') return form.text;
-  if (type === 'wifi') return `WIFI:T:${form.security};S:${escapeWifi(form.ssid)};P:${form.security === 'nopass' ? '' : escapeWifi(form.password)};;`;
-  if (type === 'email') return `mailto:${form.email}?subject=${encodeURIComponent(form.subject)}&body=${encodeURIComponent(form.message)}`;
-  if (type === 'whatsapp') return `https://wa.me/${form.phone.replace(/\D/g, '')}?text=${encodeURIComponent(form.message)}`;
-  if (type === 'contact') return `BEGIN:VCARD\nVERSION:3.0\nFN:${escapeVCard(form.name)}\nTEL:${form.phone.replace(/[^+\d]/g, '')}\nEMAIL:${escapeVCard(form.email)}\nEND:VCARD`;
-  return '';
-}
-function saveBlob(blob, name) {
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a'); link.href = url; link.download = name; link.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
 export default function QRTool() {
-  const [type, setType] = useState('url');
-  const [form, setForm] = useState({ url:'https://frankdeveloperxd.github.io',text:'Hola',ssid:'',password:'',security:'WPA',email:'',subject:'',message:'',phone:'',name:'' });
-  const [dark, setDark] = useState('#1658ff');
-  const [light, setLight] = useState('#ffffff');
-  const [size, setSize] = useState(320);
+  const [content, setContent] = useState("https://frankdeveloperxd.github.io");
+  const [dark, setDark] = useState("#086b58");
+  const [light, setLight] = useState("#ffffff");
+  const [gradient, setGradient] = useState(false);
+  const [second, setSecond] = useState("#18a07a");
+  const [size, setSize] = useState(700);
   const [logo, setLogo] = useState(null);
-  const [dataUrl, setDataUrl] = useState('');
-  const [error, setError] = useState('');
-  const canvasRef = useRef(null);
-  const payload = encode(form, type);
-  const update = (key, value) => setForm(old => ({ ...old, [key]: value }));
+  const [logoName, setLogoName] = useState("");
+  const [logoSize, setLogoSize] = useState(14);
+  const [customInner, setCustomInner] = useState(false);
+  const [innerColor, setInnerColor] = useState("#086b58");
+  const [preview, setPreview] = useState("");
+  const [error, setError] = useState("");
+
   useEffect(() => {
-    let cancelled = false;
-    const generate = async () => {
-      if (!payload.trim()) { setDataUrl(''); setError('Introduce contenido para generar el código.'); return; }
-      if (type === 'whatsapp' && !form.phone.replace(/\D/g, '')) { setError('Introduce un teléfono válido.'); setDataUrl(''); return; }
+    let active = true;
+
+    async function render() {
+      if (!content.trim()) {
+        setPreview("");
+        setError("Escribe un enlace o texto.");
+        return;
+      }
+
       try {
-        const canvas = document.createElement('canvas');
-        await QRCode.toCanvas(canvas, payload, { width:size, margin:3, errorCorrectionLevel:'H', color:{ dark, light } });
-        if (logo) {
-          const img = new Image(); img.src = logo;
-          await new Promise((resolve, reject) => { img.onload = resolve; img.onerror = reject; });
-          const ctx = canvas.getContext('2d');
-          const w = canvas.width * .15, x=(canvas.width-w)/2;
-          ctx.fillStyle = light; ctx.fillRect(x-6,x-6,w+12,w+12);
-          ctx.drawImage(img,x,x,w,w);
+        const canvas = document.createElement("canvas");
+
+        await QRCode.toCanvas(canvas, content, {
+          width: size,
+          margin: 4,
+          errorCorrectionLevel: "H",
+          color: {
+            dark,
+            light,
+          },
+        });
+
+        const ctx = canvas.getContext("2d");
+
+        if (gradient) {
+          const data = ctx.getImageData(0, 0, size, size);
+          const pixels = data.data;
+
+          const parse = (hex) => [
+            parseInt(hex.slice(1, 3), 16),
+            parseInt(hex.slice(3, 5), 16),
+            parseInt(hex.slice(5, 7), 16),
+          ];
+
+          const a = parse(dark);
+          const b = parse(second);
+          const bg = parse(light);
+
+          for (let y = 0; y < size; y++) {
+            const t = y / Math.max(1, size - 1);
+            const color = a.map((v, i) =>
+              Math.round(v * (1 - t) + b[i] * t)
+            );
+
+            for (let x = 0; x < size; x++) {
+              const k = (y * size + x) * 4;
+              const diff =
+                Math.abs(pixels[k] - bg[0]) +
+                Math.abs(pixels[k + 1] - bg[1]) +
+                Math.abs(pixels[k + 2] - bg[2]);
+
+              if (diff > 45) {
+                pixels[k] = color[0];
+                pixels[k + 1] = color[1];
+                pixels[k + 2] = color[2];
+              }
+            }
+          }
+
+          ctx.putImageData(data, 0, 0);
         }
-        if (!cancelled) { setDataUrl(canvas.toDataURL('image/png')); setError(''); canvasRef.current = canvas; }
-      } catch { if (!cancelled) { setError('No se pudo generar el QR. Reduce el texto o cambia los ajustes.'); setDataUrl(''); } }
+
+        if (logo) {
+          const image = new Image();
+
+          await new Promise((resolve, reject) => {
+            image.onload = resolve;
+            image.onerror = reject;
+            image.src = logo;
+          });
+
+          const centerX = size / 2;
+          const centerY = size / 2;
+
+          const logoBox = size * (logoSize / 100);
+          const badgePadding = size * 0.025;
+          const badgeSize = logoBox + badgePadding * 2;
+          const badgeRadius = badgeSize * 0.20;
+          const badgeX = centerX - badgeSize / 2;
+          const badgeY = centerY - badgeSize / 2;
+
+          // Diseño premium: doble marco redondeado.
+          const frameRadius = badgeSize * 0.22;
+          const outerBorder = badgeSize * 0.085;
+          const gap = badgeSize * 0.075;
+
+          ctx.save();
+
+          // Marco exterior verde o del color principal.
+          ctx.fillStyle = dark;
+          ctx.beginPath();
+          ctx.roundRect(
+            badgeX, badgeY,
+            badgeSize, badgeSize,
+            frameRadius
+          );
+          ctx.fill();
+
+          // Separación blanca.
+          const gapX = badgeX + outerBorder;
+          const gapY = badgeY + outerBorder;
+          const gapSize = badgeSize - outerBorder * 2;
+
+          ctx.fillStyle = "#ffffff";
+          ctx.beginPath();
+          ctx.roundRect(
+            gapX, gapY,
+            gapSize, gapSize,
+            Math.max(3, frameRadius - outerBorder)
+          );
+          ctx.fill();
+
+          // Cuadrado central.
+          const innerX = gapX + gap;
+          const innerY = gapY + gap;
+          const innerSize = gapSize - gap * 2;
+
+          ctx.fillStyle = customInner ? innerColor : dark;
+          ctx.beginPath();
+          ctx.roundRect(
+            innerX, innerY,
+            innerSize, innerSize,
+            innerSize * 0.20
+          );
+          ctx.fill();
+
+          // Logo original con proporciones correctas.
+          const safeSize = innerSize * 0.84;
+
+          const ratio = Math.min(
+            safeSize / image.naturalWidth,
+            safeSize / image.naturalHeight
+          );
+
+          const w = image.naturalWidth * ratio;
+          const h = image.naturalHeight * ratio;
+
+          const drawX = innerX + (innerSize - w) / 2;
+          const drawY = innerY + (innerSize - h) / 2;
+
+          ctx.beginPath();
+          ctx.roundRect(
+            innerX, innerY,
+            innerSize, innerSize,
+            innerSize * 0.20
+          );
+          ctx.clip();
+
+          ctx.drawImage(image, drawX, drawY, w, h);
+
+          ctx.restore();
+        }
+
+        if (active) {
+          setPreview(canvas.toDataURL("image/png"));
+          setError("");
+        }
+      } catch (err) {
+        if (active) {
+          setError("No se pudo generar el código QR.");
+          setPreview("");
+        }
+      }
+    }
+
+    const timer = setTimeout(render, 35);
+
+    return () => {
+      active = false;
+      clearTimeout(timer);
     };
-    generate(); return () => {cancelled=true;};
-  }, [payload, size, dark, light, logo, type, form.phone]);
-  const fields = {
-    url:[['url','Enlace','url']],text:[['text','Texto','textarea']],wifi:[['ssid','Nombre de la red','text'],['password','Contraseña','text']],
-    email:[['email','Correo electrónico','email'],['subject','Asunto','text'],['message','Mensaje','textarea']],
-    whatsapp:[['phone','Número con código de país','tel'],['message','Mensaje','textarea']],
-    contact:[['name','Nombre completo','text'],['phone','Teléfono','tel'],['email','Correo','email']]
-  };
-  const exportSVG = async () => {
-    if (!payload.trim()) return;
-    try {
-      // Sin logo se exportan vectores reales. Con logo, SVG contiene PNG incrustado.
-      const xml = logo
-        ? `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><image width="${size}" height="${size}" href="${dataUrl}"/></svg>`
-        : await QRCode.toString(payload,{type:'svg',width:size,margin:3,errorCorrectionLevel:'H',color:{dark,light}});
-      saveBlob(new Blob([xml],{type:'image/svg+xml'}),'franklabs-qr.svg');
-    } catch { setError('No se pudo exportar el SVG.'); }
-  };
-  return <div className="qr-studio">
-    <section className="qr-controls">
-      <div className="qr-tabs" role="group" aria-label="Tipo de código QR">{[['url','Enlace'],['text','Texto'],['wifi','Wi-Fi'],['email','Correo'],['whatsapp','WhatsApp'],['contact','Contacto']].map(([id,name])=><button type="button" className={type===id?'active':''} key={id} onClick={()=>setType(id)}>{name}</button>)}</div>
-      <div className="qr-fields">{fields[type].map(([key,label,inputType])=><label key={key}>{label}{inputType==='textarea'?<textarea rows={3} value={form[key]} onChange={e=>update(key,e.target.value)}/>:<input type={inputType} value={form[key]} onChange={e=>update(key,e.target.value)}/>}</label>)}
-        {type==='wifi'&&<label>Seguridad<select value={form.security} onChange={e=>update('security',e.target.value)}><option value="WPA">WPA / WPA2 / WPA3</option><option value="WEP">WEP</option><option value="nopass">Red abierta</option></select></label>}</div>
-      <h3>Personalización</h3><div className="qr-colors"><label>Color QR<input aria-label="Color del QR" type="color" value={dark} onChange={e=>setDark(e.target.value)}/></label><label>Fondo<input aria-label="Color de fondo" type="color" value={light} onChange={e=>setLight(e.target.value)}/></label><label>Tamaño<select value={size} onChange={e=>setSize(Number(e.target.value))}><option value="256">256 px</option><option value="320">320 px</option><option value="512">512 px</option><option value="1024">1024 px</option></select></label></div>
-      <label className="qr-logo-input">Logo opcional (PNG o JPG, máximo 2 MB)<input type="file" accept="image/png,image/jpeg" onChange={e=>{const file=e.target.files?.[0];if(!file){setLogo(null);return;}if(file.size>2_000_000){setError('El logo supera 2 MB.');return;}const reader=new FileReader();reader.onload=()=>setLogo(String(reader.result));reader.readAsDataURL(file);}}/></label>
-      {logo&&<button className="qr-text-button" onClick={()=>setLogo(null)}>Quitar logo</button>}
-    </section>
-    <section className="qr-preview"><h3>Vista previa</h3><div className="qr-canvas">{dataUrl?<img src={dataUrl} alt="Código QR generado"/>:<p>Escribe contenido para generar tu QR.</p>}</div>{error&&<p className="qr-error" role="alert">{error}</p>}
-      <div className="qr-actions"><button disabled={!dataUrl} onClick={()=>fetch(dataUrl).then(r=>r.blob()).then(b=>saveBlob(b,'franklabs-qr.png'))}>Descargar PNG</button><button disabled={!dataUrl} onClick={exportSVG}>Descargar SVG</button></div>
-      <p className="qr-note">Se genera en tu navegador. No se guarda en servidores. Prueba el QR con tu teléfono antes de compartirlo, especialmente si añades un logo.</p>
-    </section>
-  </div>;
+  }, [content, dark, light, gradient, second, size, logo, logoSize, customInner, innerColor]);
+
+  function handleLogo(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (
+      !["image/png", "image/jpeg", "image/webp"].includes(file.type) ||
+      file.size > 5 * 1024 * 1024
+    ) {
+      setError("Selecciona una imagen PNG, JPG o WebP de hasta 5 MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setLogo(reader.result);
+      setLogoName(file.name);
+      setError("");
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function download() {
+    if (!preview) return;
+    const a = document.createElement("a");
+    a.href = preview;
+    a.download = "franklabs-qr.png";
+    a.click();
+  }
+
+  return (
+    <div className="qrmini">
+      <div className="qrmini-heading">
+        <div>
+          <span>FRANKLABS / QR STUDIO</span>
+          <h2>Tu QR, a tu estilo.</h2>
+          <p>Colores, logo central y descarga rápida con una vista limpia.</p>
+        </div>
+      </div>
+
+      <div className="qrmini-layout">
+        <section className="qrmini-editor">
+          <div className="qrmini-block">
+            <div className="qrmini-title">
+              <span className="qrmini-number">01</span>
+              <h3>Contenido</h3>
+            </div>
+            <label htmlFor="qr-content">Enlace o texto</label>
+            <textarea
+              id="qr-content"
+              rows={3}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="https://tusitio.com"
+            />
+          </div>
+
+          <div className="qrmini-block">
+            <div className="qrmini-title">
+              <span className="qrmini-number">02</span>
+              <h3>Colores</h3>
+            </div>
+
+            <p className="qrmini-help">
+              Elige una paleta o define tus propios colores.
+            </p>
+
+            <div className="qrmini-themes">
+              {themes.map((theme) => (
+                <button
+                  key={theme.name}
+                  type="button"
+                  onClick={() => {
+                    setDark(theme.dark);
+                    setLight(theme.light);
+                    setGradient(false);
+                  }}
+                  title={theme.name}
+                >
+                  <span
+                    className="qrmini-theme-circle"
+                    style={{
+                      background: theme.light,
+                      borderColor: theme.dark,
+                    }}
+                  >
+                    <i style={{ background: theme.dark }} />
+                  </span>
+                  <small>{theme.name}</small>
+                </button>
+              ))}
+            </div>
+
+            <div className="qrmini-colors">
+              <label>
+                <span>Color del QR</span>
+                <input
+                  type="color"
+                  value={dark}
+                  onChange={(e) => setDark(e.target.value)}
+                />
+                <code>{dark.toUpperCase()}</code>
+              </label>
+
+              <label>
+                <span>Color de fondo</span>
+                <input
+                  type="color"
+                  value={light}
+                  onChange={(e) => setLight(e.target.value)}
+                />
+                <code>{light.toUpperCase()}</code>
+              </label>
+            </div>
+
+            <label className="qrmini-check">
+              <input
+                type="checkbox"
+                checked={gradient}
+                onChange={(e) => setGradient(e.target.checked)}
+              />
+              Usar degradado
+            </label>
+
+            {gradient && (
+              <div className="qrmini-colors">
+                <label>
+                  <span>Segundo color</span>
+                  <input
+                    type="color"
+                    value={second}
+                    onChange={(e) => setSecond(e.target.value)}
+                  />
+                  <code>{second.toUpperCase()}</code>
+                </label>
+              </div>
+            )}
+          </div>
+
+          <div className="qrmini-block">
+            <div className="qrmini-title">
+              <span className="qrmini-number">03</span>
+              <h3>Logo central</h3>
+            </div>
+
+            <label className="qrmini-upload">
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={handleLogo}
+              />
+
+              {logo ? (
+                <img src={logo} alt="Logo seleccionado" />
+              ) : (
+                <span className="qrmini-upload-icon">+</span>
+              )}
+
+              <strong>{logo ? "Cambiar imagen" : "Agregar logo"}</strong>
+              <small>PNG, JPG o WebP  Máximo 5 MB</small>
+            </label>
+
+            {logo && (
+              <>
+                <div className="qrmini-inner-color">
+  <label className="qrmini-check">
+    <input
+      type="checkbox"
+      checked={customInner}
+      onChange={e => setCustomInner(e.target.checked)}
+    />
+    Personalizar color del cuadrado interior
+  </label>
+
+  {customInner && (
+    <label className="qrmini-inner-picker">
+      Color interior
+      <input
+        type="color"
+        value={innerColor}
+        onChange={e => setInnerColor(e.target.value)}
+      />
+      <code>{innerColor.toUpperCase()}</code>
+    </label>
+  )}
+</div>
+<div className="qrmini-image-row">
+                  <span>{logoName}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLogo(null);
+                      setLogoName("");
+                    }}
+                  >
+                    Quitar
+                  </button>
+                </div>
+
+                <div className="qrmini-range">
+                  <label htmlFor="qr-logo-size">
+                    Tamaño del logo
+                    <strong>{logoSize}%</strong>
+                  </label>
+                  <input
+                    id="qr-logo-size"
+                    type="range"
+                    min="8"
+                    max="18"
+                    value={logoSize}
+                    onChange={(e) => setLogoSize(Number(e.target.value))}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+
+          <div className="qrmini-block">
+            <div className="qrmini-title">
+              <span className="qrmini-number">04</span>
+              <h3>Resolución</h3>
+            </div>
+
+            <div className="qrmini-sizes">
+              {[320, 640, 1000].map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={size === value ? "active" : ""}
+                  onClick={() => setSize(value)}
+                >
+                  {value} px
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="qrmini-preview">
+          <div className="qrmini-preview-heading">
+            <h3>Vista previa</h3>
+            <p>Diseño limpio, listo para descargar.</p>
+          </div>
+
+          <div className="qrmini-preview-stage">
+            {preview ? (
+              <img src={preview} alt="Tu código QR" />
+            ) : (
+              <span>Escribe contenido para crear tu QR.</span>
+            )}
+          </div>
+
+          {error && <p className="qrmini-error">{error}</p>}
+
+          <button
+            className="qrmini-download"
+            onClick={download}
+            disabled={!preview}
+          >
+            Descargar PNG
+          </button>
+
+          <p className="qrmini-footnote">
+            Usa un logo pequeño y contrastes altos para conservar buena lectura.
+          </p>
+        </section>
+      </div>
+    </div>
+  );
 }
+
