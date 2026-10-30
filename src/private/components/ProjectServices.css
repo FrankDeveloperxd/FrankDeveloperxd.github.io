@@ -1,0 +1,728 @@
+.ps-root {
+  --ps-ink: #192b45;
+  --ps-muted: #6b7d96;
+  font-family: inherit;
+  color: var(--ps-ink);
+}
+
+.ps-root * { box-sizing: border-box; }
+
+.ps-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 14px 0 25px;
+}
+
+.ps-heading h1 {
+  font-size: clamp(28px, 3.5vw, 40px);
+  line-height: 1.15;
+  letter-spacing: -.045em;
+  margin: 5px 0 8px;
+}
+
+.ps-heading p {
+  font-size: 14px;
+  color: var(--ps-muted);
+  margin: 0;
+}
+
+.ps-eyebrow {
+  color: #3568d7;
+  font-size: 10px;
+  letter-spacing: .11em;
+  font-weight: 850;
+}
+
+.ps-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 43px;
+  padding: 11px 16px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 11px;
+  background: #2867e9;
+  color: white;
+  font-size: 13px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: background .15s, transform .15s;
+}
+
+.ps-add:hover { background: #174ec6; transform: translateY(-1px); }
+.ps-add:active { transform: scale(.97); }
+.ps-add:disabled { opacity: .6; }
+
+.ps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.ps-card {
+  position: relative;
+  min-width: 0;
+  min-height: 188px;
+  border: 1px solid #e0e7f2;
+  border-radius: 18px;
+  background: rgba(255,255,255,.93);
+  box-shadow: 0 5px 18px rgba(21,45,85,.045);
+  overflow: hidden;
+  transition: transform .18s, box-shadow .18s, border-color .18s;
+}
+
+.ps-card:hover {
+  transform: translateY(-3px);
+  border-color: #b9cbea;
+  box-shadow: 0 13px 32px rgba(21,45,85,.10);
+}
+
+.ps-card-open {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 100%;
+  min-height: 188px;
+  padding: 20px 20px 45px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ps-card-icon {
+  display: grid;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  border-radius: 12px;
+  font-size: 25px;
+  margin-bottom: 15px;
+  background: #e2f7f3;
+  color: #058d7b;
+}
+
+.ps-card-note .ps-card-icon {
+  background: #f0e8ff;
+  color: #8250ca;
+}
+
+.ps-card-open strong {
+  font-size: 17px;
+  overflow-wrap: anywhere;
+}
+
+.ps-card-open small {
+  font-size: 12px;
+  color: var(--ps-muted);
+  margin-top: 4px;
+}
+
+.ps-open-label {
+  margin-top: 15px;
+  font-size: 12px;
+  color: #2867e9;
+  font-weight: 750;
+}
+
+.ps-card-actions {
+  position: absolute;
+  right: 11px;
+  bottom: 11px;
+  display: flex;
+  gap: 5px;
+}
+
+.ps-card-actions button {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  border: 1px solid #e5ebf4;
+  border-radius: 9px;
+  background: #fff;
+  color: #62748f;
+  cursor: pointer;
+  font-size: 19px;
+  transition: background .14s, color .14s;
+}
+
+.ps-card-actions button:hover {
+  background: #eaf1ff;
+  color: #2058c4;
+}
+
+.ps-card-actions .ps-delete:hover {
+  background: #fff0f2;
+  color: #d83d55;
+}
+
+.ps-new-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-style: dashed;
+  background: #f9fbff;
+  color: #536b95;
+  cursor: pointer;
+}
+
+.ps-new-icon { font-size: 30px; color: #3478f6; }
+.ps-new-card small { color: var(--ps-muted); }
+
+.ps-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 52px 20px;
+  text-align: center;
+  border: 1px dashed #cbd7eb;
+  border-radius: 20px;
+  background: rgba(255,255,255,.75);
+}
+
+.ps-empty-symbol {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 17px;
+  background: #e8f0ff;
+  color: #3478f6;
+  font-size: 30px;
+}
+
+.ps-empty h2 { margin: 0; font-size: 21px; }
+.ps-empty p { margin: 0; color: var(--ps-muted); }
+
+/* Ventana flotante */
+.ps-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(15,28,49,.46);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  animation: ps-fade .18s ease-out;
+}
+
+.ps-dialog {
+  width: min(100%, 510px);
+  max-height: calc(100dvh - 36px);
+  overflow: auto;
+  padding: 26px;
+  border: 1px solid rgba(255,255,255,.8);
+  border-radius: 23px;
+  background: #fff;
+  box-shadow: 0 28px 90px rgba(12,27,56,.23);
+  animation: ps-pop .2s cubic-bezier(.2,.9,.2,1);
+}
+
+.ps-dialog-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 22px;
+  gap: 15px;
+}
+
+.ps-dialog-head h2 {
+  margin: 6px 0 0;
+  font-size: 25px;
+  letter-spacing: -.045em;
+}
+
+.ps-close {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 10px;
+  background: #f1f4f8;
+  color: #65748b;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.ps-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.ps-options button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 132px;
+  padding: 16px;
+  border: 1px solid #e0e7f1;
+  border-radius: 15px;
+  background: #f9fbfe;
+  color: #20324e;
+  text-align: left;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, transform .15s;
+}
+
+.ps-options button:hover { transform: translateY(-2px); }
+.ps-options button.selected { border-color: #3478f6; background: #eef4ff; }
+.ps-options button span { font-size: 26px; color: #2563eb; }
+.ps-options button strong { font-size: 14px; }
+.ps-options button small { font-size: 11px; color: #718098; }
+
+.ps-dialog label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.ps-dialog input,
+.ps-dialog textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid #d6e0ed;
+  border-radius: 11px;
+  background: #fcfdff;
+  font: inherit;
+  color: #20324e;
+  font-size: 14px;
+  outline: none;
+}
+
+.ps-dialog input:focus,
+.ps-dialog textarea:focus {
+  border-color: #6597ff;
+  box-shadow: 0 0 0 3px rgba(52,120,246,.10);
+}
+
+.ps-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 22px;
+}
+
+.ps-dialog-footer > button:not(.ps-add):not(.ps-danger) {
+  padding: 10px 15px;
+  background: #f1f4f8;
+  border: 0;
+  border-radius: 10px;
+  color: #53647c;
+  cursor: pointer;
+}
+
+.ps-danger {
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 18px;
+  color: #fff;
+  background: #d9445d;
+  cursor: pointer;
+}
+
+.ps-editor {
+  width: min(100%, 850px);
+}
+
+.ps-editor textarea {
+  margin-top: 0;
+  min-height: 300px;
+  line-height: 1.7;
+  resize: vertical;
+}
+
+.ps-editor label:not(:first-of-type) {
+  margin-top: 19px;
+}
+
+@keyframes ps-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ps-pop {
+  from { opacity: 0; transform: translateY(12px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 950px) {
+  .ps-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+
+@media (max-width: 600px) {
+  .ps-heading { flex-direction: column; align-items: stretch; }
+  .ps-heading .ps-add { width: 100%; }
+  .ps-grid { grid-template-columns: minmax(0,1fr); }
+  .ps-card, .ps-card-open { min-height: 155px; }
+  .ps-dialog { padding: 18px; border-radius: 18px; }
+  .ps-options button { padding: 12px; }
+  .ps-dialog input, .ps-dialog textarea { font-size: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-overlay, .ps-dialog { animation: none; }
+  .ps-card, .ps-add, .ps-options button { transition: none; }
+}
+
+/* PROJECT SERVICES SKELETON V1 */
+
+.ps-loading-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  text-align: left;
+}
+
+.ps-loading-card {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-height: 194px;
+  padding: 22px;
+  border: 1px solid #e0e7f2;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 5px 16px rgba(30, 50, 90, .035);
+}
+
+.ps-loading-icon {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 5px;
+  border-radius: 12px;
+  background: #edf1f8;
+}
+
+.ps-loading-line {
+  display: block;
+  height: 12px;
+  border-radius: 6px;
+  background: #edf1f8;
+}
+
+.ps-loading-long { width: 82%; }
+.ps-loading-medium { width: 53%; }
+.ps-loading-short {
+  width: 40%;
+  height: 10px;
+  margin-top: auto;
+}
+
+@keyframes psSkeletonShimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+.ps-shimmer {
+  background-image: linear-gradient(
+    105deg,
+    #edf1f8 25%,
+    #f9fbff 45%,
+    #edf1f8 65%
+  );
+  background-size: 210% 100%;
+  animation: psSkeletonShimmer 1.15s linear infinite;
+}
+
+@media (max-width: 750px) {
+  .ps-loading-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .ps-loading-card {
+    min-height: 145px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-shimmer { animation: none; }
+}
+/* PROJECT SERVICES ACTION ICONS V1 */
+
+.ps-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.ps-card-actions .ps-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 35px;
+  width: 35px;
+  height: 35px;
+  min-width: 35px;
+  min-height: 35px;
+  padding: 0;
+  border: 1px solid #e1e8f3;
+  border-radius: 10px;
+  background: #fff;
+  color: #7e90aa;
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
+}
+
+.ps-card-actions .ps-icon-button svg {
+  display: block !important;
+  flex: none;
+  width: 17px !important;
+  height: 17px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  stroke: currentColor;
+}
+
+.ps-card-actions .ps-edit-button:hover {
+  background: #eaf2ff;
+  border-color: #bfd4ff;
+  color: #286cf0;
+  transform: translateY(-1px);
+}
+
+.ps-card-actions .ps-delete-button:hover {
+  background: #fff0f3;
+  border-color: #f2bec8;
+  color: #df4761;
+  transform: translateY(-1px);
+}
+
+.ps-card-actions .ps-icon-button:active {
+  transform: scale(.94);
+}
+
+.ps-card-actions .ps-icon-button:focus-visible {
+  outline: 2px solid #8bafff;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-card-actions .ps-icon-button {
+    transition: none;
+  }
+}
+
+/* PROJECT SERVICE ICON COLORS V2 START */
+
+/* Editar: verde permanente */
+.ps-card-actions .ps-edit-button {
+    color: #16A34A !important;
+    border-color: #BBE7CA !important;
+    background: #F0FDF4 !important;
+}
+
+/* Eliminar: rojo permanente */
+.ps-card-actions .ps-delete-button {
+    color: #E54860 !important;
+    border-color: #F4C6CF !important;
+    background: #FFF1F3 !important;
+}
+
+/* Mantener los colores de los SVG */
+.ps-card-actions .ps-edit-button svg,
+.ps-card-actions .ps-delete-button svg {
+    color: inherit !important;
+    stroke: currentColor !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Hover: animacion ligera */
+.ps-card-actions .ps-edit-button:hover {
+    color: #15803D !important;
+    border-color: #86D7A2 !important;
+    background: #DCFCE7 !important;
+    transform: translateY(-2px);
+}
+
+.ps-card-actions .ps-delete-button:hover {
+    color: #BE2544 !important;
+    border-color: #F29AAA !important;
+    background: #FFE4E8 !important;
+    transform: translateY(-2px);
+}
+
+/* Efecto al pulsar */
+.ps-card-actions .ps-icon-button:active {
+    transform: scale(.92);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ps-card-actions .ps-icon-button {
+        transition: none !important;
+    }
+}
+
+/* PROJECT SERVICE ICON COLORS V2 END */
+/* PROJECT SERVICES LUCIDE ICONS V1 */
+
+.ps-card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ps-card-icon svg {
+    width: 23px;
+    height: 23px;
+    display: block;
+    stroke: currentColor;
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Kanban: verde */
+.ps-card-kanban .ps-card-icon {
+    color: #119A84 !important;
+    background: #DFF5F0 !important;
+}
+
+/* Bloc de notas: morado */
+.ps-card-note .ps-card-icon {
+    color: #8758D3 !important;
+    background: #F0E7FF !important;
+}
+
+/* Selector de nuevos servicios */
+.ps-option-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 13px;
+}
+
+.ps-option-kanban {
+    color: #119A84;
+    background: #DFF5F0;
+}
+
+.ps-option-note {
+    color: #8758D3;
+    background: #F0E7FF;
+}
+
+.ps-option-icon svg {
+    display: block;
+    width: 23px;
+    height: 23px;
+}
+
+/* Boton nuevo servicio */
+.ps-new-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ps-new-icon svg {
+    display: block;
+}
+/* PROJECT SERVICES CARD COMPACT V1 */
+
+.ps-card {
+  min-height: 188px;
+}
+
+.ps-card-open {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 12px;
+  min-height: 148px;
+  padding: 18px 18px 14px;
+}
+
+.ps-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+}
+
+.ps-card-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.ps-card-copy strong {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: #22324d;
+}
+
+.ps-card-copy small {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #74839d;
+}
+
+.ps-card-head .ps-card-icon,
+.ps-card-icon {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  margin: 0;
+  align-self: flex-start;
+}
+
+.ps-open-label {
+  margin-top: auto;
+  font-size: 14px;
+}
+
+.ps-card-actions {
+  margin-top: 8px;
+}
+
+@media (max-width: 680px) {
+  .ps-card {
+    min-height: 176px;
+  }
+
+  .ps-card-open {
+    padding: 16px 16px 12px;
+    gap: 10px;
+  }
+
+  .ps-card-head .ps-card-icon,
+  .ps-card-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .ps-card-copy strong {
+    font-size: 15px;
+  }
+}

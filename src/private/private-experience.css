@@ -1,0 +1,274 @@
+/* WORKSPACE EXPERIENCE V1 */
+
+.private-root {
+  --experience-blue: #3478f6;
+  --experience-violet: #8658da;
+  --experience-teal: #089e92;
+  --experience-orange: #e69c35;
+  background: #f3f5fa;
+}
+
+/* Mejor lectura */
+.private-root .private-page-heading h1 {
+  font-weight: 790;
+  color: #14243b;
+  letter-spacing: -.045em;
+}
+
+.private-root .private-section-title {
+  font-size: 19px;
+  font-weight: 780;
+}
+
+.private-root .private-sidebar-brand-copy strong {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.private-root .private-sidebar-link {
+  font-weight: 620;
+}
+
+/* Identidad del modulo */
+.private-root .private-module:not(.private-module-future) {
+  border-top: 3px solid var(--experience-teal);
+}
+
+.private-root .private-module:not(.private-module-future)
+.private-module-icon {
+  background: #e0f6f2;
+  color: var(--experience-teal);
+}
+
+/* Proyectos */
+.private-root .private-card-icon {
+  color: var(--experience-violet);
+  background: #f0eaff;
+}
+
+.private-root .private-card {
+  border-bottom: 2px solid #e9e3fa;
+}
+
+/* Menú */
+.private-root .private-sidebar-link.active {
+  background: #e9edff;
+  color: #365cbb;
+}
+
+.private-root .private-sidebar-link.active-project {
+  background: #f0eaff;
+  color: #7448bd;
+}
+
+/* Tablero: estados claramente diferenciados */
+.private-root .private-lane:nth-child(1) {
+  border-top: 3px solid #6585f5;
+}
+
+.private-root .private-lane:nth-child(2) {
+  border-top: 3px solid var(--experience-orange);
+}
+
+.private-root .private-lane:nth-child(3) {
+  border-top: 3px solid #0ca678;
+}
+
+/* Entrada de contenido */
+@keyframes experience-enter {
+  from {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.private-root .private-hero,
+.private-root .private-page-heading,
+.private-root .private-create,
+.private-root .private-module,
+.private-root .private-card,
+.private-root .private-lane {
+  animation: experience-enter .26s ease-out both;
+}
+
+/* Microinteracciones rápidas */
+.private-root .private-sidebar-link,
+.private-root .private-primary,
+.private-root .private-card,
+.private-root .private-module,
+.private-root .private-task {
+  transition-duration: .16s;
+}
+
+.private-root .private-card-clickable {
+  cursor: pointer;
+}
+
+.private-root .private-card-clickable:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(31,48,87,.12);
+}
+
+.private-root .private-card-clickable:active {
+  transform: scale(.985);
+}
+
+.private-root .private-primary:active {
+  transform: scale(.97);
+}
+
+/* Inputs con foco claro */
+.private-root .private-create:focus-within {
+  border-color: #9bb9ff;
+  box-shadow: 0 0 0 3px rgba(52,120,246,.10);
+}
+
+/* Móvil */
+@media (max-width: 600px) {
+  .private-root .private-card,
+  .private-root .private-module {
+    border-radius: 16px;
+  }
+
+  .private-root .private-page-heading h1 {
+    font-size: clamp(27px, 8vw, 36px);
+  }
+}
+
+/* Respetar accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .private-root .private-hero,
+  .private-root .private-page-heading,
+  .private-root .private-create,
+  .private-root .private-module,
+  .private-root .private-card,
+  .private-root .private-lane {
+    animation: none;
+  }
+}
+
+/* Encabezado: texto a la izquierda, icono a la derecha */
+.private-topbar {
+  position: relative;
+}
+
+.private-topbar-title {
+  order: -1;
+}
+
+.private-top-left {
+  order: 1;
+  margin-left: 4px;
+}
+
+.private-top-actions {
+  margin-left: auto;
+}
+
+
+/* HEADER GROUP FINAL */
+.private-header-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-right: auto;
+}
+
+.private-header-group .private-topbar-title {
+  order: 0;
+}
+
+.private-header-group .private-top-left {
+  order: 1;
+  margin: 0;
+}
+
+.private-header-group + .private-top-actions {
+  margin-left: auto;
+}
+
+/* MENU ICON BLUE V1 START */
+
+/* Icono visible de manera permanente */
+.private-root .private-header-group .private-menu-toggle,
+.private-root .private-header-group .private-desktop-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 39px;
+  height: 39px;
+  padding: 0;
+
+  color: #1555d5;
+  background: #e8f0ff;
+
+  border: 1px solid #bbd0ff;
+  border-radius: 11px;
+
+  box-shadow:
+    0 3px 7px rgba(35, 84, 170, .12),
+    inset 0 1px 1px rgba(255, 255, 255, .95),
+    inset 0 -2px 3px rgba(32, 80, 164, .08);
+
+  transition:
+    background-color .15s ease,
+    box-shadow .15s ease,
+    transform .15s ease;
+}
+
+.private-root .private-header-group
+:is(.private-menu-toggle, .private-desktop-toggle) svg {
+  width: 21px;
+  height: 21px;
+  stroke-width: 2.4;
+  color: #1555d5;
+}
+
+/* Hover */
+.private-root .private-header-group
+:is(.private-menu-toggle, .private-desktop-toggle):hover {
+  color: #0b43bc;
+  background: #dce8ff;
+  border-color: #94b7ff;
+
+  box-shadow:
+    0 5px 12px rgba(35, 84, 170, .18),
+    inset 0 1px 1px rgba(255, 255, 255, .95);
+
+  transform: translateY(-1px);
+}
+
+/* Efecto de pulsacion */
+.private-root .private-header-group
+:is(.private-menu-toggle, .private-desktop-toggle):active {
+  transform: translateY(1px) scale(.96);
+
+  background: #cbdfff;
+
+  box-shadow:
+    inset 0 2px 5px rgba(28, 67, 145, .16);
+}
+
+/* Mantener el responsive del menu */
+@media (min-width: 801px) {
+  .private-root .private-header-group .private-menu-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .private-root .private-header-group .private-desktop-toggle {
+    display: none;
+  }
+
+  .private-root .private-header-group .private-menu-toggle {
+    display: inline-flex;
+  }
+}
+
+/* MENU ICON BLUE V1 END */

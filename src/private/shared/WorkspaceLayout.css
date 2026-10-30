@@ -1,0 +1,139 @@
+﻿/* WORKSPACE SHARED LAYOUT V1 */
+
+/* Las tarjetas de proyectos se adaptan al espacio disponible. */
+.private-root .private-cards {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(min(100%, 285px), 1fr));
+  gap: 16px;
+}
+
+.private-root .private-card.pux-project-card {
+  position: relative;
+  min-width: 0;
+  min-height: 200px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  outline-offset: 4px;
+}
+
+.private-root .private-card.pux-project-card:focus-visible {
+  outline: 2px solid #76a0f5;
+}
+
+/* Botones independientes dentro de la tarjeta. */
+.private-root .private-card .pux-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: auto;
+  width: 100%;
+}
+
+.private-root .private-card .pux-actions button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  padding: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    background-color 130ms ease,
+    transform 130ms ease;
+}
+
+.private-root .private-card .pux-actions .pux-edit {
+  background: #edfbf1;
+  border: 1px solid #b9e8c8;
+  color: #16a34a;
+}
+
+.private-root .private-card .pux-actions .pux-delete {
+  background: #fff0f3;
+  border: 1px solid #f5c3cc;
+  color: #e54860;
+}
+
+.private-root .private-card .pux-actions .pux-edit:hover {
+  background: #d9f8e2;
+  transform: translateY(-2px);
+}
+
+.private-root .private-card .pux-actions .pux-delete:hover {
+  background: #ffe0e7;
+  transform: translateY(-2px);
+}
+
+@keyframes puxCardDelete {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(.91) translateY(8px);
+  }
+}
+
+.private-root .private-card.pux-removing {
+  pointer-events: none;
+  animation: puxCardDelete 160ms ease-in forwards;
+}
+
+/* Servicios: mantener tamaño legible con sidebar abierto. */
+.private-root .ps-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(min(100%, 275px), 1fr));
+  gap: 16px;
+  min-width: 0;
+}
+
+.private-root .ps-grid .ps-card {
+  min-width: 0;
+}
+
+/* Área principal: no forzar compresión del tablero. */
+.private-root .private-content,
+.private-root .private-main {
+  min-width: 0;
+}
+
+/* Kanban mantiene 3 columnas legibles con scroll horizontal. */
+.private-root .kb-columns {
+  grid-template-columns: repeat(3, minmax(290px, 1fr));
+  overflow-x: auto;
+  min-width: 0;
+}
+
+/* Breadcrumb encima del tablero. */
+.private-root .private-crumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 680px) {
+  .private-root .private-cards,
+  .private-root .ps-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .private-root .private-card.pux-removing {
+    animation: none;
+    opacity: .4;
+  }
+
+  .private-root .private-card .pux-actions button {
+    transition: none;
+  }
+}

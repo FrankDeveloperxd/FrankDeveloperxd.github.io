@@ -1,0 +1,91 @@
+﻿.workspace-toast-stack {
+  position: fixed;
+  top: 76px;
+  right: 20px;
+  z-index: 3000;
+  display: grid;
+  gap: 10px;
+  width: min(390px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.workspace-toast {
+  --toast-accent: #3478f6;
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 15px;
+  border: 1px solid #e1e7f0;
+  border-left: 4px solid var(--toast-accent);
+  border-radius: 15px;
+  background: rgba(255,255,255,.97);
+  color: #20304a;
+  box-shadow: 0 15px 45px rgba(23,43,78,.16);
+  backdrop-filter: blur(18px);
+  pointer-events: auto;
+  animation: workspace-toast-enter .3s cubic-bezier(.2,.9,.2,1) both;
+}
+
+.workspace-toast-success { --toast-accent: #0ca678; }
+.workspace-toast-error { --toast-accent: #e45363; }
+.workspace-toast-info { --toast-accent: #3478f6; }
+
+.workspace-toast-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--toast-accent) 12%, white);
+  color: var(--toast-accent);
+  font-size: 17px;
+  font-weight: 850;
+}
+
+.workspace-toast-body { flex: 1; min-width: 0; }
+
+.workspace-toast-body strong {
+  font-size: 13px;
+  font-weight: 780;
+}
+
+.workspace-toast-body p {
+  margin: 4px 0 0;
+  color: #63738c;
+  font-size: 12px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.workspace-toast > button {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #8290a4;
+  font-size: 21px;
+  cursor: pointer;
+}
+
+.workspace-toast > button:hover { background: #f0f3f7; }
+
+@keyframes workspace-toast-enter {
+  from { opacity: 0; transform: translateX(22px) scale(.97); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@media (max-width: 600px) {
+  .workspace-toast-stack {
+    top: auto;
+    right: 12px;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    width: calc(100vw - 24px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workspace-toast { animation: none; }
+}

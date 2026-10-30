@@ -1,3 +1,7 @@
+import SharedNotePage from "./private/shared/SharedNotePage.jsx";
+/* NOTE SHARING FIXED V2 */
+import "./private/privateEnhancements.js";
+import PrivateApp from "./private/PrivateApp.jsx";
 import { smoothScrollToTop } from "./smoothScrollToTop.js";
 import LabsPage from './labs/LabsPage.tsx';
 import React, { useEffect, useRef, useState } from 'react';
@@ -363,4 +367,12 @@ function App(){
   </>
 }
 
-createRoot(document.getElementById('root')).render(<React.StrictMode><App/></React.StrictMode>);
+createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    {(window.location.pathname === "/compartir" || window.location.pathname.startsWith("/mi-espacio"))
+      ? (window.location.pathname === "/compartir"
+    ? <SharedNotePage />
+    : <PrivateApp />)
+      : <App/>}
+  </React.StrictMode>
+);

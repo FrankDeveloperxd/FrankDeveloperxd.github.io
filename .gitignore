@@ -2,3 +2,37 @@ node_modules
 dist
 .env.local
 .env.*.local
+
+.env.local
+
+# WORKSPACE CLEANUP RULES START
+node_modules/
+dist/
+.vite/
+
+# Configuracion local y credenciales
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.pfx
+
+# Respaldos y archivos temporales
+backups/
+*.bak
+*.bak-*
+*.backup
+*.backup-*
+*.orig
+*.tmp
+*.temp
+*.swp
+*.swo
+*.log
+
+# Archivos temporales de parches
+workspace-*-patch.cjs
+workspace-*-patch.js
+
+# WORKSPACE CLEANUP RULES END

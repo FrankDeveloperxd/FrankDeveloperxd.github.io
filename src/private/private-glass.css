@@ -1,0 +1,566 @@
+/* ========================================================
+   PERSONAL WORKSPACE - GLASS UI V5
+   Limpio, legible, rapido y responsive
+   ======================================================== */
+
+.private-root {
+  --p-blue: #3478f6;
+  --p-dark: #192638;
+  --p-muted: #596b83;
+  --p-border: rgba(140, 158, 184, .22);
+  --p-bg: #f1f4f8;
+
+  --glass: rgba(255,255,255,.80);
+  --glass-strong: rgba(255,255,255,.92);
+  --glass-border: rgba(255,255,255,.86);
+  --soft-shadow: 0 5px 22px rgba(33,48,77,.055);
+
+  background: #f1f4f8;
+  color: var(--p-dark);
+  font-family: -apple-system, BlinkMacSystemFont,
+    "Segoe UI Variable", "Segoe UI",
+    "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  font-weight: 450;
+  letter-spacing: -.008em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.private-root button,
+.private-root input {
+  font-family: inherit;
+  letter-spacing: inherit;
+}
+
+.private-root button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.private-root button:active:not(:disabled) {
+  transition-duration: .08s;
+}
+
+/* Barra superior */
+.private-root .private-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  height: 60px;
+  padding: 0 22px;
+  gap: 13px;
+  background: rgba(255,255,255,.82);
+  border-bottom: 1px solid rgba(147,163,184,.20);
+  -webkit-backdrop-filter: saturate(150%) blur(18px);
+  backdrop-filter: saturate(150%) blur(18px);
+}
+
+.private-root .private-topbar-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.03em;
+}
+
+.private-root .private-top-actions button,
+.private-root .private-menu-toggle,
+.private-root .private-desktop-toggle {
+  min-height: 36px;
+  border-radius: 10px;
+  color: #455872;
+  transition: background-color .15s ease, color .15s ease;
+}
+
+.private-root .private-top-actions button:hover,
+.private-root .private-menu-toggle:hover,
+.private-root .private-desktop-toggle:hover {
+  background: rgba(67,116,214,.09);
+  color: #245cc3;
+}
+
+/* Layout y navegación */
+.private-root .private-workspace-layout {
+  --sidebar-width: 226px;
+  min-height: calc(100dvh - 60px);
+  transition: grid-template-columns .18s ease-out;
+}
+
+.private-root .private-workspace-layout.is-collapsed {
+  --sidebar-width: 66px;
+}
+
+.private-root .private-sidebar {
+  top: 60px;
+  height: calc(100dvh - 60px);
+  padding: 16px 11px;
+  background: rgba(255,255,255,.74);
+  border-right: 1px solid rgba(139,157,182,.18);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+.private-root .private-sidebar-brand {
+  gap: 11px;
+  padding: 9px 8px 19px;
+}
+
+.private-root .private-sidebar-mark {
+  width: 37px;
+  height: 37px;
+  flex-basis: 37px;
+  border-radius: 12px;
+  background: #e9f0ff;
+  color: #2566d9;
+  box-shadow: none;
+}
+
+.private-root .private-sidebar-brand-copy strong {
+  color: #1b2b42;
+  font-size: 13.5px;
+  font-weight: 750;
+  letter-spacing: -.03em;
+}
+
+.private-root .private-sidebar-brand-copy small {
+  color: #74839a;
+  font-size: 11.5px;
+}
+
+.private-root .private-sidebar-group-label {
+  padding: 15px 11px 8px;
+  color: #75869e;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .075em;
+}
+
+.private-root .private-sidebar-nav,
+.private-root .private-sidebar-projects {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.private-root .private-sidebar-link,
+.private-root .private-project-link,
+.private-root .private-add-link {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 12px;
+  margin: 0;
+  gap: 11px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: #41536f;
+  font-size: 13px;
+  font-weight: 560;
+  text-align: left;
+  transform: none;
+  box-shadow: none;
+  transition:
+    background-color .14s ease,
+    border-color .14s ease,
+    color .14s ease;
+}
+
+.private-root .private-sidebar-link svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+
+.private-root .private-sidebar-link:hover {
+  background: rgba(225,234,249,.75);
+  color: #224e9b;
+  transform: none;
+}
+
+.private-root .private-sidebar-link.active,
+.private-root .private-sidebar-link.active-project {
+  background: rgba(52,120,246,.105);
+  border-color: rgba(52,120,246,.10);
+  color: #215cc7;
+  font-weight: 740;
+  box-shadow: none;
+}
+
+.private-root .private-sidebar-link.active::before,
+.private-root .private-sidebar-link.active-project::before {
+  content: none;
+}
+
+.private-root .private-sidebar-logout {
+  min-height: 42px;
+  border-radius: 11px;
+  background: rgba(243,246,250,.90);
+  color: #50617a;
+  font-weight: 620;
+}
+
+/* Contenido */
+.private-root .private-main {
+  width: min(1190px, calc(100% - 52px));
+  padding: 28px 0 75px;
+}
+
+.private-root .private-crumbs {
+  margin-bottom: 22px;
+  color: #687b94;
+}
+
+.private-root .private-page-heading {
+  margin: 12px 0 22px;
+}
+
+.private-root .private-kicker {
+  color: #3473dd;
+  font-size: 10.5px;
+  font-weight: 780;
+}
+
+.private-root .private-page-heading h1 {
+  color: #1b293e;
+  font-size: clamp(30px, 3.2vw, 42px);
+  line-height: 1.17;
+  font-weight: 760;
+  letter-spacing: -.048em;
+}
+
+.private-root .private-page-heading p {
+  color: #60718a;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* Dashboard */
+.private-root .private-hero {
+  padding: clamp(28px, 4vw, 48px);
+  border: 1px solid rgba(190,205,229,.58);
+  border-radius: 20px;
+  background: rgba(255,255,255,.83);
+  color: #1d2c43;
+  box-shadow: var(--soft-shadow);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+.private-root .private-hero::after {
+  display: none;
+}
+
+.private-root .private-hero .private-kicker {
+  color: #2c69d4;
+}
+
+.private-root .private-hero h1 {
+  color: #16283f;
+  font-size: clamp(31px, 4vw, 48px);
+  font-weight: 760;
+  letter-spacing: -.055em;
+}
+
+.private-root .private-hero p {
+  color: #5f7189;
+  font-size: 14px;
+}
+
+/* Tarjetas */
+.private-root .private-modules,
+.private-root .private-cards {
+  gap: 14px;
+}
+
+.private-root .private-module,
+.private-root .private-card {
+  background: var(--glass-strong);
+  border: 1px solid rgba(185,198,218,.52);
+  border-radius: 17px;
+  box-shadow: 0 3px 16px rgba(24,42,73,.045);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  transition:
+    transform .17s cubic-bezier(.2,.8,.2,1),
+    box-shadow .17s ease,
+    border-color .17s ease;
+}
+
+.private-root .private-card::before {
+  display: none;
+}
+
+.private-root .private-module:not(.private-module-future):hover,
+.private-root .private-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(83,132,220,.36);
+  box-shadow: 0 10px 28px rgba(32,54,93,.10);
+}
+
+.private-root .private-card:active {
+  transform: scale(.992);
+}
+
+.private-root .private-card {
+  min-height: 170px;
+  padding: 20px;
+}
+
+.private-root .private-module {
+  min-height: 180px;
+  padding: 20px;
+}
+
+.private-root .private-module-icon,
+.private-root .private-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: #edf3ff;
+  color: #2f6edb;
+  box-shadow: none;
+}
+
+.private-root .private-card h3 {
+  color: #1e3049;
+  font-size: 18px;
+  font-weight: 730;
+  letter-spacing: -.03em;
+}
+
+.private-root .private-module strong {
+  font-size: 18px;
+  font-weight: 730;
+}
+
+.private-root .private-card p,
+.private-root .private-module small {
+  color: #687991;
+  font-size: 12.5px;
+}
+
+.private-root .private-card-actions button {
+  border-radius: 8px;
+  min-height: 35px;
+  padding: 7px 9px;
+  transition: background-color .13s ease;
+}
+
+.private-root .private-card-actions button:hover {
+  background: #edf3ff;
+}
+
+/* Formularios */
+.private-root .private-create {
+  gap: 8px;
+  padding: 8px;
+  border-radius: 15px;
+  border: 1px solid rgba(181,195,215,.55);
+  background: rgba(255,255,255,.90);
+  box-shadow: var(--soft-shadow);
+}
+
+.private-root .private-create input {
+  height: 43px;
+  color: #1c2f48;
+  font-size: 14px;
+}
+
+.private-root .private-create input::placeholder {
+  color: #7889a1;
+}
+
+.private-root .private-primary {
+  min-height: 42px;
+  border-radius: 10px;
+  padding: 10px 17px;
+  background: #3478f6;
+  font-size: 13px;
+  font-weight: 720;
+  box-shadow: none;
+  transition:
+    background-color .14s ease,
+    transform .14s ease;
+}
+
+.private-root .private-primary:hover {
+  background: #2364dd;
+  transform: translateY(-1px);
+}
+
+.private-root .private-primary:active {
+  transform: scale(.975);
+}
+
+/* Kanban */
+.private-root .private-board {
+  gap: 15px;
+}
+
+.private-root .private-lane {
+  min-height: 190px;
+  padding: 13px;
+  border-radius: 16px;
+  background: rgba(231,237,246,.72);
+  border: 1px solid rgba(172,187,210,.36);
+  box-shadow: none;
+}
+
+.private-root .private-lane h2 {
+  color: #263b58;
+  font-size: 13px;
+  font-weight: 740;
+}
+
+.private-root .private-task {
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(186,200,218,.45);
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 2px 9px rgba(30,48,79,.045);
+  transition:
+    transform .15s ease,
+    box-shadow .15s ease;
+}
+
+.private-root .private-task:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 17px rgba(30,48,79,.09);
+}
+
+.private-root .private-task strong {
+  color: #1d2d45;
+  font-size: 14px;
+  font-weight: 660;
+}
+
+.private-root .private-task-actions button {
+  font-size: 12px;
+  font-weight: 650;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .private-root .private-main {
+    width: calc(100% - 38px);
+  }
+}
+
+/* Movil */
+@media (max-width: 800px) {
+  .private-root .private-topbar {
+    height: 60px;
+    padding-inline: 14px;
+  }
+
+  .private-root .private-workspace-layout,
+  .private-root .private-workspace-layout.is-collapsed {
+    display: block;
+  }
+
+  .private-root .private-sidebar {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    bottom: 0;
+    z-index: 110;
+    width: min(275px, 85vw);
+    height: calc(100dvh - 60px);
+    transform: translateX(-105%);
+    transition: transform .18s ease-out;
+    box-shadow: 12px 0 28px rgba(16,33,61,.14);
+  }
+
+  .private-root .private-sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .private-root .private-sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 60px 0 0;
+    z-index: 105;
+    background: rgba(17,28,46,.36);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+  }
+
+  .private-root .private-menu-toggle {
+    display: inline-flex;
+  }
+
+  .private-root .private-desktop-toggle {
+    display: none;
+  }
+
+  /* Mostrar textos del menu aunque estuviera plegado */
+  .private-root .is-collapsed .private-sidebar-brand-copy {
+    display: flex;
+  }
+
+  .private-root .is-collapsed .private-sidebar-group-label,
+  .private-root .is-collapsed .private-sidebar-link span,
+  .private-root .is-collapsed .private-sidebar-logout span,
+  .private-root .is-collapsed .private-sidebar-upcoming span {
+    display: block;
+  }
+
+  .private-root .is-collapsed .private-sidebar-link,
+  .private-root .is-collapsed .private-sidebar-logout {
+    justify-content: flex-start;
+    padding-inline: 12px;
+  }
+
+  .private-root .private-board {
+    grid-template-columns: minmax(0,1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .private-root .private-main {
+    width: calc(100% - 28px);
+    padding-top: 20px;
+  }
+
+  .private-root .private-modules,
+  .private-root .private-cards {
+    grid-template-columns: minmax(0,1fr);
+  }
+
+  .private-root .private-create {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .private-root .private-create input {
+    min-height: 46px;
+    font-size: 16px;
+  }
+
+  .private-root .private-create .private-primary {
+    width: 100%;
+  }
+
+  .private-root .private-card,
+  .private-root .private-module {
+    min-height: 155px;
+    padding: 17px;
+  }
+
+  .private-root .private-hero {
+    padding: 26px 20px;
+  }
+}
+
+/* La configuracion de accesibilidad del sistema manda */
+@media (prefers-reduced-motion: reduce) {
+  .private-root *,
+  .private-root *::before,
+  .private-root *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+  }
+}

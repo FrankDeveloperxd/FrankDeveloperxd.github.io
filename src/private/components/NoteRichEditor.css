@@ -1,0 +1,410 @@
+/* WYSIWYG DOCUMENT EDITOR */
+
+.note-rich-page {
+  width: 100%;
+  max-width: none;
+  padding: 16px clamp(14px, 2vw, 30px) 40px;
+}
+
+.note-rich-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.note-rich-downloads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.note-rich-downloads button {
+  min-height: 39px;
+  padding: 9px 13px;
+  border: 1px solid #d7e3f4;
+  border-radius: 10px;
+  background: #fff;
+  color: #2856a6;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .14s ease;
+}
+
+.note-rich-downloads button:hover {
+  background: #eaf1ff;
+}
+
+.note-rich-downloads button:disabled {
+  opacity: .5;
+}
+
+.note-rich-paper {
+  width: 100%;
+  max-width: none;
+  min-height: calc(100dvh - 160px);
+  padding: clamp(24px, 3.5vw, 55px);
+  background: #fff;
+}
+
+.note-rich-paper .note-title {
+  margin-bottom: 20px;
+}
+
+.note-rich-toolbar {
+  position: sticky;
+  top: 64px;
+  z-index: 15;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 22px;
+  padding: 11px;
+  border: 1px solid #e0e7f2;
+  border-radius: 13px;
+  background: rgba(249,251,255,.97);
+  backdrop-filter: blur(14px);
+}
+
+.note-rich-toolbar button {
+  min-height: 35px;
+  padding: 7px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: #fff;
+  color: #40536e;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: background .13s ease, color .13s ease;
+}
+
+.note-rich-toolbar button:hover {
+  background: #e9f0ff;
+  color: #205acb;
+}
+
+.note-rich-toolbar button.is-active {
+  color: #1855c5;
+  background: #dfeaff;
+  border-color: #c1d5ff;
+}
+
+.note-rich-separator {
+  width: 1px;
+  height: 25px;
+  background: #d7e0ed;
+  margin-inline: 5px;
+}
+
+/* Área editable directa */
+.note-rich-editor .tiptap {
+  outline: none;
+  min-height: 55dvh;
+  color: #283a53;
+  font-size: 16px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.note-rich-editor .tiptap:focus {
+  outline: none;
+}
+
+.note-rich-editor .tiptap p {
+  margin: 8px 0;
+}
+
+.note-rich-editor .tiptap h1,
+.note-rich-editor .tiptap h2,
+.note-rich-editor .tiptap h3 {
+  margin: 19px 0 10px;
+  color: #172941;
+  font-weight: 780;
+  line-height: 1.3;
+  letter-spacing: -.035em;
+}
+
+.note-rich-editor .tiptap h1 { font-size: 30px; }
+.note-rich-editor .tiptap h2 { font-size: 24px; }
+.note-rich-editor .tiptap h3 { font-size: 19px; }
+
+.note-rich-editor .tiptap ul,
+.note-rich-editor .tiptap ol {
+  padding-left: 28px;
+  margin: 12px 0;
+}
+
+.note-rich-editor .tiptap li {
+  margin: 4px 0;
+}
+
+.note-rich-editor .tiptap ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 5px;
+}
+
+.note-rich-editor .tiptap ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.note-rich-editor .tiptap ul[data-type="taskList"] li label {
+  flex: 0 0 auto;
+}
+
+.note-rich-editor .tiptap ul[data-type="taskList"] li > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.note-rich-editor .tiptap input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: #3478f6;
+  cursor: pointer;
+}
+
+.note-rich-editor .tiptap table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 17px 0;
+  table-layout: fixed;
+}
+
+.note-rich-editor .tiptap th,
+.note-rich-editor .tiptap td {
+  border: 1px solid #cbd6e5;
+  padding: 10px;
+  min-width: 60px;
+  vertical-align: top;
+  position: relative;
+}
+
+.note-rich-editor .tiptap th {
+  background: #ebf2ff;
+  color: #254a88;
+}
+
+.note-rich-editor .tiptap .selectedCell {
+  background: #dce8ff;
+}
+
+.note-rich-editor .tiptap .tableWrapper {
+  overflow-x: auto;
+}
+
+.note-rich-editor .tiptap blockquote {
+  margin: 17px 0;
+  padding: 10px 17px;
+  border-left: 4px solid #815aca;
+  border-radius: 0 8px 8px 0;
+  background: #f5f0ff;
+  color: #4b4465;
+}
+
+.note-rich-editor .tiptap pre {
+  padding: 17px;
+  border-radius: 12px;
+  background: #1e293b;
+  color: #edf3ff;
+  overflow-x: auto;
+}
+
+.note-rich-editor .tiptap code {
+  border-radius: 5px;
+  background: #edf1f7;
+  padding: 2px 5px;
+}
+
+.note-rich-editor .tiptap pre code {
+  color: inherit;
+  background: transparent;
+  padding: 0;
+}
+
+.note-rich-editor .tiptap mark {
+  background: #fff0a6;
+  border-radius: 3px;
+}
+
+.note-rich-editor .tiptap a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.note-rich-editor .tiptap hr {
+  border: 0;
+  border-top: 1px solid #dce4ef;
+  margin: 24px 0;
+}
+
+.note-rich-editor .tiptap:empty::before {
+  content: "Comienza a escribir...";
+  color: #9aa7b7;
+}
+
+@media (max-width: 650px) {
+  .note-rich-page {
+    padding: 11px;
+  }
+
+  .note-rich-topbar {
+    align-items: stretch;
+  }
+
+  .note-rich-downloads {
+    width: 100%;
+  }
+
+  .note-rich-downloads button {
+    flex: 1;
+  }
+
+  .note-rich-paper {
+    padding: 22px 16px;
+    min-height: 75dvh;
+  }
+
+  .note-rich-toolbar {
+    top: 60px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .note-rich-toolbar button {
+    flex-shrink: 0;
+  }
+
+  .note-rich-editor .tiptap {
+    min-height: 55dvh;
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .note-rich-toolbar button,
+  .note-rich-downloads button {
+    transition: none;
+  }
+}
+
+/* NOTE ICON TOOLBAR V2 START */
+
+.note-rich-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 9px;
+  background: #f8faff;
+  border: 1px solid #dfe7f3;
+  border-radius: 13px;
+  box-shadow: 0 3px 12px rgba(24,45,80,.045);
+}
+
+.note-rich-toolbar > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  min-height: 38px;
+  padding: 0;
+  color: #4b5e79;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease,
+    transform 120ms ease,
+    border-color 120ms ease;
+}
+
+.note-rich-toolbar > button svg {
+  display: block;
+  width: 19px;
+  height: 19px;
+  stroke-width: 2;
+}
+
+.note-rich-toolbar > button:hover {
+  color: #1757c9;
+  background: #e5eeff;
+  border-color: #d0dfff;
+}
+
+.note-rich-toolbar > button:active {
+  transform: scale(.92);
+}
+
+.note-rich-toolbar > button.is-active {
+  color: #174eb4;
+  background: #dbe8ff;
+  border-color: #b9d1ff;
+  box-shadow: inset 0 1px 3px rgba(30,80,160,.08);
+}
+
+/* Los controles contextuales de tablas pueden tener texto */
+.note-rich-toolbar > button:not(:has(svg)) {
+  width: auto;
+  min-width: 38px;
+  padding: 0 11px;
+  font-size: 12px;
+}
+
+/* Enlaces azules como en un editor de documentos */
+.note-rich-editor .tiptap a,
+.note-rich-editor .tiptap a[href] {
+  color: #1769e8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  cursor: text;
+}
+
+/* Descargar archivos */
+.note-rich-downloads button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.note-rich-downloads button svg {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 650px) {
+  .note-rich-toolbar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+  }
+
+  .note-rich-toolbar > button {
+    scroll-snap-align: start;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .note-rich-toolbar > button {
+    transition: none;
+  }
+}
+
+/* NOTE ICON TOOLBAR V2 END */
