@@ -8,7 +8,7 @@ import { useRef as useWorkspaceRef } from "react";
 // WORKSPACE USER ISOLATION V1
 import NoteShareControls from "./shared/NoteShareControls.jsx";
 /* NOTE SHARING FIXED V2 */
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, CalendarDays } from "lucide-react";
 import WorkspaceDialog from "./shared/WorkspaceDialog.jsx";
 import "./shared/WorkspaceLayout.css";
 import "./shared/WorkspaceCompactCards.css";
@@ -19,6 +19,7 @@ import "./shared/NoteHeaderCompact.css";
 import KanbanBoard from "./components/KanbanBoard.jsx";
 import NoteEditor from "./components/NoteEditor.jsx";
 import ProjectServices from "./components/ProjectServices.jsx";
+import WorkspaceCalendar from "./components/WorkspaceCalendar.jsx";
 import WorkspaceToasts, { notifyWorkspace } from "./components/WorkspaceToasts.jsx";
 import React, { useEffect, useState } from "react";
 import { supabase } from "./client";
@@ -298,6 +299,15 @@ export default function PrivateApp() {
     setProject(null);
     setBoard(null);
     setError("");
+  }
+
+  function openCalendar() {
+    leaveWorkspaceNote();
+    setView("calendar");
+    setProject(null);
+    setBoard(null);
+    setError("");
+    setSideOpen(false);
   }
 
   function openProjects() {
@@ -677,6 +687,11 @@ export default function PrivateApp() {
               <Icon name="board" size={19}/>
               <span>Proyectos</span>
             </button>
+            <button type="button"
+              className={`private-sidebar-link ${view === "calendar" ? "active" : ""}`}
+              onClick={openCalendar} title="Calendario">
+              <CalendarDays size={19}/><span>Calendario</span>
+            </button>
           </nav>
 
           <div className="private-sidebar-group-label">PROYECTOS</div>
@@ -747,16 +762,12 @@ export default function PrivateApp() {
             Inicio
           </button>
 
-          {view !== "home" && (
+          {view === "calendar" ? (
+            <><span className="workspace-pathbar-separator" aria-hidden="true">/</span><span className="workspace-pathbar-current">Calendario</span></>
+          ) : view !== "home" && (
             <>
               <span className="workspace-pathbar-separator" aria-hidden="true">/</span>
-              <button
-                type="button"
-                className="workspace-pathbar-projects"
-                onClick={openProjects}
-              >
-                Proyectos
-              </button>
+              <button type="button" className="workspace-pathbar-projects" onClick={openProjects}>Proyectos</button>
             </>
           )}
 
@@ -816,6 +827,10 @@ export default function PrivateApp() {
           {error}
           <button onClick={()=>setError("")}>Cerrar</button>
         </div>}
+
+        {!noteId && view === "calendar" && (
+          <WorkspaceCalendar key={user.id} user={user} projects={projects}/>
+        )}
 
         {!noteId && view === "home" && <>
           <div className="private-hero">

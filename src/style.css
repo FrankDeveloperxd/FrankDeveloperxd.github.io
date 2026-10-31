@@ -238,3 +238,26 @@ section[id] {
     height: 36px;
   }
 }
+/* PORTFOLIO LIGHT SCHEME V1 */
+:root {
+  color-scheme: light;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  -webkit-font-smoothing: antialiased;
+}
+
+input,
+select,
+textarea {
+  color-scheme: light;
+}
