@@ -919,7 +919,7 @@ export default function PrivateApp() {
               <span className="private-module-icon"><CalendarDays size={29}/></span>
               <strong>Calendario</strong>
               <small>Organiza tu agenda y conecta tus calendarios de Google.</small>
-              <span className="private-module-link">Abrir mÃ³dulo</span>
+              <span className="private-module-link">Abrir módulo</span>
             </button>
             <div className="private-module private-module-future">
               <span className="private-module-icon"><Icon name="plus" size={29}/></span>

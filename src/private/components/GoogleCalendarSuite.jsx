@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../client';
+import { notifyWorkspace } from './WorkspaceToasts.jsx';
 import './GoogleCalendarSuite.css';
 
 const monthStart = d => new Date(d.getFullYear(),d.getMonth(),1);
@@ -24,6 +25,7 @@ export default function GoogleCalendarSuite({user}) {
   const [calendarId,setCalendarId]=useState('');
   const [draft,setDraft]=useState(defaultDraft(new Date()));
   const [saving,setSaving]=useState(false);
+  const [deleteTarget,setDeleteTarget]=useState(null);
   const [email,setEmail]=useState('');
   const first=useMemo(()=>new Date(month.getFullYear(),month.getMonth(),1),[month]);
   const last=useMemo(()=>new Date(month.getFullYear(),month.getMonth()+1,1),[month]);
@@ -52,7 +54,7 @@ export default function GoogleCalendarSuite({user}) {
   }catch(e){setError(e.message);setBusy(false);}}
   async function disconnectGoogle() {
     if (!connected || busy) return;
-    if (!window.confirm('Â¿Desconectar Google Calendar? No se borrarÃ¡n los eventos de Google ni los del Workspace.')) return;
+    if (!window.confirm('¿Desconectar Google Calendar? No se borrarán los eventos de Google ni los del Workspace.')) return;
     setBusy(true);
     setError('');
     try {
@@ -83,16 +85,79 @@ export default function GoogleCalendarSuite({user}) {
     let start=draft.start,end=draft.end;
     if(draft.all_day){start=start.slice(0,10);const endDate=new Date(`${end.slice(0,10)}T12:00:00`);endDate.setDate(endDate.getDate()+1);end=dateInput(endDate);}else{start=new Date(start).toISOString();end=new Date(end).toISOString();}
     await invoke({action:editing.type,calendar_id:calendarId,...(editing.id?{event_id:editing.id}:{}),event:{title:draft.title,description:draft.description,start,end,all_day:draft.all_day,reminder_minutes:draft.reminder_minutes}});
-    setEditing(null);await load();
+    setEditing(null);await load();notifyWorkspace("success","Evento guardado en Google Calendar.");
   }catch(e){setError(e.message);}finally{setSaving(false);}}
-  async function remove(){if(!editing?.id||!window.confirm('¿Eliminar este evento de Google Calendar?'))return;setSaving(true);try{await invoke({action:'delete',calendar_id:calendarId,event_id:editing.id});setEditing(null);await load();}catch(e){setError(e.message);}finally{setSaving(false);}}
+  function requestDelete(event) {
+    if (!event?.id || !event?.calendar_id) return;
+
+    setDeleteTarget({
+      id: event.id,
+      calendarId: event.calendar_id,
+      title: event.title || "este evento"
+    });
+  }
+
+  async function confirmDelete() {
+    if (!deleteTarget || saving) return;
+
+    setSaving(true);
+    setError("");
+
+    try {
+      await invoke({
+        action: "delete",
+        calendar_id: deleteTarget.calendarId,
+        event_id: deleteTarget.id
+      });
+
+      setDeleteTarget(null);
+      setEditing(null);
+      await load();
+
+      notifyWorkspace("success", "Evento eliminado de Google Calendar.");
+    } catch (e) {
+      const message = e?.message || "No se pudo eliminar el evento";
+      setError(message);
+      notifyWorkspace("error", message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return <section className="gcs" aria-label="Google Calendar">
     <header className="gcs-top"><div className="gcs-brand"><span className="gcs-g">G</span><div><h2>Google Calendar</h2><p>{connected?`Cuenta conectada${email?`: ${email}`:''}`:'Conecta tu cuenta de Google para consultar tus calendarios'}</p></div></div><div className="gcs-actions"><button type="button" onClick={load} disabled={busy}>Actualizar</button><button type="button" className="gcs-primary" onClick={connect} disabled={busy}>{connected?'Reconectar Google':'Conectar Google'}</button><button type="button" onClick={disconnectGoogle} disabled={busy} aria-label="Desconectar Google Calendar">Desconectar Google</button></div></header>
     {error&&<p className="gcs-error" role="alert">{error}</p>}
     {connected&&<><div className="gcs-controls"><div><strong>Calendarios visibles</strong><div className="gcs-checks">{calendars.map(c=><label key={c.id}><input type="checkbox" checked={(selectedIds??[]).includes(c.id)} onChange={()=>toggle(c.id)}/><span className="gcs-dot" style={{background:c.color}}/>{c.name}</label>)}</div></div><button type="button" className="gcs-primary" onClick={()=>openNew()} disabled={!calendars.some(c=>c.writable)}>+ Evento en Google</button></div>
     <div className="gcs-calendar-header"><button type="button" onClick={()=>setMonth(new Date(first.getFullYear(),first.getMonth()-1,1))} aria-label="Mes anterior">‹</button><strong>{first.toLocaleDateString('es-PE',{month:'long',year:'numeric'})}</strong><button type="button" onClick={()=>setMonth(new Date(first.getFullYear(),first.getMonth()+1,1))} aria-label="Mes siguiente">›</button></div>
     <div className="gcs-grid">{['L','M','M','J','V','S','D'].map((label,i)=><span className="gcs-weekday" key={i}>{label}</span>)}{days.map((day,i)=>day?<button key={`day-${day}`} type="button" className={`gcs-day ${selected===dateInput(new Date(first.getFullYear(),first.getMonth(),day))?'gcs-selected':''}`} onClick={()=>setSelected(dateInput(new Date(first.getFullYear(),first.getMonth(),day)))}><span>{day}</span>{(byDay[dateInput(new Date(first.getFullYear(),first.getMonth(),day))]??[]).slice(0,3).map((e,j)=><small key={`${e.calendar_id}-${e.id}-${j}`} style={{borderLeftColor:e.color}}>{e.title}</small>)}</button>:<span key={`blank-${i}`} className="gcs-day-blank"/> )}</div>
-    <div className="gcs-agenda"><div className="gcs-agenda-head"><h3>Eventos · {new Date(`${selected}T12:00:00`).toLocaleDateString('es-PE',{day:'numeric',month:'long'})}</h3><button type="button" onClick={()=>openNew(selected)}>+ Crear</button></div>{(byDay[selected]??[]).length===0?<p>Sin eventos de Google para esta fecha.</p>:(byDay[selected]??[]).map((e,j)=><div className="gcs-event" key={`${e.calendar_id}-${e.id}-${j}`}><span className="gcs-dot" style={{background:e.color}}/><div><strong>{e.title}</strong><small>{e.calendar_name}</small></div>{e.writable&&<button type="button" onClick={()=>openEdit(e)}>Editar</button>}{e.link&&<a target="_blank" rel="noreferrer" href={e.link}>Abrir</a>}</div>)}</div></>}
-    {editing&&<div className="gcs-backdrop" role="presentation"><form className="gcs-dialog" onSubmit={e=>{e.preventDefault();save();}}><h3>{editing.type==='create'?'Nuevo evento en Google':'Editar evento de Google'}</h3><label>Título<input required maxLength={200} value={draft.title} onChange={e=>setDraft(d=>({...d,title:e.target.value}))}/></label><label>Calendario<select value={calendarId} onChange={e=>setCalendarId(e.target.value)} disabled={editing.type==='update'}>{calendars.filter(c=>c.writable).map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label><label>Inicio<input type="datetime-local" required value={draft.start} onChange={e=>setDraft(d=>({...d,start:e.target.value}))}/></label><label>Fin<input type="datetime-local" required value={draft.end} onChange={e=>setDraft(d=>({...d,end:e.target.value}))}/></label><label><input type="checkbox" checked={draft.all_day} onChange={e=>setDraft(d=>({...d,all_day:e.target.checked}))}/> Todo el día</label><label>Recordatorio<select value={draft.reminder_minutes??''} onChange={e=>setDraft(d=>({...d,reminder_minutes:e.target.value===''?null:Number(e.target.value)}))}><option value="">Predeterminado</option>{[0,5,10,15,30,60,1440].map(n=><option key={n} value={n}>{n} minutos</option>)}</select></label><label>Descripción<textarea value={draft.description} onChange={e=>setDraft(d=>({...d,description:e.target.value}))}/></label><div className="gcs-dialog-actions">{editing.id&&<button type="button" className="gcs-danger" onClick={remove} disabled={saving}>Eliminar</button>}<button type="button" onClick={()=>setEditing(null)}>Cancelar</button><button type="submit" className="gcs-primary" disabled={saving||!calendarId}>Guardar en Google</button></div></form></div>}
+    <div className="gcs-agenda"><div className="gcs-agenda-head"><h3>Eventos · {new Date(`${selected}T12:00:00`).toLocaleDateString('es-PE',{day:'numeric',month:'long'})}</h3><button type="button" onClick={()=>openNew(selected)}>+ Crear</button></div>{(byDay[selected]??[]).length===0?<p>Sin eventos de Google para esta fecha.</p>:(byDay[selected]??[]).map((e,j)=><div className="gcs-event" key={`${e.calendar_id}-${e.id}-${j}`}><span className="gcs-dot" style={{background:e.color}}/><div><strong>{e.title}</strong><small>{e.calendar_name}</small></div>{e.writable&&<button type="button" onClick={()=>openEdit(e)}>Editar</button>}{e.writable&&<button type="button" className="gcs-danger" onClick={()=>requestDelete(e)}>Eliminar</button>}{e.link&&<a target="_blank" rel="noreferrer" href={e.link}>Abrir</a>}</div>)}</div></>}
+    {deleteTarget&&<div className="gcs-confirm-backdrop">
+  <div className="gcs-confirm-dialog"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="gcs-delete-title"
+    aria-describedby="gcs-delete-description">
+    <div className="gcs-confirm-icon" aria-hidden="true">!</div>
+    <h3 id="gcs-delete-title">Eliminar evento</h3>
+    <p id="gcs-delete-description">
+      ¿Eliminar "{deleteTarget.title}" de Google Calendar?
+      Esta acción no se puede deshacer.
+    </p>
+    <div className="gcs-confirm-actions">
+      <button type="button"
+        disabled={saving}
+        onClick={()=>setDeleteTarget(null)}>
+        Cancelar
+      </button>
+      <button type="button"
+        className="gcs-confirm-danger"
+        disabled={saving}
+        onClick={confirmDelete}>
+        {saving ? "Eliminando..." : "Sí, eliminar"}
+      </button>
+    </div>
+  </div>
+</div>}
+{editing&&<div className="gcs-backdrop" role="presentation"><form className="gcs-dialog" onSubmit={e=>{e.preventDefault();save();}}><h3>{editing.type==='create'?'Nuevo evento en Google':'Editar evento de Google'}</h3><label>Título<input required maxLength={200} value={draft.title} onChange={e=>setDraft(d=>({...d,title:e.target.value}))}/></label><label>Calendario<select value={calendarId} onChange={e=>setCalendarId(e.target.value)} disabled={editing.type==='update'}>{calendars.filter(c=>c.writable).map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label><label>Inicio<input type="datetime-local" required value={draft.start} onChange={e=>setDraft(d=>({...d,start:e.target.value}))}/></label><label>Fin<input type="datetime-local" required value={draft.end} onChange={e=>setDraft(d=>({...d,end:e.target.value}))}/></label><label><input type="checkbox" checked={draft.all_day} onChange={e=>setDraft(d=>({...d,all_day:e.target.checked}))}/> Todo el día</label><label>Recordatorio<select value={draft.reminder_minutes??''} onChange={e=>setDraft(d=>({...d,reminder_minutes:e.target.value===''?null:Number(e.target.value)}))}><option value="">Predeterminado</option>{[0,5,10,15,30,60,1440].map(n=><option key={n} value={n}>{n} minutos</option>)}</select></label><label>Descripción<textarea value={draft.description} onChange={e=>setDraft(d=>({...d,description:e.target.value}))}/></label><div className="gcs-dialog-actions">{editing.id&&<button type="button" className="gcs-danger" onClick={()=>requestDelete({id:editing.id,calendar_id:calendarId,title:draft.title})} disabled={saving}>Eliminar</button>}<button type="button" onClick={()=>setEditing(null)}>Cancelar</button><button type="submit" className="gcs-primary" disabled={saving||!calendarId}>Guardar en Google</button></div></form></div>}
   </section>;
 }
