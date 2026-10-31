@@ -27,6 +27,7 @@ export default function WorkspaceCalendar({ user, projects = [] }) {
   const [draft, setDraft] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [destination, setDestination] = useState("workspace");
 
   const year = month.getFullYear(), monthIndex = month.getMonth();
   useEffect(() => {
@@ -71,9 +72,10 @@ export default function WorkspaceCalendar({ user, projects = [] }) {
     return events.filter(item => new Date(item.start_at) < end && new Date(item.end_at) > start);
   }
 
-  function newEvent() { setEditingId(null); setDraft(defaultDraft(fromKey(selected))); }
+  function newEvent() { setEditingId(null); setDestination("workspace"); setDraft(defaultDraft(fromKey(selected))); }
   function editEvent(item) {
     setEditingId(item.id);
+    setDestination("workspace");
     setDraft({ title: item.title, description: item.description || "", project_id: item.project_id || "", start_at: localInput(new Date(item.start_at)), end_at: localInput(new Date(item.end_at)), all_day: !!item.all_day, reminder_minutes: item.reminder_minutes ?? "" });
   }
   function update(field, value) { setDraft(current => ({ ...current, [field]: value })); }
@@ -85,19 +87,57 @@ export default function WorkspaceCalendar({ user, projects = [] }) {
     if (!draft.title.trim() || isNaN(start.getTime()) || isNaN(end.getTime()) || end <= start) {
       notifyWorkspace("error", "Verifica el titulo y las horas del evento."); return;
     }
+    if (!editingId && destination === "google" && draft.all_day) {
+      notifyWorkspace("error", "Para eventos de dÃ­a completo, utiliza el formulario Google de arriba."); return;
+    }
     const payload = { title: draft.title.trim(), description: draft.description.trim(), project_id: draft.project_id || null,
       start_at: start.toISOString(), end_at: end.toISOString(), all_day: draft.all_day,
       reminder_minutes: draft.reminder_minutes === "" ? null : Number(draft.reminder_minutes), updated_at: new Date().toISOString() };
     setSaving(true);
     try {
-      const result = editingId
-        ? await supabase.from("workspace_calendar_events").update(payload).eq("id", editingId).eq("owner_id", user.id)
-        : await supabase.from("workspace_calendar_events").insert({ ...payload, owner_id: user.id });
-      if (result.error) throw result.error;
-      setDraft(null);
-      notifyWorkspace("success", editingId ? "Evento actualizado." : "Evento creado.");
-      await reload();
-    } catch (error) { notifyWorkspace("error", error.message); }
+      if (!editingId && destination === "google") {
+        const { data: available, error: listError } = await supabase.functions.invoke("google-calendar-api", {
+          body: {
+            action: "list",
+            from: new Date(start.getFullYear(), start.getMonth(), 1).toISOString(),
+            to: new Date(start.getFullYear(), start.getMonth() + 1, 1).toISOString()
+          }
+        });
+        if (listError) throw listError;
+        if (available?.error) throw new Error(available.error);
+        if (!available?.connected) throw new Error("Conecta Google Calendar antes de guardar un evento allÃ­.");
+        const writable = (available.calendars || []).find(c => c.primary && c.writable) ||
+          (available.calendars || []).find(c => c.writable);
+        if (!writable) throw new Error("No hay un calendario de Google con permiso de escritura.");
+        const { data, error } = await supabase.functions.invoke("google-calendar-api", {
+          body: {
+            action: "create",
+            calendar_id: writable.id,
+            event: {
+              title: payload.title,
+              description: payload.description,
+              start: payload.start_at,
+              end: payload.end_at,
+              all_day: false,
+              reminder_minutes: payload.reminder_minutes
+            }
+          }
+        });
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+        if (!data?.ok) throw new Error("Google no confirmÃ³ la creaciÃ³n del evento.");
+        setDraft(null);
+        notifyWorkspace("success", "Evento creado en Google Calendar. Actualiza la vista Google para verlo.");
+      } else {
+        const result = editingId
+          ? await supabase.from("workspace_calendar_events").update(payload).eq("id", editingId).eq("owner_id", user.id)
+          : await supabase.from("workspace_calendar_events").insert({ ...payload, owner_id: user.id });
+        if (result.error) throw result.error;
+        setDraft(null);
+        notifyWorkspace("success", editingId ? "Evento actualizado." : "Evento creado.");
+        await reload();
+      }
+    } catch (error) { notifyWorkspace("error", error.message || "No se pudo guardar el evento."); }
     finally { setSaving(false); }
   }
 
@@ -165,6 +205,18 @@ export default function WorkspaceCalendar({ user, projects = [] }) {
             <label>Fin<input type="datetime-local" required value={draft.end_at} onChange={e => update("end_at", e.target.value)}/></label>
           </div>
           <label className="wc-check"><input type="checkbox" checked={draft.all_day} onChange={e => update("all_day", e.target.checked)}/>Evento de día completo (etiqueta visual por ahora)</label>
+          {!editingId && <fieldset className="wc-calendar-destination" style={{border:"1px solid #dce4ee",borderRadius:12,padding:"12px 14px",margin:"8px 0"}}>
+            <legend style={{padding:"0 5px",fontWeight:700}}>Guardar evento en</legend>
+            <label style={{display:"flex",alignItems:"center",gap:8,marginBottom:9}}>
+              <input type="radio" name="calendar-destination" checked={destination === "workspace"} onChange={() => setDestination("workspace")}/>
+              Workspace (evento privado en Supabase)
+            </label>
+            <label style={{display:"flex",alignItems:"center",gap:8}}>
+              <input type="radio" name="calendar-destination" checked={destination === "google"} onChange={() => setDestination("google")}/>
+              Google Calendar (cuenta conectada)
+            </label>
+            {destination === "google" && <small style={{display:"block",marginTop:9,color:"#64748b"}}>Se crearÃ¡ en tu calendario principal de Google, o en el primer calendario editable. No se duplicarÃ¡ en Workspace. Para editarlo, usa el calendario Google de arriba. Los eventos de dÃ­a completo y su vinculaciÃ³n a proyectos estÃ¡n disponibles solo en Workspace en este formulario.</small>}
+          </fieldset>}
           <label>Proyecto (opcional)<select value={draft.project_id} onChange={e => update("project_id", e.target.value)}><option value="">Sin proyecto</option>{projects.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}</select></label>
           <label>Recordatorio (configuración; no envía alertas aún)<select value={draft.reminder_minutes} onChange={e => update("reminder_minutes", e.target.value)}>
             <option value="">Sin recordatorio</option><option value="0">Al iniciar</option><option value="5">5 min antes</option><option value="15">15 min antes</option><option value="30">30 min antes</option><option value="60">1 hora antes</option><option value="1440">1 día antes</option>
