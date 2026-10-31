@@ -6,4 +6,12 @@ const key =
   import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export const supabase =
-  url && key ? createClient(url, key) : null;
+  url && key
+    ? createClient(url, key, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      })
+    : null;

@@ -1,0 +1,98 @@
+/* NOTE HEADER COMPACT V1
+   Solo afecta a pantallas con Bloc de notas abierto.
+   No modifica el editor ni sus eventos.
+*/
+
+/* Cabecera compartida: ruta izquierda y compartir derecha */
+.private-root .private-main:has(> .note-page) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-content: start;
+  align-items: center;
+  column-gap: 8px;
+  row-gap: 0;
+}
+
+/* Breadcrumb en la primera celda */
+.private-root .private-main:has(> .note-page)
+  > .workspace-breadcrumb-slot {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  width: 100%;
+  height: 42px;
+  min-height: 42px;
+  margin: 0 !important;
+  padding: 0;
+}
+
+.private-root .private-main:has(> .note-page)
+  .workspace-pathbar {
+  width: 100%;
+  height: 42px;
+  min-height: 42px;
+  max-height: 42px;
+  margin: 0 !important;
+}
+
+/* Boton Compartir en la misma fila */
+.private-root .private-main:has(> .note-page)
+  > .ns-toolbar {
+  grid-column: 2;
+  grid-row: 1;
+  justify-content: flex-end;
+  align-self: center;
+  margin: 0 !important;
+  min-width: 0;
+}
+
+/* Editor comienza inmediatamente debajo */
+.private-root .private-main:has(> .note-page)
+  > .note-page {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  min-width: 0;
+  margin: 0;
+  padding-top: 6px;
+}
+
+/* No alterar las acciones internas del editor */
+.private-root .private-main:has(> .note-page)
+  .note-toolbar {
+  margin-top: 0;
+}
+
+@media (max-width: 800px) {
+  .private-root .private-main:has(> .note-page) {
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 5px;
+    padding-inline: 12px;
+  }
+
+  .private-root .private-main:has(> .note-page)
+    > .workspace-breadcrumb-slot {
+    height: 40px;
+    min-height: 40px;
+  }
+
+  .private-root .private-main:has(> .note-page)
+    .workspace-pathbar {
+    height: 40px;
+    min-height: 40px;
+    max-height: 40px;
+  }
+
+  .private-root .private-main:has(> .note-page)
+    > .ns-toolbar .ns-share-button {
+    min-height: 34px;
+    padding: 7px 9px;
+    font-size: 11px;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  .private-root .private-main:has(> .note-page)
+    > .note-page {
+    padding: 5px 0 24px;
+  }
+}

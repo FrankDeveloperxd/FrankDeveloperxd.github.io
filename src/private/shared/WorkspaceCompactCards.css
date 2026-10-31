@@ -1,0 +1,444 @@
+/* WORKSPACE COMPACT CARDS V1
+   Exclusivo para tarjetas de proyectos y servicios.
+   No afecta a Kanban, editor, modales ni dashboard.
+*/
+
+/* ========== PROYECTOS ========== */
+
+.private-root .private-cards {
+  align-items: start;
+}
+
+.private-root .private-card.pux-project-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 0 !important;
+  height: auto;
+  padding: 14px 94px 16px 15px;
+  gap: 0;
+}
+
+/* Icono superior izquierdo */
+.private-root .pux-project-card > .private-card-icon {
+  width: 37px;
+  height: 37px;
+  min-width: 37px;
+  margin: 0 0 12px;
+  border-radius: 10px;
+}
+
+.private-root .pux-project-card > .private-card-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Texto inmediatamente debajo del icono */
+.private-root .pux-project-card > h3 {
+  margin: 0 0 4px !important;
+  font-size: 15px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.private-root .pux-project-card > p {
+  margin: 0 !important;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* Acciones superiores derechas */
+.private-root .pux-project-card > .pux-actions {
+  position: absolute;
+  top: 13px;
+  right: 13px;
+  bottom: auto;
+  left: auto;
+  width: auto;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.private-root .pux-project-card .pux-actions button {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  min-height: 34px;
+  flex: 0 0 34px;
+}
+
+/* ========== SERVICIOS ========== */
+
+.private-root .ps-grid {
+  align-items: start;
+}
+
+.private-root .ps-grid > .ps-card:not(.ps-new-card) {
+  position: relative;
+  min-height: 0 !important;
+  height: auto;
+  overflow: hidden;
+}
+
+/* Área clicable compacta, sin ocupar toda la tarjeta artificialmente */
+.private-root .ps-grid .ps-card:not(.ps-new-card)
+  > .ps-card-open {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 0 !important;
+  height: auto;
+  padding: 14px 92px 15px 14px;
+  gap: 0;
+}
+
+/* Icono a la izquierda y nombre al lado */
+.private-root .ps-grid .ps-card:not(.ps-new-card)
+  .ps-card-head {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 10px;
+  min-width: 0;
+  width: 100%;
+}
+
+.private-root .ps-grid .ps-card:not(.ps-new-card)
+  .ps-card-copy {
+  min-width: 0;
+  flex: 1 1 auto;
+  gap: 4px;
+}
+
+/* Tipografía compacta */
+.private-root .ps-grid .ps-card:not(.ps-new-card)
+  .ps-card-copy strong {
+  font-size: 14px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.private-root .ps-grid .ps-card:not(.ps-new-card)
+  .ps-card-copy small {
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* Icono pequeño en la esquina izquierda */
+.private-root .ps-grid .ps-card:not(.ps-new-card)
+  .ps-card-icon {
+  width: 35px;
+  height: 35px;
+  min-width: 35px;
+  flex: 0 0 35px;
+  margin: 0;
+  border-radius: 10px;
+}
+
+.private-root .ps-grid .ps-card:not(.ps-new-card)
+  .ps-card-icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+/* Enlace de apertura cerca del contenido */
+.private-root .ps-grid .ps-card:not(.ps-new-card)
+  .ps-open-label {
+  display: inline-block;
+  align-self: flex-start;
+  margin: 12px 0 0 45px !important;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Acciones en esquina superior derecha */
+.private-root .ps-grid .ps-card:not(.ps-new-card)
+  > .ps-card-actions {
+  position: absolute;
+  top: 13px;
+  right: 13px;
+  bottom: auto;
+  left: auto;
+  width: auto;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.private-root .ps-grid .ps-card:not(.ps-new-card)
+  .ps-card-actions button {
+  width: 33px;
+  height: 33px;
+  min-width: 33px;
+  min-height: 33px;
+  flex: 0 0 33px;
+}
+
+/* ========== RESPONSIVE ========== */
+
+@media (max-width: 680px) {
+  .private-root .private-cards,
+  .private-root .ps-grid {
+    gap: 10px;
+  }
+
+  .private-root .private-card.pux-project-card {
+    padding: 13px 90px 14px 14px;
+    border-radius: 14px;
+  }
+
+  .private-root .ps-grid .ps-card:not(.ps-new-card)
+    > .ps-card-open {
+    padding: 13px 86px 14px 13px;
+  }
+
+  .private-root .ps-grid .ps-card:not(.ps-new-card)
+    > .ps-card-actions {
+    top: 12px;
+    right: 11px;
+  }
+
+  .private-root .pux-project-card > .pux-actions {
+    top: 12px;
+    right: 11px;
+  }
+}
+
+/* Mantener los estados de foco accesibles */
+.private-root .pux-project-card:focus-visible,
+.private-root .ps-card-open:focus-visible {
+  outline: 2px solid #3478f6;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .private-root .pux-project-card,
+  .private-root .ps-card {
+    transition: none !important;
+  }
+}
+
+/* WORKSPACE CENTERED CARD ACTIONS V2 */
+
+/* Proyectos: editar y eliminar centrados verticalmente a la derecha */
+.private-root .pux-project-card > .pux-actions {
+    top: 50% !important;
+    right: 13px;
+    bottom: auto !important;
+    transform: translateY(-50%);
+}
+
+/* Servicios: mismo comportamiento */
+.private-root .ps-grid .ps-card:not(.ps-new-card)
+    > .ps-card-actions {
+    top: 50% !important;
+    right: 13px;
+    bottom: auto !important;
+    transform: translateY(-50%);
+}
+
+/* Mantener los botones juntos y alineados */
+.private-root .pux-project-card > .pux-actions,
+.private-root .ps-grid .ps-card:not(.ps-new-card)
+    > .ps-card-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+/* Conservar la alineacion en movil */
+@media (max-width: 680px) {
+    .private-root .pux-project-card > .pux-actions,
+    .private-root .ps-grid .ps-card:not(.ps-new-card)
+        > .ps-card-actions {
+        top: 50% !important;
+        right: 11px;
+        transform: translateY(-50%);
+    }
+}
+
+/* WORKSPACE UNIFORM SERVICES V1
+   Alturas uniformes, texto flexible y sin espacios artificiales.
+*/
+
+.private-root .ps-grid {
+  align-items: stretch !important;
+  grid-auto-rows: minmax(112px, 1fr);
+}
+
+/* Todas las tarjetas de una misma cuadricula crecen por igual. */
+.private-root .ps-grid > .ps-card {
+  height: 100%;
+  min-height: 112px !important;
+  box-sizing: border-box;
+}
+
+/* El area de apertura ocupa la tarjeta sin altura fija excesiva. */
+.private-root .ps-grid .ps-card:not(.ps-new-card)
+  > .ps-card-open {
+  width: 100%;
+  height: 100%;
+  min-height: 112px !important;
+  box-sizing: border-box;
+  justify-content: center;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+/* Nombre completo y legible, incluso si tiene varias lineas. */
+.private-root .ps-grid .ps-card-copy strong {
+  display: block;
+  min-width: 0;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-height: 1.4;
+}
+
+.private-root .ps-grid .ps-card-copy small {
+  display: block;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Las acciones mantienen su ubicacion central a la derecha. */
+.private-root .ps-grid .ps-card:not(.ps-new-card)
+  > .ps-card-actions {
+  top: 50% !important;
+  bottom: auto !important;
+  transform: translateY(-50%);
+}
+
+/* El boton Nuevo servicio tambien mantiene altura uniforme. */
+.private-root .ps-grid > .ps-new-card {
+  min-height: 112px !important;
+  padding: 14px;
+}
+
+/* Asegurar que no aparezca espacio reservado para el enlace eliminado. */
+.private-root .ps-grid .ps-card-open .ps-card-head {
+  margin: 0;
+}
+
+@media (max-width: 680px) {
+  .private-root .ps-grid {
+    grid-auto-rows: minmax(104px, 1fr);
+    gap: 10px;
+  }
+
+  .private-root .ps-grid > .ps-card {
+    min-height: 104px !important;
+  }
+
+  .private-root .ps-grid .ps-card:not(.ps-new-card)
+    > .ps-card-open {
+    min-height: 104px !important;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .private-root .ps-grid > .ps-new-card {
+    min-height: 104px !important;
+  }
+}
+
+/* PROJECT CARDS UNIFORM HEIGHT V3 */
+
+/* La cuadricula conserva la misma altura en todas las tarjetas. */
+.private-root .private-cards {
+    display: grid;
+    align-items: stretch !important;
+    grid-auto-rows: minmax(150px, auto);
+}
+
+/* Tarjetas con altura uniforme y contenido controlado. */
+.private-root .private-card.pux-project-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 150px !important;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 17px 98px 17px 16px;
+    overflow: hidden;
+}
+
+/* Icono sin estirarse. */
+.private-root .pux-project-card > .private-card-icon {
+    flex: 0 0 37px;
+    width: 37px;
+    height: 37px;
+    margin-bottom: 10px;
+}
+
+/* El titulo ocupa maximo dos lineas. */
+.private-root .pux-project-card > h3 {
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden !important;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    max-width: 100%;
+    margin: 0 0 5px !important;
+    font-size: 15px;
+    line-height: 1.4;
+    min-height: 0;
+}
+
+/* Descripcion sin margenes inesperados. */
+.private-root .pux-project-card > p {
+    display: block;
+    margin: 0 !important;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+/* Botones en el centro del lado derecho. */
+.private-root .pux-project-card > .pux-actions {
+    position: absolute;
+    top: 50% !important;
+    right: 13px !important;
+    bottom: auto !important;
+    transform: translateY(-50%);
+    width: auto;
+    margin: 0 !important;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+/* La seleccion con teclado continua siendo visible. */
+.private-root .pux-project-card:focus-visible {
+    outline: 2px solid #3478f6;
+    outline-offset: 2px;
+}
+
+@media (max-width: 680px) {
+    .private-root .private-cards {
+        grid-auto-rows: minmax(142px, auto);
+        gap: 10px;
+    }
+
+    .private-root .private-card.pux-project-card {
+        min-height: 142px !important;
+        padding: 15px 88px 15px 14px;
+    }
+
+    .private-root .pux-project-card > .pux-actions {
+        right: 11px !important;
+    }
+}

@@ -1,0 +1,266 @@
+/* PRIVATE MOBILE REFINEMENT V1
+   Aislado a pantallas pequenas.
+   No modifica la logica de los componentes.
+*/
+
+@media (max-width: 800px) {
+
+  /* Barra superior ligera */
+  .private-root .private-topbar {
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 1px 5px rgba(20, 38, 65, .06);
+  }
+
+  /* Menu lateral: sin vidrio ni desenfoque */
+  .private-root .private-sidebar {
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 8px 0 24px rgba(22, 37, 60, .12);
+    transition: transform 180ms ease-out !important;
+    will-change: transform;
+  }
+
+  .private-root .private-sidebar-overlay {
+    background: rgba(16, 27, 45, .38) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    animation: none !important;
+  }
+
+  /* Asegurar que el contenido utilice el ancho movil */
+  .private-root .private-workspace-layout,
+  .private-root .private-content,
+  .private-root .private-main {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* Migas de pan: una sola fila, sin saltos verticales */
+  .private-root .private-crumbs {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    gap: 6px !important;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0 0 14px !important;
+    padding: 9px 4px !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .private-root .private-crumbs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .private-root .private-crumbs button,
+  .private-root .private-crumbs span {
+    flex: 0 0 auto;
+    max-width: min(55vw, 240px);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px !important;
+    line-height: 1.4;
+  }
+
+  .private-root .private-crumbs button {
+    min-height: 32px;
+    padding: 5px 9px;
+    border-radius: 8px;
+  }
+
+  .private-root .private-crumbs svg {
+    flex: 0 0 13px;
+    width: 13px;
+    height: 13px;
+  }
+
+  /* Reducir el exceso de espacio en tarjetas de servicios */
+  .private-root .ps-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .private-root .ps-card {
+    min-width: 0;
+  }
+
+  /* Kanban movil: columnas legibles, una al lado de otra */
+  .private-root .kb-columns {
+    display: grid;
+    grid-template-columns: repeat(
+      3, minmax(min(82vw, 350px), min(82vw, 350px))
+    ) !important;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 3px 3px 16px;
+    scroll-snap-type: x proximity;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .private-root .kb-column {
+    min-width: 0 !important;
+    width: 100%;
+    scroll-snap-align: start;
+  }
+
+  .private-root .kb-column-head {
+    min-height: 43px;
+  }
+
+  .private-root .kb-card {
+    min-height: 96px;
+  }
+
+  .private-root .kb-card-title {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .private-root .kb-actions button {
+    min-width: 32px;
+    min-height: 32px;
+  }
+
+  /* Pista para la interaccion tactil existente */
+  .private-root .kb-heading::after {
+    content: "Desliza entre columnas. Mantén pulsada una tarjeta para moverla.";
+    display: block;
+    margin-top: 9px;
+    color: #687c99;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 430px) {
+  .private-root .private-topbar {
+    padding-inline: 10px;
+  }
+
+  .private-root .private-topbar-title {
+    font-size: 13px;
+  }
+
+  .private-root .private-main {
+    padding-inline: 12px;
+  }
+
+  .private-root .private-crumbs {
+    gap: 4px !important;
+  }
+
+  .private-root .kb-create input {
+    font-size: 13px;
+  }
+
+  .private-root .kb-create button {
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .private-root .private-sidebar {
+    transition: none !important;
+  }
+
+  .private-root .kb-columns {
+    scroll-behavior: auto;
+  }
+}
+
+
+/* WORKSPACE STRUCTURAL RESPONSIVE V5 - MENU MOVIL */
+@media (max-width: 800px) {
+
+  .private-root .private-sidebar {
+    padding: 12px 9px 16px !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .private-root .private-sidebar-brand {
+    padding: 8px 8px 14px !important;
+    margin: 0 0 8px !important;
+    border: 0 !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .private-root .private-sidebar-nav,
+  .private-root .private-sidebar-projects {
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 4px !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .private-root .private-sidebar .private-sidebar-link,
+  .private-root .private-sidebar .private-project-link,
+  .private-root .private-sidebar .private-add-link {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-height: 42px;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 9px 10px !important;
+    gap: 10px !important;
+    text-align: left !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .private-root .private-sidebar .private-sidebar-link svg {
+    width: 18px !important;
+    height: 18px !important;
+    flex: 0 0 18px !important;
+    margin: 0 !important;
+  }
+
+  .private-root .private-sidebar .private-sidebar-link span {
+    display: block !important;
+    flex: 1 1 auto !important;
+    min-width: 0;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+  }
+
+  .private-root .private-sidebar-projects
+    .private-project-link {
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+  }
+
+  .private-root .private-sidebar .private-sidebar-group-label {
+    margin: 5px 0 2px !important;
+    padding: 12px 10px 6px !important;
+    border: 0 !important;
+    text-align: left !important;
+  }
+
+  .private-root .private-sidebar .private-add-link {
+    margin-top: 6px !important;
+  }
+}

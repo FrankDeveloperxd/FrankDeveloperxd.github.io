@@ -247,9 +247,11 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
   const services = [
     ...boards.map(item => ({ ...item, kind: "kanban" })),
     ...notes.map(item => ({ ...item, kind: "note" }))
-  ].sort((a, b) =>
-    new Date(b.created_at) - new Date(a.created_at)
-  );
+  ].sort((a, b) => {
+    const first = new Date(a.created_at).getTime();
+    const second = new Date(b.created_at).getTime();
+    return first - second;
+  });
 
   return (
     <section className="ps-root">
@@ -330,7 +332,7 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
   </span>
 </div>
 
-<span className="ps-open-label">Abrir servicio</span>
+
               </button>
 
               <div className="ps-card-actions">

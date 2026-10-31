@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { supabase } from "../client";
 import "./KanbanBoard.css";
+import "./KanbanIndependentScroll.css";
 
 const stages = [
   { id: "todo", title: "Por hacer" },

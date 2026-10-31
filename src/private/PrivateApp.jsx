@@ -1,3 +1,8 @@
+import {
+  hasCachedWorkspaceAccess,
+  rememberWorkspaceAccess,
+  clearWorkspaceAccess
+} from "./workspaceAuthorizationCache.js";
 import { clearCachedProjectServices } from "./projectServicesCache.js";
 import { useRef as useWorkspaceRef } from "react";
 // WORKSPACE USER ISOLATION V1
@@ -6,6 +11,9 @@ import NoteShareControls from "./shared/NoteShareControls.jsx";
 import { Pencil, Trash2 } from "lucide-react";
 import WorkspaceDialog from "./shared/WorkspaceDialog.jsx";
 import "./shared/WorkspaceLayout.css";
+import "./shared/WorkspaceCompactCards.css";
+import "./shared/WorkspaceBreadcrumbs.css";
+import "./shared/NoteHeaderCompact.css";
 
 /* PROJECTS UX FIXED V4 */
 import KanbanBoard from "./components/KanbanBoard.jsx";
@@ -19,6 +27,7 @@ import "./private-workspace.css";
 import "./private-glass.css";
 import "./private-experience.css";
 import "./private-navigation-v2.css";
+import "./private-mobile-refinement.css";
 
 const TABLES = {
   projects: "workspace_projects",
@@ -59,7 +68,7 @@ export default function PrivateApp() {
   const [user, setUser] = useState(null);
   const lastWorkspaceOwner = useWorkspaceRef(null);
   const [ready, setReady] = useState(false);
-  const [authorized, setAuthorized] = useState(false);
+  const [authorized, setAuthorized] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -78,6 +87,8 @@ export default function PrivateApp() {
   const [sideOpen, setSideOpen] = useState(false);
   const [sideCollapsed, setSideCollapsed] = useState(false);
 
+  // SESSION RESTORE V2
+  // Supabase emite INITIAL_SESSION al restaurar la sesion.
   useEffect(() => {
     if (!supabase) {
       setReady(true);
@@ -85,20 +96,24 @@ export default function PrivateApp() {
     }
 
     let mounted = true;
-
-    async function initialize() {
-      const { data } = await supabase.auth.getUser();
-      if (mounted) {
-        setUser(data?.user || null);
-        setReady(true);
-      }
-    }
-
-    initialize();
+    let previousUserId;
 
     const { data } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        if (mounted) setUser(session?.user || null);
+        if (!mounted) return;
+
+        const nextUser = session?.user || null;
+        const nextUserId = nextUser?.id || null;
+
+        if (previousUserId !== nextUserId) {
+          setAuthorized(
+            hasCachedWorkspaceAccess(nextUserId) ? true : null
+          );
+          previousUserId = nextUserId;
+        }
+
+        setUser(nextUser);
+        setReady(true);
       }
     );
 
@@ -116,7 +131,9 @@ export default function PrivateApp() {
 
     if (previousId && previousId !== nextId) {
       clearCachedProjectServices();
-      setAuthorized(false);
+      setAuthorized(
+        hasCachedWorkspaceAccess(nextId) ? true : null
+      );
       setProjects([]);
       setBoards([]);
       setTasks([]);
@@ -143,26 +160,55 @@ export default function PrivateApp() {
     lastWorkspaceOwner.current = nextId;
   }, [user?.id]);
 
+  // Validar una vez por identidad, sin bloquear cada recarga
+  // cuando Supabase restaura una sesion ya autorizada.
   useEffect(() => {
-    if (!user || !supabase) {
-      setAuthorized(false);
+    if (!user?.id || !supabase) {
+      setAuthorized(null);
       return;
     }
 
+    const userId = user.id;
     let active = true;
-    setAuthorized(false);
-    supabase.from("workspace_owner")
+
+    // Mostrar el workspace inmediatamente si este usuario
+    // ya fue autorizado antes en este navegador.
+    setAuthorized(
+      hasCachedWorkspaceAccess(userId) ? true : null
+    );
+
+    supabase
+      .from("workspace_owner")
       .select("user_id")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .maybeSingle()
       .then(({ data, error }) => {
         if (!active) return;
-        setAuthorized(Boolean(data) && !error);
-        if (error) setError(formatError(error));
+
+        if (error) {
+          // Un fallo de red no significa revocacion de acceso.
+          setError(error.message);
+          if (!hasCachedWorkspaceAccess(userId)) {
+            setAuthorized(false);
+          }
+          return;
+        }
+
+        if (data?.user_id === userId) {
+          rememberWorkspaceAccess(userId);
+          setAuthorized(true);
+          setError("");
+        } else {
+          clearWorkspaceAccess(userId);
+          clearCachedProjectServices();
+          setAuthorized(false);
+        }
       });
 
-    return () => { active = false; };
-  }, [user]);
+    return () => {
+      active = false;
+    };
+  }, [user?.id]);
 
   async function loadProjects() {
     const { data, error } = await supabase
@@ -290,6 +336,7 @@ export default function PrivateApp() {
   }
 
   async function signOut() {
+    clearWorkspaceAccess(user?.id);
     clearCachedProjectServices();
     await supabase.auth.signOut();
     setUser(null);
@@ -511,6 +558,15 @@ export default function PrivateApp() {
     </main>
   );
 
+  if (authorized === null) return (
+    <main className="private-root private-login-page">
+      <div className="private-login" role="status">
+        <h1>Verificando acceso...</h1>
+        <p>Estamos comprobando tu sesión y permisos.</p>
+      </div>
+    </main>
+  );
+
   if (!authorized) return (
     <main className="private-root private-login-page">
       <div className="private-login">
@@ -677,7 +733,65 @@ export default function PrivateApp() {
         <div className="private-content">
           <main className="private-main">
 
-{noteId && (
+{/* WORKSPACE NOTE BREADCRUMB V2 */}
+        <div className="workspace-breadcrumb-slot">
+          <nav
+          className="workspace-pathbar"
+          aria-label="Ruta de navegacion"
+        >
+          <button
+            type="button"
+            className="workspace-pathbar-home"
+            onClick={openHome}
+          >
+            Inicio
+          </button>
+
+          {view !== "home" && (
+            <>
+              <span className="workspace-pathbar-separator" aria-hidden="true">/</span>
+              <button
+                type="button"
+                className="workspace-pathbar-projects"
+                onClick={openProjects}
+              >
+                Proyectos
+              </button>
+            </>
+          )}
+
+          {project && (
+            <>
+              <span className="workspace-pathbar-separator" aria-hidden="true">/</span>
+              <button
+                type="button"
+                className="workspace-pathbar-project"
+                onClick={() => openProject(project)}
+                title={project.title}
+              >
+                {project.title}
+              </button>
+            </>
+          )}
+
+          {board && !noteId && (
+            <>
+              <span className="workspace-pathbar-separator" aria-hidden="true">/</span>
+              <span className="workspace-pathbar-current" title={board.title}>
+                {board.title}
+              </span>
+            </>
+          )}
+        {noteId && (
+              <>
+                <span className="workspace-pathbar-separator" aria-hidden="true">/</span>
+                <span className="workspace-pathbar-current">Bloc de notas</span>
+              </>
+            )}
+          </nav>
+        </div>
+
+        {noteId && (
   <>
     <NoteShareControls noteId={noteId} user={user}/>
     <NoteEditor
@@ -688,21 +802,7 @@ export default function PrivateApp() {
   </>
 )}
 
-        <nav className="private-crumbs" aria-label="Ubicación">
-          <button onClick={openHome}>Inicio</button>
-          {view !== "home" && <>
-            <Icon name="arrow" size={14}/>
-            <button onClick={openProjects}>Kanban</button>
-          </>}
-          {project && <>
-            <Icon name="arrow" size={14}/>
-            <button onClick={()=>openProject(project)}>{project.title}</button>
-          </>}
-          {board && <>
-            <Icon name="arrow" size={14}/>
-            <span>{board.title}</span>
-          </>}
-        </nav>
+
 
             {!noteId && view === "board" && board && (
               <KanbanBoard

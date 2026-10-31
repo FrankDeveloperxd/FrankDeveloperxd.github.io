@@ -1,0 +1,40 @@
+/* KANBAN INDEPENDENT SCROLL V1 */
+/* Cada columna permanece alineada con las otras. */
+
+.kb-root .kb-columns {
+  align-items: stretch;
+}
+
+.kb-root .kb-column {
+  display: flex;
+  flex-direction: column;
+  height: clamp(420px, calc(100dvh - 270px), 780px);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.kb-root .kb-column-head {
+  flex: 0 0 auto;
+}
+
+.kb-root .kb-stack {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2px 4px 12px 2px;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #b7c7df transparent;
+}
+
+.kb-root .kb-card {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 600px) {
+  .kb-root .kb-column {
+    height: clamp(380px, calc(100dvh - 230px), 680px);
+    min-height: 0;
+  }
+}
