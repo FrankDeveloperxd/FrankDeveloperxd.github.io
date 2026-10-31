@@ -2,7 +2,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { CalendarDays, ChevronLeft, ChevronRight, Plus, Pencil, Trash2, X } from "lucide-react";
 import { supabase } from "../client";
 import { notifyWorkspace } from "./WorkspaceToasts";
+import GoogleCalendarSuite from "./GoogleCalendarSuite.jsx";
 import "./WorkspaceCalendar.css";
+import WorkspaceCalendarExport from "./WorkspaceCalendarExport.jsx";
 
 const pad = n => String(n).padStart(2, "0");
 const dayKey = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -113,6 +115,7 @@ export default function WorkspaceCalendar({ user, projects = [] }) {
         <div><span className="wc-eyebrow">ORGANIZACION PERSONAL</span><h1>Mi calendario</h1><p>Organiza tus eventos y vincúlalos con tus proyectos.</p></div>
         <button className="wc-primary" type="button" onClick={newEvent}><Plus size={17}/> Nuevo evento</button>
       </header>
+      <GoogleCalendarSuite key={user.id} user={user} />
       <div className="wc-layout">
         <section className="wc-panel" aria-label="Calendario mensual">
           <div className="wc-monthbar">
@@ -152,6 +155,7 @@ export default function WorkspaceCalendar({ user, projects = [] }) {
             )}</div>}
         </aside>
       </div>
+      <WorkspaceCalendarExport key={user.id} user={user} />
       {draft && <div className="wc-overlay" onMouseDown={e => { if (e.target === e.currentTarget && !saving) setDraft(null); }}>
         <form className="wc-dialog" role="dialog" aria-modal="true" aria-labelledby="wc-dialog-title" onSubmit={save}>
           <div className="wc-dialog-top"><h2 id="wc-dialog-title">{editingId ? "Editar evento" : "Nuevo evento"}</h2><button type="button" disabled={saving} aria-label="Cerrar" onClick={() => setDraft(null)}><X size={19}/></button></div>

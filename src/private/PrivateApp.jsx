@@ -74,7 +74,11 @@ export default function PrivateApp() {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [view, setView] = useState("home");
+  /* WORKSPACE ROUTE PERSISTENCE V1 */
+  const [view, setView] = useState(() => {
+    const route = new URLSearchParams(window.location.search).get("vista");
+    return route === "calendar" || route === "projects" ? route : "home";
+  });
   const [projects, setProjects] = useState([]);
   const [boards, setBoards] = useState([]);
   const [tasks, setTasks] = useState([]);
@@ -293,8 +297,69 @@ export default function PrivateApp() {
 
     setNoteId(null);
   }
+  function rememberWorkspaceRoute(nextView, projectId = null, boardId = null) {
+    const url = new URL(window.location.href);
+    for (const name of ["vista", "proyecto", "tablero"]) url.searchParams.delete(name);
+    if (nextView !== "home") url.searchParams.set("vista", nextView);
+    if (projectId) url.searchParams.set("proyecto", projectId);
+    if (boardId) url.searchParams.set("tablero", boardId);
+    window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
+  }
+
+  // Restore only after login; Supabase RLS verifies that these IDs belong to the account.
+  useEffect(() => {
+    if (!authorized || !user?.id || !supabase) return;
+    const params = new URLSearchParams(window.location.search);
+    const nextView = params.get("vista");
+    const projectId = params.get("proyecto");
+    const boardId = params.get("tablero");
+    if (nextView === "calendar" || nextView === "projects") {
+      setView(nextView);
+      return;
+    }
+    if (nextView !== "project" && nextView !== "board") return;
+    if (!projectId) return;
+    let active = true;
+    (async () => {
+      const { data: item, error: projectError } = await supabase
+        .from(TABLES.projects).select("*")
+        .eq("id", projectId).eq("owner_id", user.id).maybeSingle();
+      if (!active) return;
+      if (projectError || !item) {
+        rememberWorkspaceRoute("projects");
+        setView("projects");
+        return;
+      }
+      setProject(item);
+      await loadBoards(item.id);
+      if (!active) return;
+      if (nextView === "project") {
+        setView("project");
+        return;
+      }
+      if (!boardId) {
+        setView("project");
+        rememberWorkspaceRoute("project", item.id);
+        return;
+      }
+      const { data: restoredBoard, error: boardError } = await supabase
+        .from(TABLES.boards).select("*")
+        .eq("id", boardId).eq("project_id", item.id).maybeSingle();
+      if (!active) return;
+      if (boardError || !restoredBoard) {
+        setView("project");
+        rememberWorkspaceRoute("project", item.id);
+        return;
+      }
+      setBoard(restoredBoard);
+      setView("board");
+      await loadTasks(restoredBoard.id);
+    })();
+    return () => { active = false; };
+  }, [authorized, user?.id]);
   function openHome() {
     leaveWorkspaceNote();
+    rememberWorkspaceRoute("home");
     setView("home");
     setProject(null);
     setBoard(null);
@@ -303,6 +368,7 @@ export default function PrivateApp() {
 
   function openCalendar() {
     leaveWorkspaceNote();
+    rememberWorkspaceRoute("calendar");
     setView("calendar");
     setProject(null);
     setBoard(null);
@@ -312,6 +378,7 @@ export default function PrivateApp() {
 
   function openProjects() {
     leaveWorkspaceNote();
+    rememberWorkspaceRoute("projects");
     setView("projects");
     setProject(null);
     setBoard(null);
@@ -320,6 +387,7 @@ export default function PrivateApp() {
 
   function openProject(value) {
     leaveWorkspaceNote();
+    rememberWorkspaceRoute("project", value.id);
     setProject(value);
     setBoard(null);
     setView("project");
@@ -328,6 +396,7 @@ export default function PrivateApp() {
 
   function openBoard(value) {
     leaveWorkspaceNote();
+    rememberWorkspaceRoute("board", project?.id || value.project_id, value.id);
     setBoard(value);
     setView("board");
     loadTasks(value.id);
@@ -677,7 +746,7 @@ export default function PrivateApp() {
 
             <button
               type="button"
-              className={`private-sidebar-link ${view !== "home" ? "active" : ""}`}
+              className={`private-sidebar-link ${!["home", "calendar"].includes(view) ? "active" : ""}`}
               onClick={() => {
                 openProjects();
                 setSideOpen(false);
@@ -845,6 +914,12 @@ export default function PrivateApp() {
               <strong>Proyectos</strong>
               <small>Administra tus proyectos y sus tableros de trabajo.</small>
               <span className="private-module-link">Abrir módulo </span>
+            </button>
+            <button type="button" className="private-module private-calendar-module-card" onClick={() => { openCalendar(); }}>
+              <span className="private-module-icon"><CalendarDays size={29}/></span>
+              <strong>Calendario</strong>
+              <small>Organiza tu agenda y conecta tus calendarios de Google.</small>
+              <span className="private-module-link">Abrir mÃ³dulo</span>
             </button>
             <div className="private-module private-module-future">
               <span className="private-module-icon"><Icon name="plus" size={29}/></span>
