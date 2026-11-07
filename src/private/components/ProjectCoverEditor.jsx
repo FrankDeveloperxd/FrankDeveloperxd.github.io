@@ -251,7 +251,23 @@ export default function ProjectCoverEditor({
             disabled={processing}>Cancelar</button>
           <button type="button" className="pce-primary"
             disabled={processing}
-            onClick={() => onSave({color:backgroundEnabled ? color : null, image:backgroundEnabled ? image : null, storedImage:image, folderColor:folderEnabled ? folderColor : null})}>
+            onClick={async () => {
+              if (processing) return;
+              setProcessing(true);
+              setError("");
+              try {
+                await onSave({
+                  color: backgroundEnabled ? color : null,
+                  image: backgroundEnabled ? image : null,
+                  storedImage: image,
+                  folderColor: folderEnabled ? folderColor : null
+                });
+              } catch (err) {
+                setError(err.message || "No se pudo guardar la apariencia.");
+              } finally {
+                setProcessing(false);
+              }
+            }}>
             Guardar apariencia
           </button>
         </footer>

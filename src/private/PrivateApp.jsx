@@ -1,3 +1,4 @@
+import { loadProjectAppearances, saveProjectAppearance } from "./projectAppearance.js";
 import {
   hasCachedWorkspaceAccess,
   rememberWorkspaceAccess,
@@ -22,6 +23,7 @@ import ProjectServices from "./components/ProjectServices.jsx";
 import WorkspaceCalendar from "./components/WorkspaceCalendar.jsx";
 import ProjectCoverEditor from "./components/ProjectCoverEditor.jsx";
 import WorkspaceToasts, { notifyWorkspace } from "./components/WorkspaceToasts.jsx";
+import SystemNotifications from "./components/SystemNotifications.jsx";
 import React, { useEffect, useState } from "react";
 import { supabase } from "./client";
 import "./private.css";
@@ -436,42 +438,86 @@ export default function PrivateApp() {
   const [projectCovers, setProjectCovers] = useState({});
   const [coverEditing, setCoverEditing] = useState(null);
 
+  /* PROJECT APPEARANCE CLOUD V1 */
   useEffect(() => {
     if (!user?.id) {
       setProjectCovers({});
-      return;
+      return undefined;
     }
+
+    let active = true;
+    const ownerId = user.id;
+    const cacheKey = "workspace_project_covers_v1_" + ownerId;
+
     try {
-      const saved = localStorage.getItem(
-        "workspace_project_covers_v1_" + user.id
-      );
-      setProjectCovers(saved ? JSON.parse(saved) : {});
+      setProjectCovers(JSON.parse(localStorage.getItem(cacheKey) || "{}"));
     } catch {
       setProjectCovers({});
     }
+
+    async function refreshAppearance() {
+      try {
+        const remote = await loadProjectAppearances(ownerId);
+        if (!active) return;
+
+        setProjectCovers(current => {
+          const next = { ...current, ...remote };
+          try {
+            localStorage.setItem(cacheKey, JSON.stringify(next));
+          } catch {}
+          return next;
+        });
+      } catch (error) {
+        console.error("No se pudo sincronizar la apariencia:", error);
+      }
+    }
+
+    function onFocus() {
+      void refreshAppearance();
+    }
+
+    void refreshAppearance();
+    window.addEventListener("focus", onFocus);
+    const timer = window.setInterval(onFocus, 3600000);
+
+    return () => {
+      active = false;
+      window.removeEventListener("focus", onFocus);
+      window.clearInterval(timer);
+    };
   }, [user?.id]);
 
-  function saveProjectCover(cover) {
+  async function saveProjectCover(cover) {
     if (!user?.id || !coverEditing) return;
 
-    const next = {
-      ...projectCovers,
-      [coverEditing.id]: cover
-    };
+    const projectId = coverEditing.id;
+    const ownerId = user.id;
 
     try {
-      localStorage.setItem(
-        "workspace_project_covers_v1_" + user.id,
-        JSON.stringify(next)
-      );
-      setProjectCovers(next);
+      await saveProjectAppearance(ownerId, projectId, {
+        ...cover,
+        imagePath: projectCovers[projectId]?.imagePath || null
+      });
+
+      const remote = await loadProjectAppearances(ownerId);
+      setProjectCovers(current => {
+        const next = { ...current, ...remote };
+        try {
+          localStorage.setItem(
+            "workspace_project_covers_v1_" + ownerId,
+            JSON.stringify(next)
+          );
+        } catch {}
+        return next;
+      });
+
       setCoverEditing(null);
-      notifyWorkspace("success", "Apariencia del proyecto guardada.");
-    } catch {
-      notifyWorkspace("error", "No hay suficiente espacio local para guardar la portada.");
+      notifyWorkspace("success", "Apariencia guardada en tu cuenta.");
+    } catch (error) {
+      notifyWorkspace("error", error.message || "No se pudo guardar la apariencia.");
+      throw error;
     }
   }
-
   function showProjectRename(item) {
     setProjectName(item.title);
     setProjectDialogClosing(false);
@@ -738,6 +784,7 @@ export default function PrivateApp() {
 
         <div className="private-top-actions">
 
+          <SystemNotifications userId={user?.id} />
           <button onClick={signOut}><Icon name="logout" size={17}/> Salir</button>
         </div>
       </header>
