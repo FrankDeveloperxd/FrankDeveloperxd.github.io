@@ -13,6 +13,146 @@ import { supabase } from "../client";
 import { notifyWorkspace } from "./WorkspaceToasts";
 import "./ProjectServices.css";
 
+/* PROJECT TASK COUNTERS V1 */
+/* PROJECT COUNTERS INSTANT CACHE V2 */
+function readTaskCounts(ownerId, boardId) {
+  try {
+    const value = JSON.parse(
+      sessionStorage.getItem(`workspace-counts:${ownerId}:${boardId}`) || "null"
+    );
+    return value &&
+      Number.isInteger(value.todo) && value.todo >= 0 &&
+      Number.isInteger(value.doing) && value.doing >= 0
+        ? value
+        : null;
+  } catch {
+    return null;
+  }
+}
+
+function ProjectTaskCounters({ boardId, ownerId }) {
+  const [counts, setCounts] = useState(
+    () => readTaskCounts(ownerId, boardId)
+  );
+
+  useEffect(() => {
+    let active = true;
+    let revision = 0;
+    let debounce;
+
+    setCounts(readTaskCounts(ownerId, boardId));
+
+    async function loadCounts() {
+      const request = ++revision;
+
+      try {
+        const results = await Promise.all(
+          ["todo", "doing"].map(status =>
+            supabase
+              .from("workspace_tasks")
+              .select("id", { count: "exact", head: true })
+              .eq("board_id", boardId)
+              .eq("owner_id", ownerId)
+              .eq("status", status)
+          )
+        );
+
+        if (!active || request !== revision) return;
+
+        const failed = results.find(result => result.error);
+        if (failed) {
+          console.error("No se pudieron cargar los contadores:", failed.error);
+          setCounts(readTaskCounts(ownerId, boardId));
+          return;
+        }
+
+        const next = {
+          todo: results[0].count ?? 0,
+          doing: results[1].count ?? 0
+        };
+
+        try {
+          sessionStorage.setItem(
+            `workspace-counts:${ownerId}:${boardId}`,
+            JSON.stringify(next)
+          );
+        } catch {
+          // El conteo funciona aunque el almacenamiento no esté disponible.
+        }
+
+        setCounts(current =>
+          current?.todo === next.todo && current?.doing === next.doing
+            ? current
+            : next
+        );
+      } catch (error) {
+        if (active && request === revision) {
+          console.error("Error al consultar contadores:", error);
+          setCounts(readTaskCounts(ownerId, boardId));
+        }
+      }
+    }
+
+    function scheduleLoad() {
+      clearTimeout(debounce);
+      debounce = setTimeout(() => void loadCounts(), 40);
+    }
+
+    function onVisibility() {
+      if (document.visibilityState === "visible") scheduleLoad();
+    }
+
+    const channel = supabase
+      .channel(`project-counts:${boardId}:${Math.random().toString(36).slice(2)}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "workspace_tasks",
+          filter: `owner_id=eq.${ownerId}`
+        },
+        scheduleLoad
+      )
+      .subscribe(status => {
+        if (status === "SUBSCRIBED") scheduleLoad();
+      });
+
+    void loadCounts();
+    window.addEventListener("focus", scheduleLoad);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      active = false;
+      clearTimeout(debounce);
+      window.removeEventListener("focus", scheduleLoad);
+      document.removeEventListener("visibilitychange", onVisibility);
+      void supabase.removeChannel(channel);
+    };
+  }, [boardId, ownerId]);
+
+  return (
+    <div className="ps-task-counts" role="group" aria-label="Tareas del tablero">
+      <span
+        className="ps-task-count ps-task-count-todo"
+        title={counts ? `${counts.todo} tareas por hacer` : "Conteo no disponible"}
+        aria-label={counts ? `${counts.todo} tareas por hacer` : "Por hacer: conteo no disponible"}
+      >
+        <span className="ps-task-count-dot" aria-hidden="true" />
+        {counts ? counts.todo : "\u2014"}
+      </span>
+      <span
+        className="ps-task-count ps-task-count-doing"
+        title={counts ? `${counts.doing} tareas en proceso` : "Conteo no disponible"}
+        aria-label={counts ? `${counts.doing} tareas en proceso` : "En proceso: conteo no disponible"}
+      >
+        <span className="ps-task-count-dot" aria-hidden="true" />
+        {counts ? counts.doing : "\u2014"}
+      </span>
+    </div>
+  );
+}
+
 const OPTIONS = [
   {
     type: "kanban",
@@ -334,6 +474,10 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
 
 
               </button>
+
+              {item.kind === "kanban" && (
+                <ProjectTaskCounters boardId={item.id} ownerId={user.id} />
+              )}
 
               <div className="ps-card-actions">
   {/* PROJECT SERVICES ICON FIX V1 */}

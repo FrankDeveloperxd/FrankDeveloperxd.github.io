@@ -272,3 +272,24 @@
 }
 
 /* MENU ICON BLUE V1 END */
+/* DASHBOARD MODULE COLORS V1 */
+
+/* Proyectos: azul */
+.private-root .private-modules > .private-module:not(.private-module-future):not(.private-calendar-module-card) {
+  border-top-color: #2563eb !important;
+}
+
+.private-root .private-modules > .private-module:not(.private-module-future):not(.private-calendar-module-card) .private-module-icon {
+  color: #2563eb !important;
+  background-color: #eaf1ff !important;
+}
+
+/* Calendario: morado */
+.private-root .private-modules > .private-module.private-calendar-module-card {
+  border-top-color: #8b5cf6 !important;
+}
+
+.private-root .private-modules > .private-module.private-calendar-module-card .private-module-icon {
+  color: #8b5cf6 !important;
+  background-color: #f1eaff !important;
+}

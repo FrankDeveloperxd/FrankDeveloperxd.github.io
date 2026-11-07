@@ -726,3 +726,67 @@
     font-size: 15px;
   }
 }
+/* PROJECT TASK COUNTERS V1 */
+.ps-card-kanban .ps-task-counts {
+  position: absolute;
+  top: 13px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: auto;
+}
+
+.ps-task-counts .ps-task-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.ps-task-count-todo { color: #8b5cf6; }
+.ps-task-count-doing { color: #ca8a04; }
+
+.ps-task-count-dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-radius: 50%;
+  background: #8b5cf6;
+}
+
+.ps-task-count-doing .ps-task-count-dot {
+  background: #eab308;
+}
+
+/* Reservar una fila superior para los contadores. */
+.ps-card-kanban .ps-card-open {
+  min-height: 188px;
+  padding: 49px 18px 56px;
+}
+
+.ps-card-kanban .ps-card-head {
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.ps-card-kanban .ps-card-head .ps-card-icon {
+  order: -1;
+  align-self: center;
+}
+
+.ps-card-kanban .ps-card-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.ps-card-kanban .ps-card-actions {
+  top: auto;
+  bottom: 12px;
+  right: 14px;
+  margin: 0;
+}

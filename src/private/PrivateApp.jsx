@@ -8,7 +8,7 @@ import { useRef as useWorkspaceRef } from "react";
 // WORKSPACE USER ISOLATION V1
 import NoteShareControls from "./shared/NoteShareControls.jsx";
 /* NOTE SHARING FIXED V2 */
-import { Pencil, Trash2, CalendarDays } from "lucide-react";
+import { Pencil, Trash2, CalendarDays, Palette } from "lucide-react";
 import WorkspaceDialog from "./shared/WorkspaceDialog.jsx";
 import "./shared/WorkspaceLayout.css";
 import "./shared/WorkspaceCompactCards.css";
@@ -20,6 +20,7 @@ import KanbanBoard from "./components/KanbanBoard.jsx";
 import NoteEditor from "./components/NoteEditor.jsx";
 import ProjectServices from "./components/ProjectServices.jsx";
 import WorkspaceCalendar from "./components/WorkspaceCalendar.jsx";
+import ProjectCoverEditor from "./components/ProjectCoverEditor.jsx";
 import WorkspaceToasts, { notifyWorkspace } from "./components/WorkspaceToasts.jsx";
 import React, { useEffect, useState } from "react";
 import { supabase } from "./client";
@@ -432,6 +433,44 @@ export default function PrivateApp() {
   const [projectBusy, setProjectBusy] = useState(false);
   const [projectDialogClosing, setProjectDialogClosing] = useState(false);
   const [projectRemovingId, setProjectRemovingId] = useState(null);
+  const [projectCovers, setProjectCovers] = useState({});
+  const [coverEditing, setCoverEditing] = useState(null);
+
+  useEffect(() => {
+    if (!user?.id) {
+      setProjectCovers({});
+      return;
+    }
+    try {
+      const saved = localStorage.getItem(
+        "workspace_project_covers_v1_" + user.id
+      );
+      setProjectCovers(saved ? JSON.parse(saved) : {});
+    } catch {
+      setProjectCovers({});
+    }
+  }, [user?.id]);
+
+  function saveProjectCover(cover) {
+    if (!user?.id || !coverEditing) return;
+
+    const next = {
+      ...projectCovers,
+      [coverEditing.id]: cover
+    };
+
+    try {
+      localStorage.setItem(
+        "workspace_project_covers_v1_" + user.id,
+        JSON.stringify(next)
+      );
+      setProjectCovers(next);
+      setCoverEditing(null);
+      notifyWorkspace("success", "Apariencia del proyecto guardada.");
+    } catch {
+      notifyWorkspace("error", "No hay suficiente espacio local para guardar la portada.");
+    }
+  }
 
   function showProjectRename(item) {
     setProjectName(item.title);
@@ -770,6 +809,10 @@ export default function PrivateApp() {
               <button
                 type="button"
                 key={item.id}
+                style={{
+                  "--folder-accent":
+                    projectCovers[item.id]?.folderColor || "#0a84ff"
+                }}
                 className={`private-sidebar-link private-project-link ${
                   project?.id === item.id ? "active-project" : ""
                 }`}
@@ -832,17 +875,17 @@ export default function PrivateApp() {
           </button>
 
           {view === "calendar" ? (
-            <><span className="workspace-pathbar-separator" aria-hidden="true">/</span><span className="workspace-pathbar-current">Calendario</span></>
+            <><span className="workspace-pathbar-separator" aria-hidden="true">›</span><span className="workspace-pathbar-current">Calendario</span></>
           ) : view !== "home" && (
             <>
-              <span className="workspace-pathbar-separator" aria-hidden="true">/</span>
+              <span className="workspace-pathbar-separator" aria-hidden="true">›</span>
               <button type="button" className="workspace-pathbar-projects" onClick={openProjects}>Proyectos</button>
             </>
           )}
 
           {project && (
             <>
-              <span className="workspace-pathbar-separator" aria-hidden="true">/</span>
+              <span className="workspace-pathbar-separator" aria-hidden="true">›</span>
               <button
                 type="button"
                 className="workspace-pathbar-project"
@@ -856,7 +899,7 @@ export default function PrivateApp() {
 
           {board && !noteId && (
             <>
-              <span className="workspace-pathbar-separator" aria-hidden="true">/</span>
+              <span className="workspace-pathbar-separator" aria-hidden="true">›</span>
               <span className="workspace-pathbar-current" title={board.title}>
                 {board.title}
               </span>
@@ -864,7 +907,7 @@ export default function PrivateApp() {
           )}
         {noteId && (
               <>
-                <span className="workspace-pathbar-separator" aria-hidden="true">/</span>
+                <span className="workspace-pathbar-separator" aria-hidden="true">›</span>
                 <span className="workspace-pathbar-current">Bloc de notas</span>
               </>
             )}
@@ -931,6 +974,16 @@ export default function PrivateApp() {
 
         {!noteId && view === "projects" && <>
 
+            {coverEditing && (
+              <ProjectCoverEditor
+                key={coverEditing.id}
+                project={coverEditing}
+                initial={projectCovers[coverEditing.id]}
+                onClose={() => setCoverEditing(null)}
+                onSave={saveProjectCover}
+              />
+            )}
+
             <WorkspaceDialog
               mode={projectDialog?.mode}
               item={projectDialog?.item}
@@ -963,8 +1016,14 @@ export default function PrivateApp() {
                 key={item.id}
                 className={
                   "private-card pux-project-card" +
-                  (projectRemovingId === item.id ? " pux-removing" : "")
+                  (projectRemovingId === item.id ? " pux-removing" : "") + ((projectCovers[item.id]?.color || projectCovers[item.id]?.image) ? " pux-with-cover" : "")
                 }
+                style={(projectCovers[item.id]?.color || projectCovers[item.id]?.image) ? {
+                  backgroundColor: projectCovers[item.id].color,
+                  backgroundImage: projectCovers[item.id].image
+                    ? `linear-gradient(180deg,rgba(7,18,36,.12),rgba(7,18,36,.85)),url("${projectCovers[item.id].image}")`
+                    : "linear-gradient(180deg,rgba(7,18,36,.08),rgba(7,18,36,.65))"
+                } : undefined}
                 role="link"
                 tabIndex={0}
                 aria-label={`Abrir proyecto ${item.title}`}
@@ -984,7 +1043,13 @@ export default function PrivateApp() {
                   }
                 }}
               >
-                <span className="private-card-icon">
+                <span
+                  className="private-card-icon"
+                  style={{
+                    "--folder-accent":
+                      projectCovers[item.id]?.folderColor || "#805ad5"
+                  }}
+                >
                   <Icon name="folder"/>
                 </span>
 
@@ -992,6 +1057,18 @@ export default function PrivateApp() {
                 <p>Espacio de proyecto</p>
 
                 <div className="private-card-actions pux-actions">
+                  <button
+                    type="button"
+                    className="pux-cover-button"
+                    title="Personalizar fondo"
+                    aria-label={`Personalizar ${item.title}`}
+                    onClick={event => {
+                      event.stopPropagation();
+                      setCoverEditing(item);
+                    }}
+                  >
+                    <Palette size={17}/>
+                  </button>
                   <button
                     type="button"
                     className="pux-edit"

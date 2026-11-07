@@ -624,3 +624,526 @@
 }
 
 /* WORKSPACE FAST UI END */
+
+/* WORKSPACE SIDEBAR SOLID V1 */
+
+.private-root .private-sidebar {
+    background: #ffffff !important;
+    border-right: 1px solid #e2e8f0 !important;
+}
+
+/* Todos los elementos: apariencia neutra */
+.private-root .private-sidebar
+.private-sidebar-link {
+    background: transparent !important;
+    background-image: none !important;
+    color: #475569 !important;
+    border: 1px solid transparent !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    box-shadow: none !important;
+    transition:
+        background-color .18s ease,
+        color .18s ease,
+        border-color .18s ease !important;
+}
+
+/* Todos los iconos con el mismo color */
+.private-root .private-sidebar
+.private-sidebar-link svg {
+    color: #64748b !important;
+    stroke: currentColor !important;
+}
+
+/* Hover neutro */
+.private-root .private-sidebar
+.private-sidebar-link:hover {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border-color: #e2e8f0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.private-root .private-sidebar
+.private-sidebar-link:hover svg {
+    color: #334155 !important;
+}
+
+/* Elemento seleccionado: azul fuerte */
+.private-root .private-sidebar
+.private-sidebar-link.active,
+.private-root .private-sidebar
+.private-sidebar-link.active-project,
+.private-root .private-sidebar
+.private-sidebar-link.private-project-link.active-project {
+    background: #2458cc !important;
+    background-image: none !important;
+    border-color: #2458cc !important;
+    color: #ffffff !important;
+    font-weight: 750 !important;
+    box-shadow: 0 4px 10px rgba(36,88,204,.16) !important;
+}
+
+/* Texto e iconos del elemento seleccionado */
+.private-root .private-sidebar
+.private-sidebar-link.active span,
+.private-root .private-sidebar
+.private-sidebar-link.active-project span,
+.private-root .private-sidebar
+.private-sidebar-link.active svg,
+.private-root .private-sidebar
+.private-sidebar-link.active-project svg {
+    color: #ffffff !important;
+    stroke: currentColor !important;
+}
+
+/* Hover sobre el seleccionado */
+.private-root .private-sidebar
+.private-sidebar-link.active:hover,
+.private-root .private-sidebar
+.private-sidebar-link.active-project:hover,
+.private-root .private-sidebar
+.private-sidebar-link.private-project-link.active-project:hover {
+    background: #1948b0 !important;
+    border-color: #1948b0 !important;
+    color: #ffffff !important;
+}
+
+/* Carpetas sin fondos morados */
+.private-root .private-sidebar
+.private-sidebar-link.private-project-link {
+    background: transparent !important;
+    color: #475569 !important;
+    border-color: transparent !important;
+}
+
+.private-root .private-sidebar
+.private-sidebar-link.private-project-link svg {
+    color: #64748b !important;
+}
+
+.private-root .private-sidebar
+.private-sidebar-link.private-project-link:hover {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+}
+
+/* Reafirmar carpeta activa */
+.private-root .private-sidebar
+.private-sidebar-link.private-project-link.active-project {
+    background: #2458cc !important;
+    color: #ffffff !important;
+    border-color: #2458cc !important;
+}
+
+.private-root .private-sidebar
+.private-sidebar-link.private-project-link.active-project svg {
+    color: #ffffff !important;
+}
+
+/* Gestionar proyectos */
+.private-root .private-sidebar
+.private-sidebar-link.private-add-link {
+    background: #ffffff !important;
+    border: 1px solid #d6dfeb !important;
+    color: #334155 !important;
+    font-weight: 650 !important;
+}
+
+.private-root .private-sidebar
+.private-sidebar-link.private-add-link svg {
+    color: #475569 !important;
+}
+
+.private-root .private-sidebar
+.private-sidebar-link.private-add-link:hover {
+    background: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+}
+
+/* Titulos de grupo */
+.private-root .private-sidebar
+.private-sidebar-group-label {
+    color: #64748b !important;
+    font-weight: 800 !important;
+    letter-spacing: .1em !important;
+}
+
+/* Identidad */
+.private-root .private-sidebar-mark {
+    background: #eef2ff !important;
+    color: #2458cc !important;
+    box-shadow: none !important;
+}
+
+/* Quitar barras y decoraciones antiguas */
+.private-root .private-sidebar
+.private-sidebar-link::before,
+.private-root .private-sidebar
+.private-sidebar-link::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Movil y accesibilidad */
+@media (max-width: 800px) {
+    .private-root .private-sidebar
+    .private-sidebar-link {
+        min-height: 46px !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .private-root .private-sidebar
+    .private-sidebar-link {
+        transition: none !important;
+    }
+}
+
+
+/* WORKSPACE IPHONE BLUE V2 */
+
+.private-root .private-sidebar {
+    background: #ffffff !important;
+    border-right: 1px solid #e5e7eb !important;
+}
+
+/* Elementos normales: neutros */
+
+.private-root .private-sidebar .private-sidebar-link,
+.private-root .private-sidebar .private-sidebar-link.private-project-link {
+    background: transparent !important;
+    background-image: none !important;
+    border: 1px solid transparent !important;
+    color: #475569 !important;
+    box-shadow: none !important;
+    font-weight: 600 !important;
+}
+
+.private-root .private-sidebar .private-sidebar-link svg,
+.private-root .private-sidebar .private-sidebar-link.private-project-link svg {
+    color: #64748b !important;
+    stroke: currentColor !important;
+}
+
+/* Hover sin fondos pastel */
+
+.private-root .private-sidebar .private-sidebar-link:hover,
+.private-root .private-sidebar .private-sidebar-link.private-project-link:hover {
+    background: #f3f4f6 !important;
+    color: #1e293b !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Elemento activo: azul iPhone */
+
+.private-root .private-sidebar .private-sidebar-link.active,
+.private-root .private-sidebar .private-sidebar-link.active-project,
+.private-root .private-sidebar .private-sidebar-link.private-project-link.active-project {
+    background: #0a84ff !important;
+    background-image: none !important;
+    color: #ffffff !important;
+    border: 1px solid #0a84ff !important;
+    border-radius: 11px !important;
+    box-shadow: 0 3px 9px rgba(10,132,255,.18) !important;
+    font-weight: 750 !important;
+}
+
+/* Iconos y textos activos */
+
+.private-root .private-sidebar .private-sidebar-link.active svg,
+.private-root .private-sidebar .private-sidebar-link.active-project svg,
+.private-root .private-sidebar .private-sidebar-link.active span,
+.private-root .private-sidebar .private-sidebar-link.active-project span {
+    color: #ffffff !important;
+    stroke: currentColor !important;
+}
+
+/* Hover del seleccionado */
+
+.private-root .private-sidebar .private-sidebar-link.active:hover,
+.private-root .private-sidebar .private-sidebar-link.active-project:hover {
+    background: #0077ed !important;
+    border-color: #0077ed !important;
+    color: #ffffff !important;
+}
+
+/* Cuando una carpeta esta activa, Proyectos queda neutro */
+
+.private-root .private-sidebar:has(.private-project-link.active-project)
+.private-sidebar-nav .private-sidebar-link.active {
+    background: transparent !important;
+    border-color: transparent !important;
+    color: #475569 !important;
+    box-shadow: none !important;
+    font-weight: 600 !important;
+}
+
+.private-root .private-sidebar:has(.private-project-link.active-project)
+.private-sidebar-nav .private-sidebar-link.active svg,
+.private-root .private-sidebar:has(.private-project-link.active-project)
+.private-sidebar-nav .private-sidebar-link.active span {
+    color: #64748b !important;
+}
+
+/* Gestionar proyectos: boton neutro */
+
+.private-root .private-sidebar .private-sidebar-link.private-add-link {
+    background: #ffffff !important;
+    border: 1px solid #d7dee8 !important;
+    color: #475569 !important;
+    box-shadow: none !important;
+}
+
+.private-root .private-sidebar .private-sidebar-link.private-add-link svg {
+    color: #64748b !important;
+}
+
+.private-root .private-sidebar .private-sidebar-link.private-add-link:hover {
+    background: #f3f4f6 !important;
+    border-color: #cbd5e1 !important;
+    color: #1e293b !important;
+}
+
+/* Marca del Workspace */
+
+.private-root .private-sidebar-mark {
+    background: #0a84ff !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+.private-root .private-sidebar-mark svg {
+    color: #ffffff !important;
+}
+
+/* Eliminar adornos antiguos */
+
+.private-root .private-sidebar .private-sidebar-link::before,
+.private-root .private-sidebar .private-sidebar-link::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Accesibilidad */
+
+.private-root .private-sidebar .private-sidebar-link:focus-visible {
+    outline: 3px solid #80c1ff !important;
+    outline-offset: 2px !important;
+}
+
+/* Responsive */
+
+@media (max-width: 800px) {
+    .private-root .private-sidebar .private-sidebar-link {
+        min-height: 45px !important;
+    }
+}
+
+/* Movimiento reducido */
+
+@media (prefers-reduced-motion: reduce) {
+    .private-root .private-sidebar .private-sidebar-link {
+        transition: none !important;
+    }
+}
+
+
+/* WORKSPACE SELECTION HIERARCHY V3 */
+
+/* GENERAL: gris grafito en lugar de azul */
+.private-root .private-sidebar
+.private-sidebar-nav > .private-sidebar-link.active {
+    background: #334155 !important;
+    background-image: none !important;
+    border: 1px solid #334155 !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+    font-weight: 750 !important;
+}
+
+.private-root .private-sidebar
+.private-sidebar-nav > .private-sidebar-link.active svg,
+.private-root .private-sidebar
+.private-sidebar-nav > .private-sidebar-link.active span {
+    color: #ffffff !important;
+    stroke: currentColor !important;
+}
+
+/* GENERAL: hover de la seleccion */
+.private-root .private-sidebar
+.private-sidebar-nav > .private-sidebar-link.active:hover {
+    background: #253244 !important;
+    border-color: #253244 !important;
+    color: #ffffff !important;
+}
+
+/* CARPETAS: seleccion azul iPhone */
+.private-root .private-sidebar
+.private-sidebar-projects > .private-project-link.active-project,
+.private-root .private-sidebar
+.private-sidebar-projects > .private-project-link.active-project:hover {
+    background: #0a84ff !important;
+    background-image: none !important;
+    border: 1px solid #0a84ff !important;
+    color: #ffffff !important;
+    box-shadow: 0 3px 9px rgba(10,132,255,.18) !important;
+    font-weight: 750 !important;
+}
+
+.private-root .private-sidebar
+.private-sidebar-projects > .private-project-link.active-project svg,
+.private-root .private-sidebar
+.private-sidebar-projects > .private-project-link.active-project span {
+    color: #ffffff !important;
+}
+
+/* Carpetas normales: hover gris, nunca azul */
+.private-root .private-sidebar
+.private-sidebar-projects > .private-project-link:not(.active-project):hover {
+    background: #f3f4f6 !important;
+    border-color: transparent !important;
+    color: #1e293b !important;
+    box-shadow: none !important;
+}
+
+.private-root .private-sidebar
+.private-sidebar-projects > .private-project-link:not(.active-project):hover svg {
+    color: #475569 !important;
+}
+
+/* Si una carpeta esta abierta, GENERAL permanece neutro */
+.private-root .private-sidebar:has(.private-project-link.active-project)
+.private-sidebar-nav > .private-sidebar-link.active {
+    background: transparent !important;
+    border-color: transparent !important;
+    color: #475569 !important;
+    box-shadow: none !important;
+    font-weight: 600 !important;
+}
+
+.private-root .private-sidebar:has(.private-project-link.active-project)
+.private-sidebar-nav > .private-sidebar-link.active svg,
+.private-root .private-sidebar:has(.private-project-link.active-project)
+.private-sidebar-nav > .private-sidebar-link.active span {
+    color: #64748b !important;
+}
+
+.private-root .private-sidebar:has(.private-project-link.active-project)
+.private-sidebar-nav > .private-sidebar-link.active:hover {
+    background: #f3f4f6 !important;
+    color: #1e293b !important;
+}
+
+/* Respetar movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+    .private-root .private-sidebar .private-sidebar-link {
+        transition: none !important;
+    }
+}
+
+
+/* SIDEBAR PROJECT CONTEXT FIX V6 */
+
+/* Proyectos seleccionado cuando hay una carpeta activa */
+.private-root .private-sidebar:has(
+    .private-sidebar-projects > .private-project-link.active-project
+) .private-sidebar-nav > .private-sidebar-link[title="Proyectos"],
+.private-root .private-sidebar:has(
+    .private-sidebar-projects > .private-project-link.active-project
+) .private-sidebar-nav > .private-sidebar-link[title="Proyectos"]:hover {
+    background: #292d36 !important;
+    background-image: none !important;
+    border: 1px solid #292d36 !important;
+    border-radius: 11px !important;
+    color: #ffffff !important;
+    font-weight: 750 !important;
+    box-shadow: 0 3px 9px rgba(41,45,54,.15) !important;
+}
+
+/* Icono y texto blancos */
+.private-root .private-sidebar:has(
+    .private-sidebar-projects > .private-project-link.active-project
+) .private-sidebar-nav > .private-sidebar-link[title="Proyectos"] svg,
+.private-root .private-sidebar:has(
+    .private-sidebar-projects > .private-project-link.active-project
+) .private-sidebar-nav > .private-sidebar-link[title="Proyectos"] span {
+    color: #ffffff !important;
+    stroke: currentColor !important;
+}
+
+/* Hover del modulo seleccionado */
+.private-root .private-sidebar:has(
+    .private-sidebar-projects > .private-project-link.active-project
+) .private-sidebar-nav > .private-sidebar-link[title="Proyectos"]:hover {
+    background: #20242c !important;
+    border-color: #20242c !important;
+}
+
+/* La carpeta mantiene el celeste iPhone */
+.private-root .private-sidebar
+.private-sidebar-projects > .private-project-link.active-project {
+    background: #0a84ff !important;
+    border-color: #0a84ff !important;
+    color: #ffffff !important;
+}
+
+.private-root .private-sidebar
+.private-sidebar-projects > .private-project-link.active-project svg,
+.private-root .private-sidebar
+.private-sidebar-projects > .private-project-link.active-project span {
+    color: #ffffff !important;
+}
+
+
+/* PROJECT ACTIVE SAVED COLOR FIX V7 */
+
+/* Una carpeta activa usa su color guardado, no azul forzado */
+html body .private-root .private-sidebar
+.private-sidebar-projects
+> button.private-sidebar-link.private-project-link.active-project,
+html body .private-root .private-sidebar
+.private-sidebar-projects
+> button.private-sidebar-link.private-project-link.active-project:hover {
+    background: var(--folder-accent, #0a84ff) !important;
+    background-color: var(--folder-accent, #0a84ff) !important;
+    background-image: none !important;
+    border-color: var(--folder-accent, #0a84ff) !important;
+    color: #ffffff !important;
+    box-shadow: 0 3px 10px rgba(15,23,42,.14) !important;
+}
+
+/* Mantener nombre e icono blancos en la carpeta activa */
+html body .private-root .private-sidebar
+.private-sidebar-projects
+> button.private-sidebar-link.private-project-link.active-project
+:is(svg, span) {
+    color: #ffffff !important;
+    stroke: currentColor !important;
+}
+
+/* Carpetas inactivas siempre neutras */
+html body .private-root .private-sidebar
+.private-sidebar-projects
+> button.private-sidebar-link.private-project-link:not(.active-project) {
+    background: transparent !important;
+    border-color: transparent !important;
+    color: #475569 !important;
+    box-shadow: none !important;
+}
+
+html body .private-root .private-sidebar
+.private-sidebar-projects
+> button.private-sidebar-link.private-project-link:not(.active-project)
+:is(svg, span) {
+    color: #64748b !important;
+}
+
+/* Hover neutro para carpetas inactivas */
+html body .private-root .private-sidebar
+.private-sidebar-projects
+> button.private-sidebar-link.private-project-link:not(.active-project):hover {
+    background: #f3f4f6 !important;
+}

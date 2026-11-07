@@ -1,0 +1,283 @@
+/* BACKGROUND COLOR PICKER - ALWAYS ABOVE */
+
+.bcp-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  padding: 3px;
+  border: 1px solid #94a3b8;
+  border-radius: 5px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.bcp-trigger span {
+  width: 100%;
+  height: 100%;
+  border-radius: 2px;
+  border: 1px solid rgba(0,0,0,.15);
+}
+
+.bcp-trigger:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.bcp-popover {
+  position: fixed;
+  z-index: 10000;
+  width: 242px;
+  padding: 0;
+  border: 1px solid #bfc4cd;
+  background: #fff;
+  color: #111827;
+  color-scheme: light;
+  box-shadow: 0 12px 30px rgba(0,0,0,.25);
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.bcp-square {
+  position: relative;
+  height: 158px;
+  cursor: crosshair;
+  touch-action: none;
+  background-image:
+    linear-gradient(to top,#000,transparent),
+    linear-gradient(to right,#fff,transparent);
+}
+
+.bcp-cursor {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #111,0 1px 3px #0008;
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+}
+
+.bcp-controls {
+  display: grid;
+  gap: 10px;
+  padding: 11px 12px;
+}
+
+.bcp-hue-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bcp-current {
+  flex: 0 0 27px;
+  width: 27px;
+  height: 27px;
+  border: 1px solid #bfc4cd;
+  border-radius: 50%;
+}
+
+.bcp-hue {
+  width: 100%;
+  min-width: 0;
+  height: 10px;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 12px;
+  background: linear-gradient(to right,
+    red,yellow,lime,cyan,blue,magenta,red);
+  cursor: pointer;
+}
+
+.bcp-hue::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid white;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: 0 0 0 1px #777;
+}
+
+.bcp-rgb {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 8px;
+}
+
+.bcp-rgb label {
+  display: grid;
+  gap: 4px;
+  text-align: center;
+  font-size: 11px;
+  color: #1e293b;
+}
+
+.bcp-rgb input {
+  width: 100%;
+  min-width: 0;
+  height: 30px;
+  padding: 3px;
+  border: 1px solid #cbd5e1;
+  background: white;
+  color: #111827;
+  border-radius: 3px;
+  text-align: center;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bcp-popover { scroll-behavior: auto; }
+}
+/* BCP CUSTOM SWATCH V2 */
+
+.bcp-trigger {
+  position: relative;
+  padding: 2px;
+  border: 1px solid #94a3b8;
+  background:
+    conic-gradient(
+      from 0deg,
+      #ff3b30,
+      #ff9500,
+      #ffcc00,
+      #34c759,
+      #30d5c8,
+      #0a84ff,
+      #5856d6,
+      #bf5af2,
+      #ff2d55,
+      #ff3b30
+    ) !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.bcp-trigger::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 2px;
+  background: rgba(255,255,255,.22);
+  pointer-events: none;
+}
+
+.bcp-trigger span {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 2px;
+  border: 1px solid rgba(0,0,0,.14);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.15);
+}
+
+/* un poquito mas compacto visualmente */
+.bcp-popover {
+  box-shadow: 0 10px 24px rgba(0,0,0,.22);
+}
+
+/* BACKGROUND EYEDROPPER V1 */
+
+.bcp-eyedropper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 27px;
+    width: 27px;
+    height: 27px;
+    min-width: 27px;
+    padding: 3px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: #1f2937;
+    cursor: pointer;
+}
+
+.bcp-eyedropper:hover {
+    background: #eef2f7;
+    color: #0a84ff;
+}
+
+.bcp-eyedropper:focus-visible {
+    outline: 2px solid #0a84ff;
+    outline-offset: 2px;
+}
+
+/* UNIFIED PROJECT COLOR PICKERS V1 */
+
+/* Mismo aspecto para fondo y carpeta */
+.pce-palette .bcp-trigger,
+.pce-folder-palette .bcp-trigger {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+
+    padding: 3px !important;
+    border: 1px solid #94a3b8 !important;
+    border-radius: 9px !important;
+
+    background: #ffffff !important;
+    box-shadow: none !important;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* Eliminar bordes decorativos antiguos */
+.pce-palette .bcp-trigger::after,
+.pce-folder-palette .bcp-trigger::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Color real seleccionado */
+.pce-palette .bcp-trigger > span,
+.pce-folder-palette .bcp-trigger > span {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 6px !important;
+    border: 1px solid rgba(0,0,0,.12) !important;
+    box-shadow: none !important;
+}
+
+/* Sin color: los dos cuadritos totalmente multicolor */
+.pce-palette .bcp-trigger.is-empty,
+.pce-folder-palette .bcp-trigger.is-empty {
+    background: conic-gradient(
+        #ff3b30,
+        #ff9500,
+        #ffcc00,
+        #34c759,
+        #30d5c8,
+        #0a84ff,
+        #5856d6,
+        #bf5af2,
+        #ff3b30
+    ) !important;
+}
+
+.pce-palette .bcp-trigger.is-empty > span,
+.pce-folder-palette .bcp-trigger.is-empty > span {
+    background: transparent !important;
+    border-color: transparent !important;
+}
+
+/* Foco accesible */
+.pce-palette .bcp-trigger:focus-visible,
+.pce-folder-palette .bcp-trigger:focus-visible {
+    outline: 2px solid #0a84ff !important;
+    outline-offset: 2px !important;
+}
