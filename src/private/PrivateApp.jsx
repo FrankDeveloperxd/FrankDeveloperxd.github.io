@@ -1,3 +1,4 @@
+import WorkspaceActivity from "./components/WorkspaceActivity.jsx";
 import { loadProjectAppearances, saveProjectAppearance } from "./projectAppearance.js";
 import {
   hasCachedWorkspaceAccess,
@@ -17,10 +18,10 @@ import "./shared/WorkspaceBreadcrumbs.css";
 import "./shared/NoteHeaderCompact.css";
 
 /* PROJECTS UX FIXED V4 */
-import KanbanBoard from "./components/KanbanBoard.jsx";
-import NoteEditor from "./components/NoteEditor.jsx";
+const KanbanBoard = lazyWorkspaceModule(() => import("./components/KanbanBoard.jsx"));
+const NoteEditor = lazyWorkspaceModule(() => import("./components/NoteEditor.jsx"));
 import ProjectServices from "./components/ProjectServices.jsx";
-import WorkspaceCalendar from "./components/WorkspaceCalendar.jsx";
+const WorkspaceCalendar = lazyWorkspaceModule(() => import("./components/WorkspaceCalendar.jsx"));
 import ProjectCoverEditor from "./components/ProjectCoverEditor.jsx";
 import WorkspaceToasts, { notifyWorkspace } from "./components/WorkspaceToasts.jsx";
 import SystemNotifications from "./components/SystemNotifications.jsx";
@@ -32,6 +33,32 @@ import "./private-glass.css";
 import "./private-experience.css";
 import "./private-navigation-v2.css";
 import "./private-mobile-refinement.css";
+
+/* WORKSPACE LAZY MODULES V1 */
+function lazyWorkspaceModule(loader) {
+  const Component = React.lazy(loader);
+
+  return function WorkspaceModule(props) {
+    return (
+      <React.Suspense fallback={
+        <div
+          role="status"
+          style={{
+            minHeight: 180,
+            display: "grid",
+            placeItems: "center",
+            color: "#8290a5",
+            fontSize: 13
+          }}
+        >
+          Cargando herramienta
+        </div>
+      }>
+        <Component {...props} />
+      </React.Suspense>
+    );
+  };
+}
 
 const TABLES = {
   projects: "workspace_projects",
@@ -1017,6 +1044,7 @@ export default function PrivateApp() {
               <small>Este dashboard crecerá contigo.</small>
             </div>
           </div>
+        <WorkspaceActivity userId={user.id} projects={projects} />
         </>}
 
         {!noteId && view === "projects" && <>

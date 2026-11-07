@@ -39,6 +39,7 @@ function ProjectTaskCounters({ boardId, ownerId }) {
     let active = true;
     let revision = 0;
     let debounce;
+    let subscribedOnce = false;
 
     setCounts(readTaskCounts(ownerId, boardId));
 
@@ -95,7 +96,7 @@ function ProjectTaskCounters({ boardId, ownerId }) {
 
     function scheduleLoad() {
       clearTimeout(debounce);
-      debounce = setTimeout(() => void loadCounts(), 40);
+      debounce = setTimeout(() => void loadCounts(), 180);
     }
 
     function onVisibility() {
@@ -112,10 +113,23 @@ function ProjectTaskCounters({ boardId, ownerId }) {
           table: "workspace_tasks",
           filter: `owner_id=eq.${ownerId}`
         },
-        scheduleLoad
+        payload => {
+          // Las eliminaciones pueden no incluir board_id.
+          // En ese caso refrescar por seguridad.
+          if (
+            payload.eventType === "DELETE" ||
+            payload.new?.board_id === boardId ||
+            payload.old?.board_id === boardId
+          ) {
+            scheduleLoad();
+          }
+        }
       )
       .subscribe(status => {
-        if (status === "SUBSCRIBED") scheduleLoad();
+        if (status === "SUBSCRIBED") {
+          if (subscribedOnce) scheduleLoad();
+          subscribedOnce = true;
+        }
       });
 
     void loadCounts();

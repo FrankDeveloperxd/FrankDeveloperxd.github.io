@@ -1,6 +1,34 @@
 import { supabase } from "./client";
 
 const BUCKET = "project-covers";
+const signedCoverCache = new Map();
+
+async function getCoverUrl(ownerId, imagePath) {
+  const key = `${ownerId}:${imagePath}`;
+  const cached = signedCoverCache.get(key);
+
+  if (cached && cached.expiresAt > Date.now()) return cached.promise;
+
+  const promise = supabase.storage
+    .from(BUCKET)
+    .createSignedUrl(imagePath, 604800)
+    .then(({ data, error }) => {
+      if (error) throw error;
+      return data.signedUrl;
+    });
+
+  signedCoverCache.set(key, {
+    expiresAt: Date.now() + 6 * 60 * 60 * 1000,
+    promise
+  });
+
+  try {
+    return await promise;
+  } catch (error) {
+    signedCoverCache.delete(key);
+    throw error;
+  }
+}
 
 export async function loadProjectAppearances(ownerId) {
   const { data, error } = await supabase
@@ -16,12 +44,11 @@ export async function loadProjectAppearances(ownerId) {
 
     let imageUrl = null;
     if (value.imagePath) {
-      const { data: signed, error: signError } = await supabase.storage
-        .from(BUCKET)
-        .createSignedUrl(value.imagePath, 604800);
-
-      if (signError) throw signError;
-      imageUrl = signed.signedUrl;
+      try {
+        imageUrl = await getCoverUrl(ownerId, value.imagePath);
+      } catch (error) {
+        console.error("No se pudo cargar una portada:", error);
+      }
     }
 
     return [project.id, {

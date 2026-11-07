@@ -1,14 +1,41 @@
-import SharedNotePage from "./private/shared/SharedNotePage.jsx";
+const SharedNotePage = lazyWorkspacePage(() => import("./private/shared/SharedNotePage.jsx"));
 /* NOTE SHARING FIXED V2 */
 import "./private/privateEnhancements.js";
-import PrivateApp from "./private/PrivateApp.jsx";
+const PrivateApp = lazyWorkspacePage(() => import("./private/PrivateApp.jsx"));
 import { smoothScrollToTop } from "./smoothScrollToTop.js";
-import LabsPage from './labs/LabsPage.tsx';
+const LabsPage = lazyWorkspacePage(() => import("./labs/LabsPage.tsx"));
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './style.css';
 import './portfolio-responsive.css';
 import './labs-responsive.css';
+
+/* LAZY WORKSPACE PAGES V1 */
+function lazyWorkspacePage(loader) {
+  const Page = React.lazy(loader);
+
+  return function DeferredWorkspacePage(props) {
+    return (
+      <React.Suspense fallback={
+        <div
+          role="status"
+          style={{
+            minHeight: "60vh",
+            display: "grid",
+            placeItems: "center",
+            color: "#718098",
+            fontFamily: "system-ui, sans-serif",
+            fontSize: 13
+          }}
+        >
+          Cargando
+        </div>
+      }>
+        <Page {...props} />
+      </React.Suspense>
+    );
+  };
+}
 
 const projects = [
   { name:'MODCONTROL', group:'Monitoreo industrial', desc:'App para visualizar variables, sensores y alertas desde dispositivos conectados.', color:'blue', art:'monitor', tags:['Android','MQTT'] },

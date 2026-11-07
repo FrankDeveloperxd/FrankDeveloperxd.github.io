@@ -83,6 +83,7 @@ export default function SystemNotifications({ userId }) {
     let active = true;
     let requestId = 0;
     let inFlight = false;
+    let lastRefresh = 0;
 
     const cached = readCachedNotifications(userId);
     const cachedReads = readCachedNotificationIds(userId);
@@ -93,7 +94,7 @@ export default function SystemNotifications({ userId }) {
     setLoading(cached === null || cachedReads === null);
 
     async function refresh() {
-      if (!userId || !active || inFlight) return;
+      if (!userId || !active || inFlight || Date.now() - lastRefresh < 10000) return;
       inFlight = true;
       const request = ++requestId;
 
@@ -127,8 +128,15 @@ export default function SystemNotifications({ userId }) {
           (readsResult.data || []).map(item => item.notification_id)
         );
 
-        setNotifications(next);
-        setReadIds(ids);
+        lastRefresh = Date.now();
+        setNotifications(current =>
+          JSON.stringify(current) === JSON.stringify(next) ? current : next
+        );
+        setReadIds(current =>
+          current.size === ids.size && [...current].every(id => ids.has(id))
+            ? current
+            : ids
+        );
         setNotificationsReady(true);
         setReadStateReady(true);
         setError("");
@@ -162,7 +170,7 @@ export default function SystemNotifications({ userId }) {
 
     const timer = window.setInterval(() => {
       if (document.visibilityState === "visible") void refresh();
-    }, 30000);
+    }, 120000);
 
     return () => {
       active = false;
