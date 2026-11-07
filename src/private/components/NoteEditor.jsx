@@ -1,3 +1,7 @@
+import { scheduleNoteImageCleanup } from "../noteImageCleanup.js";
+/* NOTE IMAGES V1 */
+import { ImagePlus } from "lucide-react";
+import { NotePrivateImage, uploadNoteImage, discardNoteImage } from "./NoteImages.jsx";
 import {
   Bold,
   Italic,
@@ -32,6 +36,7 @@ import "./NoteEditor.css";
 import "./NoteRichEditor.css";
 
 const extensions = [
+  NotePrivateImage,
   StarterKit,
   TaskList,
   TaskItem.configure({ nested: true }),
@@ -61,7 +66,7 @@ function normalizeContent(value) {
   // Los documentos antiguos se conservan como texto.
   // Solo tratamos como HTML los documentos creados
   // con el editor visual.
-  if (/^\s*<(p|h[1-6]|ul|ol|blockquote|pre|div|table)\b/i.test(value)) {
+  if (/^\s*<(p|h[1-6]|ul|ol|blockquote|pre|div|table|img)\b/i.test(value)) {
     return value;
   }
 
@@ -96,6 +101,63 @@ function safeFilename(title) {
 }
 
 export default function NoteEditor({ noteId, onBack }) {
+  const imageInputRef = useRef(null);
+  const imageEditorRef = useRef(null);
+  const currentNoteRef = useRef(noteId);
+  const imageUploadingRef = useRef(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  currentNoteRef.current = noteId;
+
+  async function insertImages(files) {
+    if (imageUploadingRef.current) return;
+    const instance = imageEditorRef.current;
+    if (!instance || instance.isDestroyed) return;
+
+    const targetNote = currentNoteRef.current;
+    imageUploadingRef.current = true;
+    setUploadingImage(true);
+    setError("");
+
+    try {
+      for (const file of files) {
+        if (currentNoteRef.current !== targetNote || instance.isDestroyed) break;
+        const uploaded = await uploadNoteImage(targetNote, file);
+
+        if (currentNoteRef.current !== targetNote || instance.isDestroyed) {
+          await discardNoteImage(uploaded.path);
+          break;
+        }
+
+        // Insertar después de una imagen seleccionada, sin sustituirla.
+        const selection = instance.state.selection;
+        const position = selection.node?.type.name === "image"
+          ? selection.from + selection.node.nodeSize
+          : selection.to;
+
+        const inserted = instance.chain().focus().insertContentAt(position, {
+          type: "image",
+          attrs: {
+            storagePath: uploaded.path,
+            alt: file.name || "Imagen",
+            width: 300,
+            height: null,
+            widthPercent: 100,
+            layout: "center"
+          }
+        }).run();
+
+        if (!inserted) {
+          await discardNoteImage(uploaded.path);
+          throw new Error("No se pudo insertar la imagen en este punto.");
+        }
+      }
+    } catch (err) {
+      setError(err.message || "No se pudo insertar la imagen.");
+    } finally {
+      imageUploadingRef.current = false;
+      setUploadingImage(false);
+    }
+  }
   const [title, setTitle] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState("");
@@ -121,6 +183,33 @@ export default function NoteEditor({ noteId, onBack }) {
     content: "<p></p>",
     immediatelyRender: false,
     editorProps: {
+      handlePaste(view, event) {
+        const files = Array.from(event.clipboardData?.files || [])
+          .filter(file => file.type.startsWith("image/"));
+        if (!files.length) return false;
+        event.preventDefault();
+        void insertImages(files);
+        return true;
+      },
+      handleDrop(view, event, slice, moved) {
+        if (moved) return false;
+        const files = Array.from(event.dataTransfer?.files || [])
+          .filter(file => file.type.startsWith("image/"));
+        if (!files.length) return false;
+        event.preventDefault();
+        const position = view.posAtCoords({
+          left: event.clientX, top: event.clientY
+        });
+        if (position) view.dispatch(
+          view.state.tr.setSelection(
+            view.state.selection.constructor.near(
+              view.state.doc.resolve(position.pos)
+            )
+          )
+        );
+        void insertImages(files);
+        return true;
+      },
       attributes: {
         class: "note-rich-content",
         "aria-label": "Contenido del documento",
@@ -134,6 +223,8 @@ export default function NoteEditor({ noteId, onBack }) {
       markChanged();
     }
   });
+
+  imageEditorRef.current = editor;
 
   const toolbarState = useEditorState({
     editor,
@@ -251,7 +342,7 @@ export default function NoteEditor({ noteId, onBack }) {
         if (!active || !ready.current) return;
 
         // No reemplazar la edición local activa.
-        if (dirty.current) return;
+        if (dirty.current || busy.current || imageUploadingRef.current) return;
 
         if (
           draft.current.title === row.title &&
@@ -297,7 +388,7 @@ export default function NoteEditor({ noteId, onBack }) {
 
         // Durante una edición local conservamos el cursor
         // y el contenido local.
-        if (dirty.current || busy.current) return;
+        if (dirty.current || busy.current || imageUploadingRef.current) return;
 
         const nextTitle = String(payload.title || "");
         const nextContent = normalizeContent(payload.content);
@@ -458,6 +549,7 @@ export default function NoteEditor({ noteId, onBack }) {
 
       setError("");
       savedVersion.current = version;
+      scheduleNoteImageCleanup();
 
       if (editVersion.current === version) {
         dirty.current = false;
@@ -647,6 +739,31 @@ ${content}
 
           <div className="note-rich-toolbar" role="toolbar"
                aria-label="Formato del documento">
+            <input
+              ref={imageInputRef}
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              multiple
+              hidden
+              onChange={event => {
+                const files = Array.from(event.target.files || []);
+                event.target.value = "";
+                void insertImages(files);
+              }}
+            />
+            <button type="button"
+              title={uploadingImage ? "Comprimiendo y subiendo" : "Insertar imagen"}
+              aria-label="Insertar imagen"
+              disabled={uploadingImage}
+              onMouseDown={event => event.preventDefault()}
+              onClick={() => imageInputRef.current?.click()}>
+              <ImagePlus size={18} aria-hidden="true" />
+            </button>
+            {uploadingImage && (
+              <span role="status" className="note-image-progress">
+                Comprimiendo y subiendo
+              </span>
+            )}
             {buttons.map(({ action, title: tooltip, icon: Icon }) => (
               <button
                 type="button"

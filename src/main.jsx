@@ -1,14 +1,15 @@
-const SharedNotePage = lazyWorkspacePage(() => import("./private/shared/SharedNotePage.jsx"));
 /* NOTE SHARING FIXED V2 */
 import "./private/privateEnhancements.js";
-const PrivateApp = lazyWorkspacePage(() => import("./private/PrivateApp.jsx"));
 import { smoothScrollToTop } from "./smoothScrollToTop.js";
-const LabsPage = lazyWorkspacePage(() => import("./labs/LabsPage.tsx"));
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './style.css';
 import './portfolio-responsive.css';
 import './labs-responsive.css';
+
+const SharedNotePage = lazyWorkspacePage(() => import("./private/shared/SharedNotePage.jsx"));
+const PrivateApp = lazyWorkspacePage(() => import("./private/PrivateApp.jsx"));
+const LabsPage = lazyWorkspacePage(() => import("./labs/LabsPage.tsx"));
 
 /* LAZY WORKSPACE PAGES V1 */
 function lazyWorkspacePage(loader) {

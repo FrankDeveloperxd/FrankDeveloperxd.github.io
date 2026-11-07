@@ -1,3 +1,4 @@
+import SharedNoteImages from "./SharedNoteImages.jsx";
 import React, { useEffect, useState } from "react";
 import DOMPurify from "dompurify";
 import {
@@ -201,12 +202,7 @@ export default function SharedNotePage() {
 
             <h1>{note.title}</h1>
 
-            <div
-              className="ns-public-content"
-              dangerouslySetInnerHTML={{
-                __html: safeHtml
-              }}
-            />
+            <SharedNoteImages key={token} html={safeHtml} token={token} />
           </article>
         )}
       </div>

@@ -1,3 +1,4 @@
+import { useNoteImageCleanup } from "./noteImageCleanup.js";
 import WorkspaceActivity from "./components/WorkspaceActivity.jsx";
 import { loadProjectAppearances, saveProjectAppearance } from "./projectAppearance.js";
 import {
@@ -18,10 +19,7 @@ import "./shared/WorkspaceBreadcrumbs.css";
 import "./shared/NoteHeaderCompact.css";
 
 /* PROJECTS UX FIXED V4 */
-const KanbanBoard = lazyWorkspaceModule(() => import("./components/KanbanBoard.jsx"));
-const NoteEditor = lazyWorkspaceModule(() => import("./components/NoteEditor.jsx"));
 import ProjectServices from "./components/ProjectServices.jsx";
-const WorkspaceCalendar = lazyWorkspaceModule(() => import("./components/WorkspaceCalendar.jsx"));
 import ProjectCoverEditor from "./components/ProjectCoverEditor.jsx";
 import WorkspaceToasts, { notifyWorkspace } from "./components/WorkspaceToasts.jsx";
 import SystemNotifications from "./components/SystemNotifications.jsx";
@@ -33,6 +31,10 @@ import "./private-glass.css";
 import "./private-experience.css";
 import "./private-navigation-v2.css";
 import "./private-mobile-refinement.css";
+
+const KanbanBoard = lazyWorkspaceModule(() => import("./components/KanbanBoard.jsx"));
+const NoteEditor = lazyWorkspaceModule(() => import("./components/NoteEditor.jsx"));
+const WorkspaceCalendar = lazyWorkspaceModule(() => import("./components/WorkspaceCalendar.jsx"));
 
 /* WORKSPACE LAZY MODULES V1 */
 function lazyWorkspaceModule(loader) {
@@ -97,6 +99,7 @@ function formatError(error) {
 
 export default function PrivateApp() {
   const [user, setUser] = useState(null);
+  useNoteImageCleanup(user?.id);
   const lastWorkspaceOwner = useWorkspaceRef(null);
   const [ready, setReady] = useState(false);
   const [authorized, setAuthorized] = useState(null);
