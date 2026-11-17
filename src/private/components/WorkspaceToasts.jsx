@@ -1,3 +1,4 @@
+import WorkspaceFeedback from "../shared/WorkspaceFeedback.jsx";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Check,
@@ -53,7 +54,7 @@ export default function WorkspaceToasts() {
 
     function onNotify(event) {
       const { type, message } = event.detail || {};
-      if (!message) return;
+      if (!message || type === "success") return;
 
       const id = crypto.randomUUID();
       const kind = ["success", "error", "info"].includes(type)
@@ -118,6 +119,8 @@ export default function WorkspaceToasts() {
   }, []);
 
   return (
+    <>
+    <WorkspaceFeedback/>
     <div className="workspace-toast-stack" aria-label="Notificaciones">
       {toasts.map(toast => (
         <div
@@ -162,5 +165,6 @@ export default function WorkspaceToasts() {
         </div>
       ))}
     </div>
+    </>
   );
 }

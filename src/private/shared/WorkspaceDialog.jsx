@@ -1,4 +1,4 @@
-﻿import React, { useEffect } from "react";
+import React, { useEffect } from "react";
 import { AlertTriangle, Pencil, Trash2, X } from "lucide-react";
 import "./WorkspaceDialog.css";
 
@@ -10,7 +10,8 @@ export default function WorkspaceDialog({
   onClose,
   onConfirm,
   busy = false,
-  closing = false
+  closing = false,
+  error = ""
 }) {
   useEffect(() => {
     if (!item) return;
@@ -98,6 +99,7 @@ export default function WorkspaceDialog({
           </>
         )}
 
+        {error && <p className="wkd-error" role="alert">{error}</p>}
         <div className="wkd-actions">
           <button type="button" onClick={onClose} disabled={busy}>
             Cancelar

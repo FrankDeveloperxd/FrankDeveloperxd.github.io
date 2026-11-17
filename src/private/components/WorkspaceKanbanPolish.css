@@ -1,0 +1,31 @@
+/* Kanban: flat solid surfaces, visible column identity and compact controls. */
+html[data-workspace-theme] body .private-root .kb-root .kb-column { --lane:#4779ed; border-top:3px solid var(--lane); border-radius:14px; }
+html[data-workspace-theme] body .private-root .kb-root .kb-doing { --lane:#d7941e; }
+html[data-workspace-theme] body .private-root .kb-root .kb-done { --lane:#129675; }
+html[data-workspace-theme] body .private-root .kb-root .kb-column-head { padding-bottom:13px; margin-bottom:12px; border-bottom:1px solid #dce3ee; color:#26364d; font-size:14px; }
+html[data-workspace-theme] body .private-root .kb-root .kb-column-dot { background:var(--lane); }
+html[data-workspace-theme] body .private-root .kb-root .kb-count { background:var(--lane); color:#fff; border-radius:6px; padding:3px 8px; }
+html[data-workspace-theme="tinta"] body .private-root .kb-root .kb-column { background:#17181c; border-right-color:#31333c; border-bottom-color:#31333c; border-left-color:#31333c; }
+html[data-workspace-theme="tinta"] body .private-root .kb-root .kb-column-head { border-bottom-color:#343740; color:#eef0f7; }
+html[data-workspace-theme="tinta"] body .private-root .kb-root .kb-card { background:#2c2f38; border-top-color:#494e5c; border-right-color:#494e5c; border-bottom-color:#494e5c; box-shadow:none; }
+html[data-workspace-theme="tinta"] body .private-root .kb-root .kb-card:hover { background:#333743; border-top-color:#68738a; border-right-color:#68738a; border-bottom-color:#68738a; box-shadow:none; }
+html[data-workspace-theme] body .private-root .kb-root .kb-card-title { font-size:14px; line-height:1.5; font-weight:650; }
+html[data-workspace-theme="tinta"] body .private-root .kb-root .kb-card-title { color:#f3f4fa; }
+html[data-workspace-theme="tinta"] body .private-root .kb-root :is(.kb-empty-time,.kb-estimate,.kb-grip) { color:#bcc2d0; }
+html[data-workspace-theme] body .private-root .kb-root .kb-actions { gap:6px; }
+html[data-workspace-theme] body .private-root .kb-root .kb-actions button[title="Cambiar prioridad"] { background:#7449ad; color:#fff; border:0; }
+html[data-workspace-theme] body .private-root .kb-root .kb-actions button[title="Editar tarea"] { background:#16834a; color:#fff; border:0; }
+html[data-workspace-theme] body .private-root .kb-root .kb-actions button[title="Eliminar tarea"] { background:#bd3f58; color:#fff; border:0; }
+html[data-workspace-theme] body .private-root .kb-root .kb-actions button svg { stroke:currentColor; opacity:1; }
+/* Theme switches immediately; only two tiny SVG layers animate. No page snapshots or repainting transitions. */
+html[data-workspace-theme] body .private-root,
+html[data-workspace-theme] body .private-root .private-topbar,
+html[data-workspace-theme] body .private-root .private-sidebar { transition:none; }
+html[data-workspace-theme] body .private-root .private-top-actions .workspace-theme-toggle { overflow:hidden; }
+html body .private-root .workspace-theme-icons { display:grid !important; place-items:center; width:20px; height:20px; }
+.workspace-theme-icons svg { grid-area:1/1; display:block; transition:transform 180ms ease-out,opacity 140ms linear; }
+.workspace-theme-icons .theme-sun { opacity:0; transform:translateY(12px) rotate(-45deg) scale(.7); }
+.workspace-theme-icons .theme-moon { opacity:1; transform:translateY(0) rotate(0) scale(1); }
+html[data-workspace-theme="tinta"] .workspace-theme-icons .theme-sun { opacity:1; transform:translateY(0) rotate(0) scale(1); }
+html[data-workspace-theme="tinta"] .workspace-theme-icons .theme-moon { opacity:0; transform:translateY(-12px) rotate(45deg) scale(.7); }
+@media(prefers-reduced-motion:reduce) { .workspace-theme-icons svg { transition:none; } }

@@ -1,0 +1,197 @@
+/* Focused corrections: no geometry, data or navigation changes. */
+/* Solid module headers. The card body keeps the current light/dark surface. */
+html[data-workspace-theme] body .private-root .wd-dashboard .wd-card::before { background:#2867e9; opacity:1; }
+html[data-workspace-theme] body .private-root .wd-dashboard .wd-card-calendar::before { background:#8758d3; }
+html[data-workspace-theme] body .private-root .wd-dashboard .wd-card-habits::before { background:#0b8070; }
+/* Remove the old inset gloss; keep an explicit keyboard focus indicator. */
+html body .private-root .private-header-group :is(.private-menu-toggle,.private-desktop-toggle) { box-shadow:none !important; }
+html body .private-root .private-header-group :is(.private-menu-toggle,.private-desktop-toggle):hover,
+html body .private-root .private-header-group :is(.private-menu-toggle,.private-desktop-toggle):active { box-shadow:none !important; }
+html body .private-root .private-header-group :is(.private-menu-toggle,.private-desktop-toggle):focus:not(:focus-visible) { outline:none; }
+html body .private-root .private-header-group :is(.private-menu-toggle,.private-desktop-toggle):focus-visible { outline:2px solid #88aaff; outline-offset:3px; }
+html[data-workspace-theme="tinta"] body .private-root .private-header-group :is(.private-menu-toggle,.private-desktop-toggle) { background:#292b32; border-color:#41434c; color:#fff; }
+html[data-workspace-theme="tinta"] body .private-root .private-header-group :is(.private-menu-toggle,.private-desktop-toggle) svg { color:#fff; stroke:currentColor; }
+/* The topbar logout is a separate button from the sidebar logout. */
+html body .private-root .private-top-actions>button:last-child:not(.workspace-theme-toggle),
+html body .private-root .private-top-actions>button:last-child:not(.workspace-theme-toggle):hover {
+ background:#bd3f58 !important; border:1px solid #bd3f58 !important; color:#fff !important;
+}
+html body .private-root .private-top-actions>button:last-child:not(.workspace-theme-toggle) svg { color:#fff !important; stroke:currentColor; }
+/* Disable backdrop blur only; image effects and documents are not filtered. */
+html body .private-root,
+html body .private-root *,
+html body .private-root *::before,
+html body .private-root *::after,
+.wsf-overlay,.wsf-dialog {
+ backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+}
+/* Close buttons always contain a real visible SVG. */
+html body .private-root .ps-dialog .ps-close {
+ display:inline-flex; align-items:center; justify-content:center;
+ width:34px; height:34px; min-width:34px; min-height:34px;
+ padding:0; color:#53647c; background:#f1f4f8; border:1px solid #dfe6f1;
+}
+html body .private-root .ps-dialog .ps-close svg { display:block !important; width:18px; height:18px; visibility:visible; opacity:1; stroke:currentColor; }
+html[data-workspace-theme="tinta"] body .private-root .ps-dialog .ps-close { color:#f0f1f7; background:#303139; border-color:#42444f; }
+/* Dark notification panel: solid surfaces, readable badges, neutral separators. */
+html[data-workspace-theme="tinta"] body .private-root .system-notifications-panel { background:#1d1e22; border:1px solid #393b44; box-shadow:0 8px 22px #08090b; }
+html[data-workspace-theme="tinta"] body .private-root .system-notifications-header { background:#1d1e22; border-color:#34363e; }
+html[data-workspace-theme="tinta"] body .private-root .system-notifications-header h2 { color:#f1f2f7; }
+html[data-workspace-theme="tinta"] body .private-root .system-notifications-header p { color:#a7a8b3; }
+html[data-workspace-theme="tinta"] body .private-root :is(.system-notifications-close,.system-notifications-read-all) { color:#fff; background:#32343d; border:1px solid #444650; }
+html[data-workspace-theme="tinta"] body .private-root .system-notifications-close svg { color:#fff; stroke:currentColor; }
+html[data-workspace-theme="tinta"] body .private-root .system-notifications-list { background:#18191d; scrollbar-color:#52545f #18191d; }
+html[data-workspace-theme="tinta"] body .private-root .system-notifications-list .system-notification-item:nth-child(n) { background:#24262d; border-color:#363944; }
+html[data-workspace-theme="tinta"] body .private-root .system-notifications-list .system-notification-item.is-unread { background:#292b33; border-color:#4b3d46; }
+html[data-workspace-theme="tinta"] body .private-root .system-notifications-list .system-notification-item.is-unread:hover { background:#30323b; border-color:#735161; }
+html[data-workspace-theme="tinta"] body .private-root .system-notifications-list .system-notification-item.is-read { background:#202126; border-color:#34363e; }
+html[data-workspace-theme="tinta"] body .private-root .system-notification-item.is-read .system-notification-content { opacity:1; }
+html[data-workspace-theme="tinta"] body .private-root .system-notification-meta>span:first-child { color:#fff; background:#315cb8; }
+html[data-workspace-theme="tinta"] body .private-root .system-notification-meta time { color:#afb1bf; }
+html[data-workspace-theme="tinta"] body .private-root .system-notification-title { color:#f0f1f7; }
+html[data-workspace-theme="tinta"] body .private-root .system-notification-description { color:#b8bac7; }
+html[data-workspace-theme="tinta"] body .private-root .system-notifications-list .system-notification-item .system-notification-indicator { background:#e54860; }
+html[data-workspace-theme="tinta"] body .private-root .system-notifications-list .system-notification-item.is-read .system-notification-indicator { background:#7e8191; }
+/* Activity: restore the blue scale, without a grey/lavender tint. */
+html[data-workspace-theme="tinta"] body .private-root .wa-root .wa-heading h2 { color:#9bbcff; }
+html[data-workspace-theme="tinta"] body .private-root .wa-root .wa-level-0 { background:#2b2d34; }
+html[data-workspace-theme="tinta"] body .private-root .wa-root .wa-level-1 { background:#193f79; }
+html[data-workspace-theme="tinta"] body .private-root .wa-root .wa-level-2 { background:#235ec7; }
+html[data-workspace-theme="tinta"] body .private-root .wa-root .wa-level-3 { background:#338bff; }
+html[data-workspace-theme="tinta"] body .private-root .wa-root .wa-level-4 { background:#7db6ff; }
+html body .private-root .wa-root .wa-cell.wa-selected { outline:2px solid #2867e9; outline-offset:2px; }
+html[data-workspace-theme="tinta"] body .private-root .wa-root .wa-cell.wa-selected { outline:2px solid #fff; outline-offset:2px; box-shadow:0 0 0 4px #111214; }
+html[data-workspace-theme="tinta"] body .private-root .wa-scroll { scrollbar-color:#555968 #191a1e; }
+/* Text selection is independent from the underlying text/data colors. */
+html[data-workspace-theme] body .private-root::selection,
+html[data-workspace-theme] body .private-root ::selection { background:#3159b7; color:#fff; text-shadow:none; }
+/* Priority borders were being overwritten by the theme's generic border-color. */
+html body .private-root .kb-card.kb-priority-low { border-left:4px solid #18a477 !important; }
+html body .private-root .kb-card.kb-priority-medium { border-left:4px solid #e6a536 !important; }
+html body .private-root .kb-card.kb-priority-high { border-left:4px solid #df5264 !important; }
+html[data-workspace-theme="tinta"] body .private-root .kb-root .kb-column { background:#17191e; border-color:#353842; }
+html[data-workspace-theme="tinta"] body .private-root .kb-root .kb-card { background:#262830; border-top-color:#454854; border-right-color:#454854; border-bottom-color:#454854; }
+html[data-workspace-theme="tinta"] body .private-root .kb-root .kb-card-title { color:#f1f2f7; }
+html[data-workspace-theme="tinta"] body .private-root .kb-root .kb-column.kb-over { background:#232b3a; border-color:#5976a8; }
+html[data-workspace-theme="tinta"] body .private-root .kb-priority-menu { background:#2a2d36; border-color:#4b4f5d; }
+html[data-workspace-theme="tinta"] body .private-root .kb-priority-menu .kb-priority-option { color:#eceef7; background:transparent; }
+html[data-workspace-theme="tinta"] body .private-root .kb-priority-menu .kb-priority-option:hover { background:#3a3e4a; }
+
+/* CLEAN FOLDER ICONS START */
+
+/* Proyectos sin portada: carpeta de color, sin bloque detrás. */
+html[data-workspace-theme] body .private-root
+.private-cards .private-card.pux-project-card:not(.pux-with-cover)
+> .private-card-icon {
+    background: none !important;
+    background-image: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    color: var(--folder-accent, #805ad5) !important;
+}
+
+html[data-workspace-theme] body .private-root
+.private-cards .private-card.pux-project-card:not(.pux-with-cover)
+> .private-card-icon svg {
+    display: block !important;
+    width: 30px !important;
+    height: 30px !important;
+    color: var(--folder-accent, #805ad5) !important;
+    stroke: currentColor !important;
+    stroke-width: 2;
+    fill: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Servicios: iconos definidos y colores vivos. */
+html[data-workspace-theme] body .private-root
+.ps-root .ps-card .ps-card-icon {
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+html[data-workspace-theme] body .private-root
+.ps-root .ps-card-kanban .ps-card-icon {
+    color: #0b9b80 !important;
+}
+
+html[data-workspace-theme] body .private-root
+.ps-root .ps-card-note .ps-card-icon {
+    color: #9254ed !important;
+}
+
+html[data-workspace-theme] body .private-root
+.ps-root .ps-card .ps-card-icon svg {
+    display: block !important;
+    width: 28px !important;
+    height: 28px !important;
+    color: inherit !important;
+    stroke: currentColor !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* CLEAN FOLDER ICONS END */
+/* VIVID ICONS START */
+
+/* Editar: verde vivo. */
+html[data-workspace-theme] body .private-root
+:is(.pux-actions .pux-edit,
+    .ps-card-actions .ps-edit-button,
+    .hv-actions .hv-edit,
+    .kb-actions button[title="Editar tarea"]) {
+    background: #16a34a !important;
+    border-color: #16a34a !important;
+    color: #ffffff !important;
+}
+
+/* Eliminar y salir: rojo definido. */
+html[data-workspace-theme] body .private-root
+:is(.pux-actions .pux-delete,
+    .ps-card-actions .ps-delete-button,
+    .hv-actions .hv-delete,
+    .kb-actions button[title="Eliminar tarea"]) {
+    background: #ef3340 !important;
+    border-color: #ef3340 !important;
+    color: #ffffff !important;
+}
+
+/* Personalizar y prioridad: morado vivo. */
+html[data-workspace-theme] body .private-root
+:is(.pux-actions .pux-cover-button,
+    .kb-actions button[title="Cambiar prioridad"]) {
+    background: #9333ea !important;
+    border-color: #9333ea !important;
+    color: #ffffff !important;
+}
+
+/* Archivar/restaurar: amarillo sólido, icono oscuro. */
+html[data-workspace-theme] body .private-root .hv-actions .hv-archive {
+    background: #facc15 !important;
+    border-color: #facc15 !important;
+    color: #292000 !important;
+}
+
+/* Los SVG heredan el color real del botón. */
+html[data-workspace-theme] body .private-root
+:is(.pux-actions, .ps-card-actions, .hv-actions, .kb-actions) button svg {
+    color: inherit !important;
+    stroke: currentColor !important;
+    opacity: 1 !important;
+    filter: none !important;
+}
+
+/* Servicios sin fondo: colores más luminosos. */
+html[data-workspace-theme] body .private-root
+.ps-root .ps-card-kanban .ps-card-icon {
+    color: #00b894 !important;
+}
+
+html[data-workspace-theme] body .private-root
+.ps-root .ps-card-note .ps-card-icon {
+    color: #a855f7 !important;
+}
+
+/* VIVID ICONS END */

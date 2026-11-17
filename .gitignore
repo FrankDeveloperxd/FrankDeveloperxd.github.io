@@ -36,3 +36,10 @@ workspace-*-patch.cjs
 workspace-*-patch.js
 
 # WORKSPACE CLEANUP RULES END
+*.bak.*
+*.backup.*
+*.zip
+*.7z
+*.rar
+*.rej
+*~

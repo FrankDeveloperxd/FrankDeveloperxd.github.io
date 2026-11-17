@@ -1,3 +1,4 @@
+import { notifyWorkspace } from "./WorkspaceToasts.jsx";
 import React, { useState } from "react";
 import { Download, Link2, RefreshCw } from "lucide-react";
 import { supabase } from "../client";
@@ -62,6 +63,7 @@ export default function WorkspaceCalendarExport({ user }) {
       const a = document.createElement("a");
       a.href = url; a.download = "mi-workspace.ics"; a.click();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
+      notifyWorkspace("info", "Archivo de calendario preparado para descargar.");
     } catch (e) { setError(e.message || "No se pudo exportar."); }
     finally { setBusy(false); }
   }
@@ -79,11 +81,12 @@ export default function WorkspaceCalendarExport({ user }) {
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || "No se pudo crear el enlace.");
       setSubscription(payload.url);
+      notifyWorkspace("success", rotate ? "Enlace de suscripción renovado." : "Enlace de suscripción preparado.");
     } catch (e) { setError(e.message || "Error al generar enlace."); }
     finally { setBusy(false); }
   }
   async function copy() {
-    try { await navigator.clipboard.writeText(subscription); }
+    try { await navigator.clipboard.writeText(subscription); notifyWorkspace("info", "Enlace copiado."); }
     catch { setError("No se pudo copiar. Selecciona y copia el enlace manualmente."); }
   }
   return <details className="wc-export" aria-label="Integración iCalendar">

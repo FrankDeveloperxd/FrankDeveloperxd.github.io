@@ -1,0 +1,39 @@
+.wsf-overlay { position:fixed; inset:0; z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(23,37,63,.38); animation:wsf-backdrop-in 160ms ease both; }
+.wsf-overlay.is-closing { animation:wsf-backdrop-out 220ms ease both; }
+.wsf-dialog { position:relative; width:min(420px,100%); max-height:calc(100dvh - 40px); overflow:auto; box-sizing:border-box; padding:27px; border:1px solid #e0e7f2; border-radius:19px; background:#fff; color:#22324d; box-shadow:0 16px 45px rgba(12,27,56,.14); font-family:inherit; outline:none; animation:wsf-window-in 200ms cubic-bezier(.2,.8,.3,1) both; }
+.wsf-dialog.is-closing { animation:wsf-window-out 220ms ease both; }
+.wsf-success { width:min(340px,100%); padding:30px 24px; text-align:center; }
+.wsf-icon { display:grid; place-items:center; width:48px; height:48px; border-radius:13px; margin-bottom:18px; }
+.wsf-icon.is-success { width:76px; height:76px; margin:0 auto 18px; background:#f0fdf4; color:#16a34a; border-radius:50%; animation:wsf-check-pop 480ms cubic-bezier(.2,.8,.3,1) both; }
+.wsf-icon.is-danger { color:#e54860; background:#fff1f3; }
+.wsf-icon.is-info { color:#2867e9; background:#eef4ff; }
+.wsf-icon svg { flex:none; }
+.wsf-success .wsf-icon svg path,.wsf-success .wsf-icon svg polyline { stroke-dasharray:90; stroke-dashoffset:90; animation:wsf-check-draw 450ms ease-out 180ms forwards; }
+.wsf-dialog h2 { margin:0; font-size:21px; line-height:1.45; font-weight:700; overflow-wrap:anywhere; }
+.wsf-success h2 { font-size:17px; }
+.wsf-dialog p { color:#6b7d96; font-size:14px; line-height:1.7; margin:13px 0 22px; white-space:pre-line; overflow-wrap:anywhere; }
+.wsf-dialog button { font:inherit; cursor:pointer; }
+.wsf-close { position:absolute; top:15px; right:15px; display:grid; place-items:center; width:32px; height:32px; padding:0; border:1px solid #e1e8f3; background:#fff; color:#74839d; border-radius:9px; }
+.wsf-actions { display:flex; justify-content:flex-end; gap:9px; }
+.wsf-actions button { border:0; border-radius:10px; padding:11px 16px; background:#f1f4f8; color:#53647c; font-size:13px; font-weight:650; }
+.wsf-actions .wsf-danger { color:white; background:#e54860; }
+.wsf-actions .wsf-primary { color:white; background:#2867e9; }
+.wsf-dialog button:disabled { opacity:.5; cursor:default; }
+.wsf-dialog button:focus-visible { outline:2px solid #8bafff; outline-offset:3px; }
+.wsf-sr { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+@keyframes wsf-backdrop-in { from {opacity:0} to {opacity:1} }
+@keyframes wsf-backdrop-out { from {opacity:1} to {opacity:0} }
+@keyframes wsf-window-in { from {opacity:0;transform:translateY(12px) scale(.96)} to {opacity:1;transform:translateY(0) scale(1)} }
+@keyframes wsf-window-out { from {opacity:1;transform:translateY(0) scale(1)} to {opacity:0;transform:translateY(-5px) scale(.98)} }
+@keyframes wsf-check-pop { 0% {opacity:0;transform:scale(.65)} 70% {opacity:1;transform:scale(1.08)} 100% {opacity:1;transform:scale(1)} }
+@keyframes wsf-check-draw { to {stroke-dashoffset:0} }
+/* Same entrance for the existing private workspace editors and confirmations. */
+.private-root :is(.ps-dialog,.wc-dialog,.gcs-dialog,.gcs-confirm-dialog,.kb-modal,.kb-delete-dialog,.pce-dialog,.ns-dialog,.hv-dialog,.wkd-dialog):not(.wkd-out):not(.kb-pop-out) { animation:wsf-window-in 200ms cubic-bezier(.2,.8,.3,1) both; }
+@media(prefers-reduced-motion:reduce) {
+ .wsf-overlay,.wsf-dialog,.wsf-icon.is-success,.wsf-success .wsf-icon svg path,.wsf-success .wsf-icon svg polyline { animation:none !important; transform:none; stroke-dashoffset:0; }
+ .private-root :is(.ps-dialog,.wc-dialog,.gcs-dialog,.gcs-confirm-dialog,.kb-modal,.kb-delete-dialog,.pce-dialog,.ns-dialog,.hv-dialog,.wkd-dialog) { animation:none !important; }
+}
+
+/* Error and informational notices stay visible over editor dialogs. */
+.workspace-toast-stack { z-index:11000; }
+.wkd-error { padding:10px 12px; border-radius:9px; background:#fff1f3; color:#be2544; font-size:13px; line-height:1.5; }

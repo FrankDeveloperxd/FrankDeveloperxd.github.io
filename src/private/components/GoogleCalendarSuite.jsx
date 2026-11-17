@@ -1,3 +1,4 @@
+import { confirmWorkspace } from "../shared/workspaceFeedback.js";
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../client';
 import { notifyWorkspace } from './WorkspaceToasts.jsx';
@@ -54,7 +55,7 @@ export default function GoogleCalendarSuite({user}) {
   }catch(e){setError(e.message);setBusy(false);}}
   async function disconnectGoogle() {
     if (!connected || busy) return;
-    if (!window.confirm('¿Desconectar Google Calendar? No se borrarán los eventos de Google ni los del Workspace.')) return;
+    if (!await confirmWorkspace({title:'Desconectar Google Calendar',message:'No se borrarán los eventos de Google ni los del Workspace.',confirmLabel:'Desconectar',danger:false})) return;
     setBusy(true);
     setError('');
     try {
@@ -70,6 +71,7 @@ export default function GoogleCalendarSuite({user}) {
       setSelectedIds(null);
       setEvents([]);
       setEmail('');
+      notifyWorkspace('success','Google Calendar desconectado.');
     } catch (e) {
       setError(e.message || 'No fue posible desconectar Google.');
     } finally {
@@ -158,6 +160,6 @@ export default function GoogleCalendarSuite({user}) {
     </div>
   </div>
 </div>}
-{editing&&<div className="gcs-backdrop" role="presentation"><form className="gcs-dialog" onSubmit={e=>{e.preventDefault();save();}}><h3>{editing.type==='create'?'Nuevo evento en Google':'Editar evento de Google'}</h3><label>Título<input required maxLength={200} value={draft.title} onChange={e=>setDraft(d=>({...d,title:e.target.value}))}/></label><label>Calendario<select value={calendarId} onChange={e=>setCalendarId(e.target.value)} disabled={editing.type==='update'}>{calendars.filter(c=>c.writable).map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label><label>Inicio<input type="datetime-local" required value={draft.start} onChange={e=>setDraft(d=>({...d,start:e.target.value}))}/></label><label>Fin<input type="datetime-local" required value={draft.end} onChange={e=>setDraft(d=>({...d,end:e.target.value}))}/></label><label><input type="checkbox" checked={draft.all_day} onChange={e=>setDraft(d=>({...d,all_day:e.target.checked}))}/> Todo el día</label><label>Recordatorio<select value={draft.reminder_minutes??''} onChange={e=>setDraft(d=>({...d,reminder_minutes:e.target.value===''?null:Number(e.target.value)}))}><option value="">Predeterminado</option>{[0,5,10,15,30,60,1440].map(n=><option key={n} value={n}>{n} minutos</option>)}</select></label><label>Descripción<textarea value={draft.description} onChange={e=>setDraft(d=>({...d,description:e.target.value}))}/></label><div className="gcs-dialog-actions">{editing.id&&<button type="button" className="gcs-danger" onClick={()=>requestDelete({id:editing.id,calendar_id:calendarId,title:draft.title})} disabled={saving}>Eliminar</button>}<button type="button" onClick={()=>setEditing(null)}>Cancelar</button><button type="submit" className="gcs-primary" disabled={saving||!calendarId}>Guardar en Google</button></div></form></div>}
+{editing&&<div className="gcs-backdrop" role="presentation"><form className="gcs-dialog" role="dialog" aria-modal="true" aria-label="Evento de Google Calendar" onSubmit={e=>{e.preventDefault();save();}}><h3>{editing.type==='create'?'Nuevo evento en Google':'Editar evento de Google'}</h3><label>Título<input required maxLength={200} value={draft.title} onChange={e=>setDraft(d=>({...d,title:e.target.value}))}/></label><label>Calendario<select value={calendarId} onChange={e=>setCalendarId(e.target.value)} disabled={editing.type==='update'}>{calendars.filter(c=>c.writable).map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label><label>Inicio<input type="datetime-local" required value={draft.start} onChange={e=>setDraft(d=>({...d,start:e.target.value}))}/></label><label>Fin<input type="datetime-local" required value={draft.end} onChange={e=>setDraft(d=>({...d,end:e.target.value}))}/></label><label><input type="checkbox" checked={draft.all_day} onChange={e=>setDraft(d=>({...d,all_day:e.target.checked}))}/> Todo el día</label><label>Recordatorio<select value={draft.reminder_minutes??''} onChange={e=>setDraft(d=>({...d,reminder_minutes:e.target.value===''?null:Number(e.target.value)}))}><option value="">Predeterminado</option>{[0,5,10,15,30,60,1440].map(n=><option key={n} value={n}>{n} minutos</option>)}</select></label><label>Descripción<textarea value={draft.description} onChange={e=>setDraft(d=>({...d,description:e.target.value}))}/></label><div className="gcs-dialog-actions">{editing.id&&<button type="button" className="gcs-danger" onClick={()=>requestDelete({id:editing.id,calendar_id:calendarId,title:draft.title})} disabled={saving}>Eliminar</button>}<button type="button" onClick={()=>setEditing(null)}>Cancelar</button><button type="submit" className="gcs-primary" disabled={saving||!calendarId}>Guardar en Google</button></div></form></div>}
   </section>;
 }

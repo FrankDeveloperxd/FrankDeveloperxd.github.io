@@ -1,3 +1,4 @@
+import { confirmWorkspace } from "../shared/workspaceFeedback.js";
 import React, { useEffect, useMemo, useState } from "react";
 import { CalendarDays, ChevronLeft, ChevronRight, Plus, Pencil, Trash2, X } from "lucide-react";
 import { supabase } from "../client";
@@ -142,7 +143,7 @@ export default function WorkspaceCalendar({ user, projects = [] }) {
   }
 
   async function remove(item) {
-    if (!window.confirm(`¿Eliminar el evento "${item.title}"?`)) return;
+    if (!await confirmWorkspace({title:"Eliminar evento",message:`Se eliminará «${item.title}». Esta acción es permanente.`,confirmLabel:"Eliminar evento"})) return;
     const { error } = await supabase.from("workspace_calendar_events").delete().eq("id", item.id).eq("owner_id", user.id);
     if (error) notifyWorkspace("error", error.message);
     else { notifyWorkspace("success", "Evento eliminado."); await reload(); }

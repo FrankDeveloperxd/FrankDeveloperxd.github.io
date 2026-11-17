@@ -1,4 +1,5 @@
-﻿import React, { useEffect, useState } from "react";
+import { notifyWorkspace } from "../components/WorkspaceToasts.jsx";
+import React, { useEffect, useState } from "react";
 import { Share2, Copy, Check, Link2Off, X, Link2 } from "lucide-react";
 import { supabase } from "../client";
 import "./NoteSharing.css";
@@ -75,6 +76,7 @@ export default function NoteShareControls({ noteId, user }) {
 
       if (result.error) throw result.error;
       setShare(result.data);
+      notifyWorkspace("success", "Enlace de lectura activado.");
       // LIVE NOTE SHARE V2
       window.dispatchEvent(
         new CustomEvent("workspace-note-share-changed")
@@ -104,6 +106,7 @@ export default function NoteShareControls({ noteId, user }) {
       setError(revokeError.message);
     } else {
       setShare(data);
+      notifyWorkspace("success", "Enlace de lectura revocado.");
       window.dispatchEvent(
         new CustomEvent("workspace-note-share-changed")
       );
@@ -116,6 +119,7 @@ export default function NoteShareControls({ noteId, user }) {
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
+      notifyWorkspace("info", "Enlace copiado.");
     } catch {
       setError("No se pudo copiar automáticamente. Selecciona el enlace.");
     }

@@ -15,10 +15,8 @@ export function getCachedProjectServices(ownerId, projectId) {
   const entry = cache.get(key);
   if (!entry) return null;
 
-  if (Date.now() - entry.timestamp > MAX_AGE) {
-    cache.delete(key);
-    return null;
-  }
+  // La antigüedad no obliga a mostrar una pantalla vacía.
+  // ProjectServices siempre revalida los datos al abrirse.
 
   return entry.services;
 }

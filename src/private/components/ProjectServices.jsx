@@ -1,3 +1,4 @@
+import { X as WorkspaceCloseIcon } from "lucide-react";
 // WORKSPACE USER ISOLATION V1
 import {
   Columns3,
@@ -216,7 +217,8 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
         .select("*").eq("project_id", projectId)
         .order("created_at", { ascending: false }),
       supabase.from("workspace_notes")
-        .select("*").eq("project_id", projectId)
+        .select("id,title,created_at,updated_at,project_id,owner_id")
+        .eq("project_id", projectId)
         .order("created_at", { ascending: false })
     ]);
 
@@ -295,10 +297,22 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
     setModal({ action: "delete", item });
   }
 
-  function openNote(note) {
-    setEditingNote(note);
-    setNoteTitle(note.title);
-    setContent(note.content || "");
+  async function openNote(note) {
+    const { data, error } = await supabase
+      .from("workspace_notes")
+      .select("id,title,content")
+      .eq("id", note.id)
+      .eq("owner_id", user.id)
+      .single();
+
+    if (error) {
+      notifyWorkspace("error", error.message);
+      return;
+    }
+
+    setEditingNote(data);
+    setNoteTitle(data.title);
+    setContent(data.content || "");
   }
 
   async function saveService(event) {
@@ -554,7 +568,7 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
                   className="ps-close"
                   onClick={() => setEditingNote(null)}
                   aria-label="Cerrar editor"
-                ></button>
+                ><WorkspaceCloseIcon size={18} strokeWidth={2} aria-hidden="true"/></button>
               </div>
 
               <label htmlFor="ps-note-title">Título</label>
@@ -603,7 +617,7 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
                     <span className="ps-eyebrow">CONFIRMACIÓN</span>
                     <h2>¿Eliminar servicio?</h2>
                   </div>
-                  <button className="ps-close" onClick={() => setModal(null)}></button>
+                  <button aria-label="Cerrar" type="button" className="ps-close" onClick={() => setModal(null)}><WorkspaceCloseIcon size={18} strokeWidth={2} aria-hidden="true"/></button>
                 </div>
                 <p>
                   Se eliminará {modal.item.title} y su contenido.
@@ -631,11 +645,11 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
                         : "Añadir servicio"}
                     </h2>
                   </div>
-                  <button
+                  <button aria-label="Cerrar"
                     type="button"
                     className="ps-close"
                     onClick={() => setModal(null)}
-                  ></button>
+                  ><WorkspaceCloseIcon size={18} strokeWidth={2} aria-hidden="true"/></button>
                 </div>
 
                 {modal.action === "create" && (

@@ -1,3 +1,5 @@
+import { notifyWorkspace } from "./WorkspaceToasts.jsx";
+import { readCachedTasks, saveCachedTasks } from "../workspaceTaskCache.js";
 import React, { useEffect, useRef, useState } from "react";
 import {
   DndContext, DragOverlay, PointerSensor,
@@ -239,9 +241,9 @@ function kanbanCollision(args) {
   return closestCorners(args);
 }
 export default function KanbanBoard({ board, user }) {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(() => readCachedTasks(user.id, board.id) || []);
   const [newTitle, setNewTitle] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => readCachedTasks(user.id, board.id) === null);
   const [working, setWorking] = useState(false);
   const [error, setError] = useState("");
   const [editing, setEditing] = useState(null);
@@ -293,9 +295,15 @@ export default function KanbanBoard({ board, user }) {
   }
 
   useEffect(() => {
-    setLoading(true);
+    const cached = readCachedTasks(user.id, board.id);
+    setTasks(cached || []);
+    setLoading(cached === null);
     void refresh();
-  }, [board.id]);
+  }, [board.id, user.id]);
+
+  useEffect(() => {
+    if (!loading) saveCachedTasks(user.id, board.id, tasks);
+  }, [tasks, loading, board.id, user.id]);
 
   /* KANBAN REALTIME START */
 
@@ -419,6 +427,7 @@ export default function KanbanBoard({ board, user }) {
         createError?.message || "No se pudo guardar la tarea."
       );
     } else {
+      notifyWorkspace("success", "Tarea creada.");
       // Sustituir el ID temporal por el definitivo.
       setTasks(current => {
         const withoutTemporary = current.filter(
@@ -471,6 +480,7 @@ export default function KanbanBoard({ board, user }) {
     if (e2) setError(e2.message);
     else {
       setEditing(null);
+      notifyWorkspace("success", "Tarea actualizada.");
       await refresh();
     }
     setWorking(false);
@@ -482,45 +492,22 @@ export default function KanbanBoard({ board, user }) {
 
   async function confirmDelete() {
     if (!confirmTask || deleteBusy) return;
-
     const task = confirmTask;
-    const previous = [...tasks];
-
     setDeleteBusy(true);
-    setDeletingId(task.id);
     setError("");
-
-    // Cerrar la confirmacion inmediatamente.
-    // La solicitud de red ocurre en paralelo.
-    setConfirmTask(null);
-
-    const removePromise = supabase
-      .from("workspace_tasks")
-      .delete()
-      .eq("id", task.id)
-      .eq("board_id", board.id);
-
-    // Dejar que la tarjeta reproduzca su salida.
-    window.setTimeout(() => {
-      setTasks(current =>
-        current.filter(item => item.id !== task.id)
-      );
-      setDeletingId(null);
-    }, 170);
-
     try {
-      const { error: removeError } = await removePromise;
-
-      if (removeError) {
-        setTasks(previous);
-        setError(removeError.message);
-        await refresh();
-      }
+      const { error: removeError } = await supabase.from("workspace_tasks")
+        .delete().eq("id", task.id).eq("board_id", board.id);
+      if (removeError) throw removeError;
+      setConfirmTask(null);
+      setDeletingId(task.id);
+      await new Promise(resolve => setTimeout(resolve, 170));
+      setTasks(current => current.filter(item => item.id !== task.id));
+      notifyWorkspace("success", "Tarea eliminada.");
     } catch (err) {
-      setTasks(previous);
       setError(err.message || "Error al eliminar la tarea.");
-      await refresh();
     } finally {
+      setDeletingId(null);
       setDeleteBusy(false);
     }
   }
@@ -894,7 +881,7 @@ export default function KanbanBoard({ board, user }) {
           onMouseDown={e => {
             if (e.target === e.currentTarget) setEditing(null);
           }}>
-          <form className="kb-modal" onSubmit={saveEdit}>
+          <form className="kb-modal" role="dialog" aria-modal="true" aria-label="Editar tarea" onSubmit={saveEdit}>
             <div className="kb-modal-head">
               <h2>Editar tarea</h2>
               <button type="button" onClick={() => setEditing(null)}

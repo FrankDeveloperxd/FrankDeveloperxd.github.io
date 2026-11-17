@@ -1,0 +1,64 @@
+/* WORKSPACE FLUID WIDTH V1 */
+
+/* Permitir que el contenido se ajuste junto al menú. */
+html body .private-root
+.private-workspace-layout > .private-content {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Ancho fluido para el panel, manteniendo el editor de notas. */
+html body .private-root
+.private-content > .private-main:not(:has(.note-page)) {
+  --workspace-gutter: clamp(16px, 2vw, 40px);
+  box-sizing: border-box;
+  width: calc(
+    100% - var(--workspace-gutter) - var(--workspace-gutter)
+  );
+  max-width: none;
+  min-width: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Dashboard: columnas según el espacio realmente disponible. */
+html body .private-root .private-main .private-modules {
+  grid-template-columns:
+    repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+}
+
+/* Proyectos y servicios: más columnas en pantallas grandes. */
+html body .private-root .private-main .private-cards,
+html body .private-root .private-main .ps-grid {
+  grid-template-columns:
+    repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+}
+
+/* Los módulos pueden crecer sin desbordar el panel. */
+html body .private-root .private-main
+:is(.wa-root, .wc-root, .gcs, .kb-root, .hv-root, .ps-root) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+html body .private-root .private-main .hv-surface {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* Márgenes menores en tablet y móvil. */
+@media (max-width: 800px) {
+  html body .private-root
+  .private-content > .private-main:not(:has(.note-page)) {
+    --workspace-gutter: 14px;
+  }
+}
+
+@media (max-width: 600px) {
+  html body .private-root .private-main .private-modules,
+  html body .private-root .private-main .private-cards,
+  html body .private-root .private-main .ps-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

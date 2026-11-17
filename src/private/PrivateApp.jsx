@@ -1,5 +1,10 @@
+import WorkspaceTheme from "./components/WorkspaceTheme.jsx";
+import WorkspaceDashboard from "./components/WorkspaceDashboard.jsx";
+import { confirmWorkspace } from "./shared/workspaceFeedback.js";
+/* WORKSPACE FAST NAVIGATION V1 */
+import { clearCachedTasks } from "./workspaceTaskCache.js";
 import { useNoteImageCleanup } from "./noteImageCleanup.js";
-import WorkspaceActivity from "./components/WorkspaceActivity.jsx";
+
 import { loadProjectAppearances, saveProjectAppearance } from "./projectAppearance.js";
 import {
   hasCachedWorkspaceAccess,
@@ -11,7 +16,7 @@ import { useRef as useWorkspaceRef } from "react";
 // WORKSPACE USER ISOLATION V1
 import NoteShareControls from "./shared/NoteShareControls.jsx";
 /* NOTE SHARING FIXED V2 */
-import { Pencil, Trash2, CalendarDays, Palette } from "lucide-react";
+import { Pencil, Trash2, CalendarDays, Palette, Target } from "lucide-react";
 import WorkspaceDialog from "./shared/WorkspaceDialog.jsx";
 import "./shared/WorkspaceLayout.css";
 import "./shared/WorkspaceCompactCards.css";
@@ -31,7 +36,12 @@ import "./private-glass.css";
 import "./private-experience.css";
 import "./private-navigation-v2.css";
 import "./private-mobile-refinement.css";
+import "./SidebarFixedFooter.css";
+import "./WorkspaceResponsive.css";
+import "./components/WorkspaceHabits.css";
+import { clearHabitsCache } from "./components/WorkspaceHabitsCache.js";
 
+const WorkspaceHabits = lazyWorkspaceModule(() => import("./components/WorkspaceHabits.jsx"));
 const KanbanBoard = lazyWorkspaceModule(() => import("./components/KanbanBoard.jsx"));
 const NoteEditor = lazyWorkspaceModule(() => import("./components/NoteEditor.jsx"));
 const WorkspaceCalendar = lazyWorkspaceModule(() => import("./components/WorkspaceCalendar.jsx"));
@@ -110,7 +120,7 @@ export default function PrivateApp() {
   /* WORKSPACE ROUTE PERSISTENCE V1 */
   const [view, setView] = useState(() => {
     const route = new URLSearchParams(window.location.search).get("vista");
-    return route === "calendar" || route === "projects" ? route : "home";
+    return ["calendar", "projects", "habits"].includes(route) ? route : "home";
   });
   const [projects, setProjects] = useState([]);
   const [boards, setBoards] = useState([]);
@@ -169,6 +179,7 @@ export default function PrivateApp() {
 
     if (previousId && previousId !== nextId) {
       clearCachedProjectServices();
+      clearCachedTasks(); clearHabitsCache();
       setAuthorized(
         hasCachedWorkspaceAccess(nextId) ? true : null
       );
@@ -239,6 +250,7 @@ export default function PrivateApp() {
         } else {
           clearWorkspaceAccess(userId);
           clearCachedProjectServices();
+      clearCachedTasks(); clearHabitsCache();
           setAuthorized(false);
         }
       });
@@ -346,7 +358,7 @@ export default function PrivateApp() {
     const nextView = params.get("vista");
     const projectId = params.get("proyecto");
     const boardId = params.get("tablero");
-    if (nextView === "calendar" || nextView === "projects") {
+    if (["calendar", "projects", "habits"].includes(nextView)) {
       setView(nextView);
       return;
     }
@@ -364,7 +376,7 @@ export default function PrivateApp() {
         return;
       }
       setProject(item);
-      await loadBoards(item.id);
+      // ProjectServices carga los servicios del proyecto.
       if (!active) return;
       if (nextView === "project") {
         setView("project");
@@ -386,7 +398,7 @@ export default function PrivateApp() {
       }
       setBoard(restoredBoard);
       setView("board");
-      await loadTasks(restoredBoard.id);
+      // KanbanBoard carga las tareas del tablero.
     })();
     return () => { active = false; };
   }, [authorized, user?.id]);
@@ -397,6 +409,16 @@ export default function PrivateApp() {
     setProject(null);
     setBoard(null);
     setError("");
+  }
+
+  function openHabits() {
+    leaveWorkspaceNote();
+    rememberWorkspaceRoute("habits");
+    setView("habits");
+    setProject(null);
+    setBoard(null);
+    setError("");
+    setSideOpen(false);
   }
 
   function openCalendar() {
@@ -415,7 +437,6 @@ export default function PrivateApp() {
     setView("projects");
     setProject(null);
     setBoard(null);
-    loadProjects();
   }
 
   function openProject(value) {
@@ -424,7 +445,6 @@ export default function PrivateApp() {
     setProject(value);
     setBoard(null);
     setView("project");
-    loadBoards(value.id);
   }
 
   function openBoard(value) {
@@ -432,7 +452,6 @@ export default function PrivateApp() {
     rememberWorkspaceRoute("board", project?.id || value.project_id, value.id);
     setBoard(value);
     setView("board");
-    loadTasks(value.id);
   }
 
   async function signIn(event) {
@@ -450,6 +469,7 @@ export default function PrivateApp() {
   async function signOut() {
     clearWorkspaceAccess(user?.id);
     clearCachedProjectServices();
+    clearCachedTasks(); clearHabitsCache();
     await supabase.auth.signOut();
     setUser(null);
     setAuthorized(false);
@@ -608,15 +628,6 @@ export default function PrivateApp() {
       return;
     }
 
-    // Animación de cierre sin bloquear la interfaz.
-    setProjectDialogClosing(true);
-
-    await new Promise(resolve => setTimeout(resolve, 130));
-
-    setProjectDialog(null);
-    setProjectDialogClosing(false);
-    setProjectRemovingId(item.id);
-
     try {
       const { error: deleteError } = await supabase
         .from(TABLES.projects)
@@ -625,6 +636,13 @@ export default function PrivateApp() {
         .eq("owner_id", user.id);
 
       if (deleteError) throw deleteError;
+
+      // Close only after the database confirms deletion.
+      setProjectDialogClosing(true);
+      await new Promise(resolve => setTimeout(resolve, 130));
+      setProjectDialog(null);
+      setProjectDialogClosing(false);
+      setProjectRemovingId(item.id);
 
       // Dejar visible brevemente la animación de salida.
       await new Promise(resolve => setTimeout(resolve, 160));
@@ -705,7 +723,7 @@ export default function PrivateApp() {
   }
 
   async function removeItem(table, id, reload) {
-    if (!window.confirm("¿Eliminar este elemento y su contenido relacionado?")) return;
+    if (!await confirmWorkspace({title:"Eliminar elemento",message:"Se eliminará este elemento y su contenido relacionado. Esta acción es permanente.",confirmLabel:"Eliminar"})) return;
     const { error } = await supabase.from(table).delete().eq("id", id);
     if (error) setError(formatError(error));
     else {
@@ -775,7 +793,7 @@ export default function PrivateApp() {
 
   return (
     <div className="private-root">
-      <WorkspaceToasts />
+      <WorkspaceToasts key={user.id} />
       <header className="private-topbar">
         <div className="private-header-group">
   <span className="private-topbar-title">Panel personal</span>
@@ -814,6 +832,7 @@ export default function PrivateApp() {
 
         <div className="private-top-actions">
 
+          <WorkspaceTheme key={user.id} userId={user.id}/>
           <SystemNotifications userId={user?.id} />
           <button onClick={signOut}><Icon name="logout" size={17}/> Salir</button>
         </div>
@@ -834,15 +853,31 @@ export default function PrivateApp() {
           className={`private-sidebar ${sideOpen ? "is-open" : ""}`}
           aria-label="Navegacion del espacio privado"
         >
-          <div className="private-sidebar-brand">
-            <div className="private-sidebar-mark">
+          <div className="private-sidebar-scroll">
+
+          {/* WORKSPACE BRAND TOGGLE V1 */}
+          <button
+            type="button"
+            className="private-sidebar-brand"
+            aria-label="Alternar menú lateral"
+            title="Plegar o desplegar menú"
+            onClick={() => {
+              if (window.matchMedia("(max-width: 800px)").matches) {
+                setSideOpen(value => !value);
+              } else {
+                setSideCollapsed(value => !value);
+              }
+            }}
+          >
+            <span className="private-sidebar-mark">
               <Icon name="grid" size={22}/>
-            </div>
-            <div className="private-sidebar-brand-copy">
+            </span>
+            <span className="private-sidebar-brand-copy">
               <strong>Mi Workspace</strong>
               <small>Espacio personal</small>
-            </div>
-          </div>
+            </span>
+          
+          </button>
 
           <div className="private-sidebar-group-label">GENERAL</div>
 
@@ -862,7 +897,7 @@ export default function PrivateApp() {
 
             <button
               type="button"
-              className={`private-sidebar-link ${!["home", "calendar"].includes(view) ? "active" : ""}`}
+              className={`private-sidebar-link ${["projects", "project", "board"].includes(view) ? "active" : ""}`}
               onClick={() => {
                 openProjects();
                 setSideOpen(false);
@@ -877,12 +912,21 @@ export default function PrivateApp() {
               onClick={openCalendar} title="Calendario">
               <CalendarDays size={19}/><span>Calendario</span>
             </button>
+                      <button
+              type="button"
+              className={`private-sidebar-link ${view === "habits" ? "active" : ""}`}
+              onClick={openHabits}
+              title="Hábitos"
+            >
+              <Target size={19}/>
+              <span>Hábitos</span>
+            </button>
           </nav>
 
           <div className="private-sidebar-group-label">PROYECTOS</div>
 
           <div className="private-sidebar-projects">
-            {projects.slice(0, 8).map(item => (
+            {projects.map(item => (
               <button
                 type="button"
                 key={item.id}
@@ -917,13 +961,16 @@ export default function PrivateApp() {
             </button>
           </div>
 
-          <div className="private-sidebar-bottom">
-            <div className="private-sidebar-group-label">PROXIMAMENTE</div>
+          
+<div className="private-sidebar-group-label">PROXIMAMENTE</div>
             <div className="private-sidebar-upcoming">
               <Icon name="plus" size={18}/>
               <span>Mas modulos</span>
             </div>
-            <button
+          </div>
+
+          <div className="private-sidebar-bottom">
+<button
               type="button"
               className="private-sidebar-logout"
               onClick={signOut}
@@ -951,7 +998,9 @@ export default function PrivateApp() {
             Inicio
           </button>
 
-          {view === "calendar" ? (
+          {view === "habits" ? (
+            <><span className="workspace-pathbar-separator" aria-hidden="true">›</span><span className="workspace-pathbar-current">Hábitos</span></>
+          ) : view === "calendar" ? (
             <><span className="workspace-pathbar-separator" aria-hidden="true">›</span><span className="workspace-pathbar-current">Calendario</span></>
           ) : view !== "home" && (
             <>
@@ -1017,38 +1066,23 @@ export default function PrivateApp() {
           <button onClick={()=>setError("")}>Cerrar</button>
         </div>}
 
+        {!noteId && view === "habits" && (
+          <WorkspaceHabits key={user.id} user={user}/>
+        )}
+
         {!noteId && view === "calendar" && (
           <WorkspaceCalendar key={user.id} user={user} projects={projects}/>
         )}
 
-        {!noteId && view === "home" && <>
-          <div className="private-hero">
-            <span className="private-kicker">PANEL PERSONAL</span>
-            <h1>Un espacio para todas tus ideas.</h1>
-            <p>Organiza tus herramientas y proyectos desde un solo lugar.</p>
-          </div>
-          <h2 className="private-section-title">Mis módulos</h2>
-          <div className="private-modules">
-            <button className="private-module" onClick={openProjects}>
-              <span className="private-module-icon"><Icon name="board" size={29}/></span>
-              <strong>Proyectos</strong>
-              <small>Administra tus proyectos y sus tableros de trabajo.</small>
-              <span className="private-module-link">Abrir módulo </span>
-            </button>
-            <button type="button" className="private-module private-calendar-module-card" onClick={() => { openCalendar(); }}>
-              <span className="private-module-icon"><CalendarDays size={29}/></span>
-              <strong>Calendario</strong>
-              <small>Organiza tu agenda y conecta tus calendarios de Google.</small>
-              <span className="private-module-link">Abrir módulo</span>
-            </button>
-            <div className="private-module private-module-future">
-              <span className="private-module-icon"><Icon name="plus" size={29}/></span>
-              <strong>Próximos módulos</strong>
-              <small>Este dashboard crecerá contigo.</small>
-            </div>
-          </div>
-        <WorkspaceActivity userId={user.id} projects={projects} />
-        </>}
+        {!noteId && view === "home" && (
+          <WorkspaceDashboard
+            userId={user.id}
+            projects={projects}
+            onProjects={openProjects}
+            onCalendar={openCalendar}
+            onHabits={openHabits}
+          />
+        )}
 
         {!noteId && view === "projects" && <>
 
@@ -1067,6 +1101,7 @@ export default function PrivateApp() {
               item={projectDialog?.item}
               value={projectName}
               onChange={setProjectName}
+              error={error}
               onClose={closeProjectDialog}
               onConfirm={confirmProjectAction}
               busy={projectBusy}

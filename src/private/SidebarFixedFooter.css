@@ -1,0 +1,73 @@
+/* Menú desplazable y cierre de sesión siempre visible. */
+html body .private-root #workspace-sidebar {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0 !important;
+}
+
+html body .private-root #workspace-sidebar > .private-sidebar-scroll {
+  min-width: 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 18px 12px 12px;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+html body .private-root #workspace-sidebar > .private-sidebar-bottom {
+  position: static;
+  min-width: 0;
+  margin: 0;
+  padding: 12px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  border-top: 1px solid #edf0f5;
+  background: #fff;
+}
+
+html body .private-root #workspace-sidebar
+> .private-sidebar-bottom > .private-sidebar-logout {
+  margin-top: 0;
+}
+
+@media (min-width: 801px) {
+  html body .private-root .is-collapsed #workspace-sidebar
+  > .private-sidebar-scroll,
+  html body .private-root .is-collapsed #workspace-sidebar
+  > .private-sidebar-bottom {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
+@media (max-width: 800px) {
+  html body .private-root #workspace-sidebar > .private-sidebar-scroll {
+    padding: 12px 9px;
+  }
+
+  html body .private-root #workspace-sidebar > .private-sidebar-bottom {
+    padding-left: 9px;
+    padding-right: 9px;
+  }
+}
+/* WORKSPACE BRAND TOGGLE V1 */
+html body .private-root #workspace-sidebar button.private-sidebar-brand {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+html body .private-root #workspace-sidebar button.private-sidebar-brand:focus-visible {
+  outline: 2px solid #0a84ff;
+  outline-offset: -2px;
+  border-radius: 10px;
+}
