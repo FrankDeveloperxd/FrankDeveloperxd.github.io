@@ -37,3 +37,19 @@
 /* Error and informational notices stay visible over editor dialogs. */
 .workspace-toast-stack { z-index:11000; }
 .wkd-error { padding:10px 12px; border-radius:9px; background:#fff1f3; color:#be2544; font-size:13px; line-height:1.5; }
+
+/* SOLID FEEDBACK RESULTS V2: portal styles override the theme intentionally. */
+html[data-workspace-theme] .wsf-dialog .wsf-icon.is-success { background:#16a34a !important; color:#fff !important; }
+html[data-workspace-theme] .wsf-dialog .wsf-icon:is(.is-error,.is-danger) { background:#ef3340 !important; color:#fff !important; }
+html[data-workspace-theme] .wsf-dialog .wsf-icon:is(.is-info,.is-loading) { background:#2563eb !important; color:#fff !important; }
+.wsf-success .wsf-icon { width:76px; height:76px; border-radius:50%; margin:0 auto 18px; animation:wsf-result-pop 380ms cubic-bezier(.2,.8,.3,1) both; }
+html[data-workspace-theme] .wsf-dialog .wsf-icon svg { color:#fff !important; stroke:currentColor !important; opacity:1 !important; filter:none !important; }
+.wsf-result-error .wsf-icon svg { animation:wsf-error-pop 360ms ease-out; }
+.wsf-result-error .wsf-icon svg path { stroke-dasharray:30; stroke-dashoffset:30; animation:wsf-check-draw 220ms ease-out 120ms forwards; }
+.wsf-result-loading .wsf-icon svg { animation:wsf-loader-turn 750ms linear infinite; }
+.wsf-result-loading .wsf-icon svg path,.wsf-result-info .wsf-icon svg path { stroke-dasharray:none; stroke-dashoffset:0; animation:none; }
+.wsf-overlay,.wsf-dialog { backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+@keyframes wsf-result-pop { 0% {transform:scale(.6)} 70% {transform:scale(1.12)} 100% {transform:scale(1)} }
+@keyframes wsf-error-pop { 0%,100% {transform:rotate(0)} 35% {transform:rotate(-9deg)} 70% {transform:rotate(7deg)} }
+@keyframes wsf-loader-turn { to {transform:rotate(360deg)} }
+@media(prefers-reduced-motion:reduce) { .wsf-success .wsf-icon,.wsf-icon svg,.wsf-icon svg path { animation:none !important; stroke-dashoffset:0 !important; } }

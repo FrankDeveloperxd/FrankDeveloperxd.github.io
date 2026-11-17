@@ -668,13 +668,28 @@ export default function PrivateApp() {
     event.preventDefault();
     if (!newName.trim()) return;
     setBusy(true);
+    /* PROJECT LOADING FEEDBACK V2 */
+    notifyWorkspace("loading", "Creando proyecto…");
+    try {
     const { error } = await supabase.from(TABLES.projects)
       .insert({ title: newName.trim(), owner_id: user.id });
     setBusy(false);
-    if (error) return setError(formatError(error));
+    if (error) {
+      const message = formatError(error);
+      setError(message);
+      notifyWorkspace("error", message);
+      return;
+    }
     setNewName("");
     await loadProjects();
     notifyWorkspace("success", "Proyecto creado correctamente.");
+    } catch (error) {
+      const message = error?.message || "No se pudo completar la operación.";
+      setError(message);
+      notifyWorkspace("error", message);
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function createBoard(event) {

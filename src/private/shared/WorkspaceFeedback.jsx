@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { CheckCircle2, Trash2, Unplug, X } from 'lucide-react';
+import { CheckCircle2, Trash2, Unplug, X, LoaderCircle, Info } from 'lucide-react';
 import { createFeedbackController } from './workspaceFeedback.js';
 import './WorkspaceFeedback.css';
 
@@ -11,7 +11,9 @@ export default function WorkspaceFeedback() {
     const manager = createFeedbackController(setActive);
     controller.current = manager;
     const notify = event => {
-      if (event.detail?.type === 'success') manager.success(String(event.detail.message || ''));
+      const {type,message}=event.detail || {};
+      if (type === 'loading') manager.loading(String(message || 'Guardando…'));
+      else if (['success','error','info'].includes(type)) manager.result(type,String(message || ''));
     };
     const confirm = event => {
       if (!event.detail || event.detail.handled) return;
@@ -43,13 +45,15 @@ export default function WorkspaceFeedback() {
   }, [active?.id]);
 
   if (!active) return null;
-  const success = active.kind === 'success';
+  const success = active.kind !== 'confirm';
+  const loading = active.kind === 'loading';
+  const tone = active.kind === 'error' ? 'error' : active.kind === 'info' ? 'info' : loading ? 'loading' : 'success';
   const closing = active.phase === 'closing';
-  const Icon = success ? CheckCircle2 : active.danger === false ? Unplug : Trash2;
+  const Icon = success ? (loading ? LoaderCircle : tone === 'error' ? X : tone === 'info' ? Info : CheckCircle2) : active.danger === false ? Unplug : Trash2;
   return createPortal(
     <div className={`wsf-overlay ${closing ? 'is-closing' : ''}`}>
-      <section ref={dialog} tabIndex={-1}
-        className={`wsf-dialog ${success ? 'wsf-success' : 'wsf-confirm'} ${closing ? 'is-closing' : ''}`}
+      <section key={active.id} ref={dialog} tabIndex={-1}
+        className={`wsf-dialog ${success ? `wsf-success wsf-result-${tone}` : 'wsf-confirm'} ${closing ? 'is-closing' : ''}`}
         role={success ? 'dialog' : 'alertdialog'} aria-modal="true"
         aria-labelledby={`wsf-title-${active.id}`}
         aria-describedby={!success ? `wsf-description-${active.id}` : undefined}
@@ -64,7 +68,7 @@ export default function WorkspaceFeedback() {
             else if(!event.shiftKey && (document.activeElement===last || document.activeElement===dialog.current)) {event.preventDefault();first.focus();}
           }
         }}>
-        <span className={`wsf-icon ${success ? 'is-success' : active.danger===false ? 'is-info' : 'is-danger'}`} aria-hidden="true"><Icon size={success ? 46 : 26} strokeWidth={success ? 1.8 : 2}/></span>
+        <span className={`wsf-icon ${success ? `is-${tone}` : active.danger===false ? 'is-info' : 'is-danger'}`} aria-hidden="true"><Icon size={success ? 46 : 26} strokeWidth={success ? 1.8 : 2}/></span>
         {!success && <button className="wsf-close" type="button" aria-label="Cerrar" disabled={closing} onClick={()=>controller.current?.close(false)}><X size={19}/></button>}
         <h2 id={`wsf-title-${active.id}`}>{success ? active.message : active.title || 'Confirmar acción'}</h2>
         {success ? <span className="wsf-sr" role="status">{active.message}</span> : <>

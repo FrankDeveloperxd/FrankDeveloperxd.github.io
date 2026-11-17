@@ -20,7 +20,7 @@ export function createFeedbackController(onChange, clock = globalThis) {
     later(() => {
       if (active?.id === id && active.phase === 'opening') { active.phase = 'visible'; publish(); }
     }, 200);
-    if (active.kind === 'success') later(() => close(), 1380);
+    if (['success','error','info'].includes(active.kind)) later(() => { if(active?.id===id) close(); }, active.kind==='error'?2400:1380);
   }
   function close(answer = false) {
     if (!active || active.phase === 'closing') return;
@@ -35,13 +35,22 @@ export function createFeedbackController(onChange, clock = globalThis) {
     }, 220);
   }
   return {
-    success(message) {
+    loading(message) {
+      if (disposed || active) return;
+      queue.push({kind:'loading', id:crypto.randomUUID(), message}); next();
+    },
+    result(kind,message) {
       if (disposed || !message) return;
       const now = clock.Date?.now?.() ?? Date.now();
-      if (lastMessage === message && now - lastTime < 600) return;
-      lastMessage = message; lastTime = now;
-      queue.push({ kind:'success', id:crypto.randomUUID(), message }); next();
+      if (lastMessage === kind+message && now-lastTime<600) return;
+      lastMessage=kind+message; lastTime=now;
+      if(active?.kind==='loading') {
+        timers.forEach(id=>clock.clearTimeout(id)); timers=[];
+        active=null;
+        queue.unshift({kind,id:crypto.randomUUID(),message}); next();
+      } else { queue.push({kind,id:crypto.randomUUID(),message}); next(); }
     },
+    success(message) { this.result('success',message); },
     confirm(options) {
       if (disposed) { options.resolve(false); return; }
       queue.push({ ...options, kind:'confirm', id:crypto.randomUUID() }); next();

@@ -54,7 +54,7 @@ export default function WorkspaceToasts() {
 
     function onNotify(event) {
       const { type, message } = event.detail || {};
-      if (!message || type === "success") return;
+      if (!message || ["success","error","info","loading"].includes(type)) return;
 
       const id = crypto.randomUUID();
       const kind = ["success", "error", "info"].includes(type)
