@@ -1,16 +1,13 @@
+@import "./animations/feedback.motion.css";
 .wsf-overlay { position:fixed; inset:0; z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(23,37,63,.38); animation:wsf-backdrop-in 160ms ease both; }
 .wsf-overlay.is-closing { animation:wsf-backdrop-out 220ms ease both; }
 .wsf-dialog { position:relative; width:min(420px,100%); max-height:calc(100dvh - 40px); overflow:auto; box-sizing:border-box; padding:27px; border:1px solid #e0e7f2; border-radius:19px; background:#fff; color:#22324d; box-shadow:0 16px 45px rgba(12,27,56,.14); font-family:inherit; outline:none; animation:wsf-window-in 200ms cubic-bezier(.2,.8,.3,1) both; }
 .wsf-dialog.is-closing { animation:wsf-window-out 220ms ease both; }
-.wsf-success { width:min(340px,100%); padding:30px 24px; text-align:center; }
 .wsf-icon { display:grid; place-items:center; width:48px; height:48px; border-radius:13px; margin-bottom:18px; }
-.wsf-icon.is-success { width:76px; height:76px; margin:0 auto 18px; background:#f0fdf4; color:#16a34a; border-radius:50%; animation:wsf-check-pop 480ms cubic-bezier(.2,.8,.3,1) both; }
 .wsf-icon.is-danger { color:#e54860; background:#fff1f3; }
 .wsf-icon.is-info { color:#2867e9; background:#eef4ff; }
 .wsf-icon svg { flex:none; }
-.wsf-success .wsf-icon svg path,.wsf-success .wsf-icon svg polyline { stroke-dasharray:90; stroke-dashoffset:90; animation:wsf-check-draw 450ms ease-out 180ms forwards; }
 .wsf-dialog h2 { margin:0; font-size:21px; line-height:1.45; font-weight:700; overflow-wrap:anywhere; }
-.wsf-success h2 { font-size:17px; }
 .wsf-dialog p { color:#6b7d96; font-size:14px; line-height:1.7; margin:13px 0 22px; white-space:pre-line; overflow-wrap:anywhere; }
 .wsf-dialog button { font:inherit; cursor:pointer; }
 .wsf-close { position:absolute; top:15px; right:15px; display:grid; place-items:center; width:32px; height:32px; padding:0; border:1px solid #e1e8f3; background:#fff; color:#74839d; border-radius:9px; }
@@ -21,12 +18,6 @@
 .wsf-dialog button:disabled { opacity:.5; cursor:default; }
 .wsf-dialog button:focus-visible { outline:2px solid #8bafff; outline-offset:3px; }
 .wsf-sr { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
-@keyframes wsf-backdrop-in { from {opacity:0} to {opacity:1} }
-@keyframes wsf-backdrop-out { from {opacity:1} to {opacity:0} }
-@keyframes wsf-window-in { from {opacity:0;transform:translateY(12px) scale(.96)} to {opacity:1;transform:translateY(0) scale(1)} }
-@keyframes wsf-window-out { from {opacity:1;transform:translateY(0) scale(1)} to {opacity:0;transform:translateY(-5px) scale(.98)} }
-@keyframes wsf-check-pop { 0% {opacity:0;transform:scale(.65)} 70% {opacity:1;transform:scale(1.08)} 100% {opacity:1;transform:scale(1)} }
-@keyframes wsf-check-draw { to {stroke-dashoffset:0} }
 /* Same entrance for the existing private workspace editors and confirmations. */
 .private-root :is(.ps-dialog,.wc-dialog,.gcs-dialog,.gcs-confirm-dialog,.kb-modal,.kb-delete-dialog,.pce-dialog,.ns-dialog,.hv-dialog,.wkd-dialog):not(.wkd-out):not(.kb-pop-out) { animation:wsf-window-in 200ms cubic-bezier(.2,.8,.3,1) both; }
 @media(prefers-reduced-motion:reduce) {
@@ -38,18 +29,66 @@
 .workspace-toast-stack { z-index:11000; }
 .wkd-error { padding:10px 12px; border-radius:9px; background:#fff1f3; color:#be2544; font-size:13px; line-height:1.5; }
 
-/* SOLID FEEDBACK RESULTS V2: portal styles override the theme intentionally. */
-html[data-workspace-theme] .wsf-dialog .wsf-icon.is-success { background:#16a34a !important; color:#fff !important; }
-html[data-workspace-theme] .wsf-dialog .wsf-icon:is(.is-error,.is-danger) { background:#ef3340 !important; color:#fff !important; }
-html[data-workspace-theme] .wsf-dialog .wsf-icon:is(.is-info,.is-loading) { background:#2563eb !important; color:#fff !important; }
-.wsf-success .wsf-icon { width:76px; height:76px; border-radius:50%; margin:0 auto 18px; animation:wsf-result-pop 380ms cubic-bezier(.2,.8,.3,1) both; }
-html[data-workspace-theme] .wsf-dialog .wsf-icon svg { color:#fff !important; stroke:currentColor !important; opacity:1 !important; filter:none !important; }
-.wsf-result-error .wsf-icon svg { animation:wsf-error-pop 360ms ease-out; }
-.wsf-result-error .wsf-icon svg path { stroke-dasharray:30; stroke-dashoffset:30; animation:wsf-check-draw 220ms ease-out 120ms forwards; }
-.wsf-result-loading .wsf-icon svg { animation:wsf-loader-turn 750ms linear infinite; }
-.wsf-result-loading .wsf-icon svg path,.wsf-result-info .wsf-icon svg path { stroke-dasharray:none; stroke-dashoffset:0; animation:none; }
-.wsf-overlay,.wsf-dialog { backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
-@keyframes wsf-result-pop { 0% {transform:scale(.6)} 70% {transform:scale(1.12)} 100% {transform:scale(1)} }
-@keyframes wsf-error-pop { 0%,100% {transform:rotate(0)} 35% {transform:rotate(-9deg)} 70% {transform:rotate(7deg)} }
-@keyframes wsf-loader-turn { to {transform:rotate(360deg)} }
-@media(prefers-reduced-motion:reduce) { .wsf-success .wsf-icon,.wsf-icon svg,.wsf-icon svg path { animation:none !important; stroke-dashoffset:0 !important; } }
+
+/* Kinetic Glyph — result notices only. Confirmation dialogs remain unchanged. */
+.wsf-overlay.is-result { background:rgba(8,12,18,.48); animation:wsf-kinetic-backdrop-in 130ms ease-out both; }
+.wsf-overlay.is-result.is-closing { animation:wsf-kinetic-backdrop-out 140ms ease-in both; }
+.wsf-kinetic-result {
+  --wsf-accent:#119875;
+  width:min(350px,100%);
+  min-height:226px;
+  padding:27px 24px 25px;
+  text-align:center;
+  background:#fcfdff;
+  color:#151b25;
+  border:1px solid #dde3eb;
+  border-radius:21px;
+  box-shadow:0 18px 46px #0509114a,0 1px 2px #05091118;
+  animation:wsf-kinetic-window-in 220ms cubic-bezier(.17,.88,.25,1) both;
+}
+.wsf-kinetic-result.is-closing { animation:wsf-kinetic-window-out 180ms cubic-bezier(.48,0,.85,.28) both; }
+.wsf-result-error { --wsf-accent:#db5664; }
+.wsf-result-info { --wsf-accent:#4779d6; }
+.wsf-result-warning { --wsf-accent:#c68b39; }
+.wsf-result-loading { --wsf-accent:#556c85; }
+.wsf-kinetic-meta { display:block;font-size:10px;letter-spacing:.13em;color:#8895a6;text-transform:uppercase;font-weight:730; }
+.wsf-kinetic-seal { width:96px;height:94px;display:grid;place-items:center;margin:9px auto 6px;transition:opacity 110ms ease,transform 110ms ease; }
+.wsf-kinetic-result.is-morphing .wsf-kinetic-seal { opacity:0;transform:translateY(-4px) scale(.97); }
+.wsf-glyph { display:block;width:78px;height:78px;color:var(--wsf-accent);overflow:visible; }
+.wsf-glyph-track { fill:none;stroke:currentColor;stroke-width:1.45;opacity:.13; }
+.wsf-glyph-ring { fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-dasharray:152;stroke-dashoffset:152;transform-origin:36px 36px;transform:rotate(-105deg);animation:wsf-kinetic-ring 410ms cubic-bezier(.28,.75,.2,1) 55ms both; }
+.wsf-glyph-stroke { fill:none;stroke:currentColor;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40; }
+.wsf-glyph-check-short { animation:wsf-kinetic-check-short 240ms cubic-bezier(.18,.8,.2,1) 160ms both; }
+.wsf-glyph-check-long { animation:wsf-kinetic-check-long 290ms cubic-bezier(.18,.8,.2,1) 230ms both; }
+.wsf-glyph-cross-a { animation:wsf-kinetic-cross-a 260ms cubic-bezier(.18,.8,.2,1) 170ms both; }
+.wsf-glyph-cross-b { animation:wsf-kinetic-cross-b 260ms cubic-bezier(.18,.8,.2,1) 250ms both; }
+.wsf-glyph-bang-line { animation:wsf-kinetic-arrive-top 270ms cubic-bezier(.16,.84,.23,1) 150ms both; }
+.wsf-glyph-bang-dot { animation:wsf-kinetic-arrive-bottom 220ms cubic-bezier(.16,.84,.23,1) 265ms both; }
+.wsf-glyph-info-dot { animation:wsf-kinetic-arrive-top 230ms cubic-bezier(.16,.84,.23,1) 150ms both; }
+.wsf-glyph-info-line { animation:wsf-kinetic-arrive-bottom 250ms cubic-bezier(.16,.84,.23,1) 205ms both; }
+.wsf-glyph-spark { fill:currentColor;opacity:0;animation:wsf-kinetic-spark 350ms ease-out 265ms both; }
+.wsf-glyph-loader { transform-origin:36px 36px;animation:wsf-kinetic-loader 790ms linear infinite; }
+.wsf-glyph-loader-path { fill:none;stroke:currentColor;stroke-width:3.2;stroke-linecap:round; }
+.wsf-glyph-loader-dot { fill:currentColor; }
+.wsf-kinetic-copy { animation:wsf-kinetic-copy-in 180ms ease-out 330ms both; }
+.wsf-kinetic-result.is-morphing .wsf-kinetic-copy { animation:none!important;opacity:0;transform:translateY(-5px); }
+.wsf-kinetic-result.is-closing .wsf-kinetic-copy { animation:wsf-kinetic-copy-out 140ms ease-in both; }
+.wsf-kinetic-result.is-closing .wsf-glyph-frame { animation:wsf-kinetic-glyph-out 175ms cubic-bezier(.4,0,.8,.4) both; }
+.wsf-kinetic-copy h2 { font-size:17px;font-weight:680;letter-spacing:-.035em;line-height:1.45;margin:4px 0 7px;color:#151b25;overflow-wrap:anywhere; }
+.wsf-kinetic-progress { display:block;width:43px;height:2px;margin:22px auto 0;border-radius:3px;background:#dce2e9;overflow:hidden; }
+.wsf-kinetic-progress > span { display:block;width:100%;height:100%;background:var(--wsf-accent);transform-origin:left center;animation:wsf-kinetic-countdown var(--wsf-hold-duration,1450ms) linear both; }
+.wsf-result-loading .wsf-kinetic-copy { animation:wsf-kinetic-copy-in 160ms ease-out 120ms both; }
+@media(max-width:420px) { .wsf-kinetic-result { padding:25px 18px;min-height:216px; } }
+@media(prefers-reduced-motion:reduce) {
+  .wsf-overlay.is-result,.wsf-overlay.is-result.is-closing,
+  .wsf-kinetic-result,.wsf-kinetic-result.is-closing,
+  .wsf-kinetic-copy,.wsf-kinetic-result.is-closing .wsf-kinetic-copy,
+  .wsf-kinetic-result.is-closing .wsf-glyph-frame,
+  .wsf-glyph-ring,.wsf-glyph-stroke,.wsf-glyph-spark,.wsf-glyph-loader,
+  .wsf-kinetic-progress > span { animation:none!important;transition:none!important; }
+  .wsf-overlay.is-result { background:rgba(8,12,18,.48); }
+  .wsf-kinetic-result { opacity:1;transform:none; }
+  .wsf-glyph-ring,.wsf-glyph-stroke { stroke-dashoffset:0;opacity:1; }
+  .wsf-glyph-spark { display:none; }
+  .wsf-kinetic-copy { opacity:1;transform:none; }
+}

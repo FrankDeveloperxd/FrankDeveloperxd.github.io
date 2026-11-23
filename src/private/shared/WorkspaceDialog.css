@@ -1,4 +1,5 @@
-﻿.wkd-backdrop {
+﻿@import "./animations/dialogs.motion.css";
+.wkd-backdrop {
   position: fixed;
   inset: 0;
   z-index: 1000;
@@ -146,21 +147,6 @@
 .wkd-actions button:disabled {
   opacity: .5;
   cursor: default;
-}
-
-@keyframes wkd-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes wkd-pop {
-  0% { opacity: 0; transform: translateY(12px) scale(.88); }
-  65% { opacity: 1; transform: translateY(-2px) scale(1.025); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes wkd-exit {
-  to { opacity: 0; transform: translateY(7px) scale(.92); }
 }
 
 @media (max-width: 550px) {

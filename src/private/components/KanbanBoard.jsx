@@ -1,4 +1,3 @@
-import { notifyWorkspace } from "./WorkspaceToasts.jsx";
 import { readCachedTasks, saveCachedTasks } from "../workspaceTaskCache.js";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -427,7 +426,6 @@ export default function KanbanBoard({ board, user }) {
         createError?.message || "No se pudo guardar la tarea."
       );
     } else {
-      notifyWorkspace("success", "Tarea creada.");
       // Sustituir el ID temporal por el definitivo.
       setTasks(current => {
         const withoutTemporary = current.filter(
@@ -480,7 +478,6 @@ export default function KanbanBoard({ board, user }) {
     if (e2) setError(e2.message);
     else {
       setEditing(null);
-      notifyWorkspace("success", "Tarea actualizada.");
       await refresh();
     }
     setWorking(false);
@@ -503,7 +500,6 @@ export default function KanbanBoard({ board, user }) {
       setDeletingId(task.id);
       await new Promise(resolve => setTimeout(resolve, 170));
       setTasks(current => current.filter(item => item.id !== task.id));
-      notifyWorkspace("success", "Tarea eliminada.");
     } catch (err) {
       setError(err.message || "Error al eliminar la tarea.");
     } finally {

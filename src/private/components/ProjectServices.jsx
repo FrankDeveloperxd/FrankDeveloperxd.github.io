@@ -215,10 +215,12 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
     const [boardsResult, notesResult] = await Promise.all([
       supabase.from("workspace_boards")
         .select("*").eq("project_id", projectId)
+        .eq("owner_id", user.id)
         .order("created_at", { ascending: false }),
       supabase.from("workspace_notes")
         .select("id,title,created_at,updated_at,project_id,owner_id")
         .eq("project_id", projectId)
+        .eq("owner_id", user.id)
         .order("created_at", { ascending: false })
     ]);
 
@@ -279,7 +281,7 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
 
     // Actualizacion posterior desde Supabase.
     void refresh();
-  }, [project.id]);
+  }, [project.id, user.id]);
 
   function createModal() {
     setType("kanban");
@@ -320,6 +322,10 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
 
     const name = title.trim();
     if (!name || busy) return;
+    if (!user?.id || !project?.id || project.owner_id !== user.id) {
+      notifyWorkspace("error", "El proyecto seleccionado no pertenece a esta cuenta. Regresa a Proyectos y vuelve a abrirlo.");
+      return;
+    }
 
     setBusy(true);
     const editing = modal?.action === "rename";
@@ -336,9 +342,31 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
         .eq("id", modal.item.id)
         .eq("owner_id", user.id);
     } else {
+      // La FK compuesta requiere un proyecto existente con este mismo owner_id.
+      // Validar antes de insertar evita intentar crear servicios sobre proyectos
+      // ajenos, eliminados o restaurados desde una sesion anterior.
+      const { data: parentProject, error: parentError } = await supabase
+        .from("workspace_projects")
+        .select("id")
+        .eq("id", project.id)
+        .eq("owner_id", user.id)
+        .maybeSingle();
+
+      if (parentError || !parentProject) {
+        setBusy(false);
+        if (parentError) console.error("No se pudo verificar el proyecto:", parentError);
+        notifyWorkspace(
+          "error",
+          parentError
+            ? "No se pudo verificar el proyecto. Revisa la conexion y tus permisos."
+            : "El proyecto no existe para esta cuenta. Vuelve a Proyectos y abre uno de tu usuario."
+        );
+        return;
+      }
+
       result = await supabase.from(table).insert({
         title: name,
-        project_id: project.id,
+        project_id: parentProject.id,
         owner_id: user.id,
         ...(kind === "note" ? { content: "" } : {})
       });
@@ -347,7 +375,13 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
     setBusy(false);
 
     if (result.error) {
-      notifyWorkspace("error", result.error.message);
+      console.error("No se pudo guardar el servicio:", result.error);
+      notifyWorkspace(
+        "error",
+        result.error.code === "23503"
+          ? "No se pudo asociar el servicio al proyecto. Comprueba que sea tuyo y vuelve a abrirlo."
+          : result.error.message
+      );
       return;
     }
 

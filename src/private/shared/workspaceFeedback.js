@@ -7,60 +7,110 @@ export function confirmWorkspace(options) {
   });
 }
 
-// Pure controller: one floating window at a time, including its closing animation.
+// Una sola ventana a la vez. Se desmonta al terminar su animacion de salida.
+// Un fallback protege los casos de reduced motion o animationend no disparado.
 export function createFeedbackController(onChange, clock = globalThis) {
-  let active = null, queue = [], disposed = false, timers = [];
+  const VISIBLE_MS = { success: 1450, info: 1450, error: 1900, warning: 1700 };
+  const EXIT_FALLBACK_MS = 280;
+  const MORPH_MS = 110;
+  let active = null, queue = [], disposed = false;
+  const timers = new Set();
   let lastMessage = '', lastTime = -Infinity;
-  const later = (fn, ms) => { const id = clock.setTimeout(fn, ms); timers.push(id); };
+
+  const later = (fn, ms) => {
+    const id = clock.setTimeout(() => { timers.delete(id); fn(); }, ms);
+    timers.add(id);
+  };
+  const clearTimers = () => {
+    for (const id of timers) clock.clearTimeout(id);
+    timers.clear();
+  };
   const publish = () => onChange(active ? { ...active } : null);
+
+  function scheduleResultClose(id, kind) {
+    later(() => {
+      if (active?.id === id && active.kind === kind && active.phase !== 'closing') close();
+    }, VISIBLE_MS[kind] ?? VISIBLE_MS.info);
+  }
+
   function next() {
     if (disposed || active || !queue.length) return;
-    active = { ...queue.shift(), phase: 'opening' }; publish();
+    active = { ...queue.shift(), phase: 'opening', morphing: false };
+    publish();
     const id = active.id;
     later(() => {
-      if (active?.id === id && active.phase === 'opening') { active.phase = 'visible'; publish(); }
-    }, 200);
-    if (['success','error','info'].includes(active.kind)) later(() => { if(active?.id===id) close(); }, active.kind==='error'?2400:1380);
+      if (active?.id === id && active.phase === 'opening') {
+        active.phase = 'visible';
+        publish();
+      }
+    }, 220);
+    if (active.kind in VISIBLE_MS) scheduleResultClose(id, active.kind);
   }
+
+  function finishClose(id) {
+    if (disposed || !active || active.id !== id || active.phase !== 'closing') return;
+    const finished = active;
+    clearTimers();
+    active = null;
+    publish();
+    finished.resolve?.(finished.answer ?? false);
+    next();
+  }
+
   function close(answer = false) {
     if (!active || active.phase === 'closing') return;
-    active.phase = 'closing'; publish();
-    const current = active;
-    later(() => {
-      if (disposed) return;
-      timers.forEach(id => clock.clearTimeout(id)); timers = [];
-      active = null; publish();
-      current.resolve?.(answer);
-      next();
-    }, 220);
+    clearTimers();
+    active = { ...active, phase: 'closing', answer };
+    publish();
+    const id = active.id;
+    later(() => finishClose(id), EXIT_FALLBACK_MS);
   }
+
   return {
     loading(message) {
       if (disposed || active) return;
-      queue.push({kind:'loading', id:crypto.randomUUID(), message}); next();
+      queue.push({ kind: 'loading', id: crypto.randomUUID(), message });
+      next();
     },
-    result(kind,message) {
+    result(kind, message) {
       if (disposed || !message) return;
       const now = clock.Date?.now?.() ?? Date.now();
-      if (lastMessage === kind+message && now-lastTime<600) return;
-      lastMessage=kind+message; lastTime=now;
-      if(active?.kind==='loading') {
-        timers.forEach(id=>clock.clearTimeout(id)); timers=[];
-        active=null;
-        queue.unshift({kind,id:crypto.randomUUID(),message}); next();
-      } else { queue.push({kind,id:crypto.randomUUID(),message}); next(); }
+      if (lastMessage === kind + message && now - lastTime < 600) return;
+      lastMessage = kind + message;
+      lastTime = now;
+
+      // Mantener el mismo modal al pasar de carga al resultado.
+      if (active?.kind === 'loading' && active.phase !== 'closing') {
+        clearTimers();
+        const id = active.id;
+        active = { ...active, phase: 'visible', morphing: true };
+        publish();
+        later(() => {
+          if (active?.id !== id || active.kind !== 'loading') return;
+          active = { ...active, kind, message, morphing: false };
+          publish();
+          scheduleResultClose(id, kind);
+        }, MORPH_MS);
+      } else {
+        queue.push({ kind, id: crypto.randomUUID(), message });
+        next();
+      }
     },
-    success(message) { this.result('success',message); },
+    success(message) { this.result('success', message); },
     confirm(options) {
       if (disposed) { options.resolve(false); return; }
-      queue.push({ ...options, kind:'confirm', id:crypto.randomUUID() }); next();
+      queue.push({ ...options, kind: 'confirm', id: crypto.randomUUID() });
+      next();
     },
     close,
+    finishClose,
     dispose() {
       disposed = true;
-      timers.forEach(id => clock.clearTimeout(id)); timers = [];
-      active?.resolve?.(false); queue.forEach(item => item.resolve?.(false));
-      active = null; queue = [];
+      clearTimers();
+      active?.resolve?.(false);
+      queue.forEach(item => item.resolve?.(false));
+      active = null;
+      queue = [];
     }
   };
 }

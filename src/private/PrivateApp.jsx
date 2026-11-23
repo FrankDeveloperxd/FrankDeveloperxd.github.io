@@ -261,19 +261,23 @@ export default function PrivateApp() {
   }, [user?.id]);
 
   async function loadProjects() {
+    if (!user?.id) return;
     const { data, error } = await supabase
       .from(TABLES.projects)
       .select("*")
+      .eq("owner_id", user.id)
       .order("created_at", { ascending: true });
     if (error) setError(formatError(error));
     else setProjects(data || []);
   }
 
   async function loadBoards(projectId) {
+    if (!user?.id) return;
     const { data, error } = await supabase
       .from(TABLES.boards)
       .select("*")
       .eq("project_id", projectId)
+      .eq("owner_id", user.id)
       .order("created_at", { ascending: false });
     if (error) setError(formatError(error));
     else setBoards(data || []);
@@ -290,8 +294,8 @@ export default function PrivateApp() {
   }
 
   useEffect(() => {
-    if (authorized) loadProjects();
-  }, [authorized]);
+    if (authorized && user?.id) void loadProjects();
+  }, [authorized, user?.id]);
 
   useEffect(() => {
     if (error && user && authorized) {
@@ -440,6 +444,12 @@ export default function PrivateApp() {
   }
 
   function openProject(value) {
+    if (!value?.id || value.owner_id !== user?.id) {
+      setError("Este proyecto no pertenece a la cuenta activa. Actualiza la lista de proyectos.");
+      void loadProjects();
+      openProjects();
+      return;
+    }
     leaveWorkspaceNote();
     rememberWorkspaceRoute("project", value.id);
     setProject(value);
@@ -724,7 +734,6 @@ export default function PrivateApp() {
     if (error) return setError(formatError(error));
     setNewTask("");
     await loadTasks(board.id);
-    notifyWorkspace("success", "Tarea añadida al tablero.");
   }
 
   async function moveTask(task, status) {
@@ -734,7 +743,6 @@ export default function PrivateApp() {
     setTasks(current => current.map(item =>
       item.id === task.id ? { ...item, status } : item
     ));
-    notifyWorkspace("success", "Estado de la tarea actualizado.");
   }
 
   async function removeItem(table, id, reload) {

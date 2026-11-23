@@ -1,0 +1,16 @@
+/* Animaciones originales extraidas de WorkspaceDialog.css. No cambiar duraciones ni curvas en esta fase. */
+
+@keyframes wkd-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes wkd-pop {
+  0% { opacity: 0; transform: translateY(12px) scale(.88); }
+  65% { opacity: 1; transform: translateY(-2px) scale(1.025); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes wkd-exit {
+  to { opacity: 0; transform: translateY(7px) scale(.92); }
+}

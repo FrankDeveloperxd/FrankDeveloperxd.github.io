@@ -1,0 +1,29 @@
+/* Legacy keyframes preserved for confirmation dialogs and existing shared styles. */
+@keyframes wsf-backdrop-in { from { opacity:0 } to { opacity:1 } }
+@keyframes wsf-backdrop-out { from { opacity:1 } to { opacity:0 } }
+@keyframes wsf-window-in { from { opacity:0;transform:translateY(12px) scale(.96) } to { opacity:1;transform:translateY(0) scale(1) } }
+@keyframes wsf-window-out { from { opacity:1;transform:translateY(0) scale(1) } to { opacity:0;transform:translateY(-5px) scale(.98) } }
+@keyframes wsf-check-pop { 0% { opacity:0;transform:scale(.65) } 70% { opacity:1;transform:scale(1.08) } 100% { opacity:1;transform:scale(1) } }
+@keyframes wsf-check-draw { to { stroke-dashoffset:0 } }
+@keyframes wsf-result-pop { 0% { transform:scale(.6) } 70% { transform:scale(1.12) } 100% { transform:scale(1) } }
+@keyframes wsf-error-pop { 0%,100% { transform:rotate(0) } 35% { transform:rotate(-9deg) } 70% { transform:rotate(7deg) } }
+@keyframes wsf-loader-turn { to { transform:rotate(360deg) } }
+
+/* Kinetic Glyph — output-only animation sequence. No filter or canvas effects. */
+@keyframes wsf-kinetic-backdrop-in { from { background:rgba(8,12,18,0) } to { background:rgba(8,12,18,.48) } }
+@keyframes wsf-kinetic-backdrop-out { from { background:rgba(8,12,18,.48) } to { background:rgba(8,12,18,0) } }
+@keyframes wsf-kinetic-window-in { from { opacity:0;transform:translate3d(0,17px,0) scale(.985) } to { opacity:1;transform:translate3d(0,0,0) scale(1) } }
+@keyframes wsf-kinetic-window-out { from { opacity:1;transform:translate3d(0,0,0) scale(1) } to { opacity:0;transform:translate3d(0,-9px,0) scale(.991) } }
+@keyframes wsf-kinetic-ring { 0% { stroke-dashoffset:152;opacity:.15 } 20% {opacity:1} 100% {stroke-dashoffset:0;opacity:.92} }
+@keyframes wsf-kinetic-check-short { 0% {opacity:0;stroke-dashoffset:40;transform:translate(-12px,8px)} 20% {opacity:1} 100% {opacity:1;stroke-dashoffset:0;transform:translate(0,0)} }
+@keyframes wsf-kinetic-check-long { 0% {opacity:0;stroke-dashoffset:40;transform:translate(13px,-12px)} 20% {opacity:1} 100% {opacity:1;stroke-dashoffset:0;transform:translate(0,0)} }
+@keyframes wsf-kinetic-cross-a { from {opacity:0;stroke-dashoffset:40;transform:translate(-13px,-10px)} to {opacity:1;stroke-dashoffset:0;transform:translate(0,0)} }
+@keyframes wsf-kinetic-cross-b { from {opacity:0;stroke-dashoffset:40;transform:translate(13px,-10px)} to {opacity:1;stroke-dashoffset:0;transform:translate(0,0)} }
+@keyframes wsf-kinetic-arrive-top { from {opacity:0;stroke-dashoffset:40;transform:translateY(-16px)} to {opacity:1;stroke-dashoffset:0;transform:translateY(0)} }
+@keyframes wsf-kinetic-arrive-bottom { from {opacity:0;stroke-dashoffset:40;transform:translateY(12px)} to {opacity:1;stroke-dashoffset:0;transform:translateY(0)} }
+@keyframes wsf-kinetic-spark { 0% {opacity:0;transform:translate(-15px,8px) scale(.6)} 40% {opacity:.9} 100% {opacity:0;transform:translate(5px,-10px) scale(.3)} }
+@keyframes wsf-kinetic-copy-in { from {opacity:0;transform:translateY(5px)} to {opacity:1;transform:translateY(0)} }
+@keyframes wsf-kinetic-copy-out { from {opacity:1;transform:translateY(0)} to {opacity:0;transform:translateY(-5px)} }
+@keyframes wsf-kinetic-countdown { from {transform:scaleX(1)} to {transform:scaleX(0)} }
+@keyframes wsf-kinetic-loader { to {transform:rotate(360deg)} }
+@keyframes wsf-kinetic-glyph-out { from {opacity:1;transform:translateX(0) scale(1)} to {opacity:0;transform:translateX(9px) scale(.97)} }
