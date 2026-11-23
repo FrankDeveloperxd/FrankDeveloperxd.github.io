@@ -92,3 +92,41 @@
   .wsf-glyph-spark { display:none; }
   .wsf-kinetic-copy { opacity:1;transform:none; }
 }
+
+/* KINETIC GLYPH DARK CONTRAST FIX */
+
+html[data-workspace-theme="tinta"] .wsf-dialog.wsf-kinetic-result {
+  background: var(--t-surface, #1d1e22);
+  color: var(--t-ink, #ececf1);
+  border-color: var(--t-line, #34353d);
+  --wsf-accent: #48d8ac;
+}
+
+html[data-workspace-theme="tinta"] .wsf-dialog.wsf-kinetic-result .wsf-kinetic-copy h2 {
+  color: #f4f5f9;
+}
+
+html[data-workspace-theme="tinta"] .wsf-dialog.wsf-kinetic-result .wsf-kinetic-meta {
+  color: #b9bfcb;
+}
+
+html[data-workspace-theme="tinta"] .wsf-dialog.wsf-kinetic-result .wsf-kinetic-progress {
+  background: #454750;
+}
+
+html[data-workspace-theme="tinta"] .wsf-kinetic-result.wsf-result-error {
+  --wsf-accent: #ff798c;
+}
+
+html[data-workspace-theme="tinta"] .wsf-kinetic-result.wsf-result-info {
+  --wsf-accent: #8baeff;
+}
+
+html[data-workspace-theme="tinta"] .wsf-kinetic-result.wsf-result-warning {
+  --wsf-accent: #efbd69;
+}
+
+html[data-workspace-theme="tinta"] .wsf-kinetic-result.wsf-result-loading {
+  --wsf-accent: #b6c6dd;
+}
+
