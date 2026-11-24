@@ -1,76 +1,81 @@
-import WorkspaceTheme from "./components/WorkspaceTheme.jsx";
-import WorkspaceDashboard from "./components/WorkspaceDashboard.jsx";
-import { confirmWorkspace } from "./shared/workspaceFeedback.js";
+import "./theme/WorkspaceTheme.jsx";
+import WorkspaceDashboard from "./modules/dashboard/WorkspaceDashboard.jsx";
+import { confirmWorkspace } from "./shared/feedback/workspaceFeedback.js";
 /* WORKSPACE FAST NAVIGATION V1 */
-import { clearCachedTasks } from "./workspaceTaskCache.js";
-import { useNoteImageCleanup } from "./noteImageCleanup.js";
+import { clearCachedTasks } from "./modules/projects/kanban/workspaceTaskCache.js";
+import { useNoteImageCleanup } from "./modules/notes/noteImageCleanup.js";
 
-import { loadProjectAppearances, saveProjectAppearance } from "./projectAppearance.js";
+import { loadProjectAppearances, saveProjectAppearance } from "./modules/projects/appearance/projectAppearance.js";
 import {
   hasCachedWorkspaceAccess,
   rememberWorkspaceAccess,
   clearWorkspaceAccess
-} from "./workspaceAuthorizationCache.js";
-import { clearCachedProjectServices } from "./projectServicesCache.js";
+} from "./auth/workspaceAuthorizationCache.js";
+import { clearCachedProjectServices } from "./modules/projects/services/projectServicesCache.js";
 import { useRef as useWorkspaceRef } from "react";
 // WORKSPACE USER ISOLATION V1
-import NoteShareControls from "./shared/NoteShareControls.jsx";
+import NoteShareControls from "./modules/notes/sharing/NoteShareControls.jsx";
 /* NOTE SHARING FIXED V2 */
-import { Pencil, Trash2, CalendarDays, Palette, Target } from "lucide-react";
-import WorkspaceDialog from "./shared/WorkspaceDialog.jsx";
-import "./shared/WorkspaceLayout.css";
-import "./shared/WorkspaceCompactCards.css";
-import "./shared/WorkspaceBreadcrumbs.css";
-import "./shared/NoteHeaderCompact.css";
+
+import "./shared/feedback/WorkspaceDialog.jsx";
+import "./layout/WorkspaceLayout.css";
+import "./layout/WorkspaceCompactCards.css";
+import "./layout/WorkspaceBreadcrumbs.css";
+import "./modules/notes/NoteHeaderCompact.css";
 
 /* PROJECTS UX FIXED V4 */
-import ProjectServices from "./components/ProjectServices.jsx";
-import ProjectCoverEditor from "./components/ProjectCoverEditor.jsx";
-import WorkspaceToasts, { notifyWorkspace } from "./components/WorkspaceToasts.jsx";
-import SystemNotifications from "./components/SystemNotifications.jsx";
+import ProjectServices from "./modules/projects/services/ProjectServices.jsx";
+import "./modules/projects/appearance/ProjectCoverEditor.jsx";
+import WorkspaceToasts, { notifyWorkspace } from "./shared/notifications/WorkspaceToasts.jsx";
+import "./shared/notifications/SystemNotifications.jsx";
 import React, { useEffect, useState } from "react";
-import { supabase } from "./client";
-import "./private.css";
-import "./private-workspace.css";
-import "./private-glass.css";
-import "./private-experience.css";
-import "./private-navigation-v2.css";
-import "./private-mobile-refinement.css";
-import "./SidebarFixedFooter.css";
-import "./WorkspaceResponsive.css";
-import "./components/WorkspaceHabits.css";
-import { clearHabitsCache } from "./components/WorkspaceHabitsCache.js";
+import { supabase } from "./shared/services/client";
+import "./styles/private.css";
+import "./styles/private-workspace.css";
+import "./styles/private-glass.css";
+import "./styles/private-experience.css";
+import "./layout/private-navigation-v2.css";
+import "./styles/private-mobile-refinement.css";
+import "./layout/SidebarFixedFooter.css";
+import "./styles/WorkspaceResponsive.css";
+import "./modules/habits/WorkspaceHabits.css";
+import { clearHabitsCache } from "./modules/habits/WorkspaceHabitsCache.js";
+import Icon from "./shared/components/WorkspaceIcon.jsx";
+import lazyWorkspaceModule from "./shared/components/lazyWorkspaceModule.jsx";
+import WorkspaceAccess from "./auth/components/WorkspaceAccess.jsx";
+import WorkspaceHeader from "./layout/header/WorkspaceHeader.jsx";
+import WorkspaceSidebar from "./layout/sidebar/WorkspaceSidebar.jsx";
+import WorkspaceBreadcrumbs from "./layout/WorkspaceBreadcrumbs.jsx";
+import WorkspaceProjects from "./modules/projects/WorkspaceProjects.jsx";
 
-const WorkspaceHabits = lazyWorkspaceModule(() => import("./components/WorkspaceHabits.jsx"));
-const KanbanBoard = lazyWorkspaceModule(() => import("./components/KanbanBoard.jsx"));
-const NoteEditor = lazyWorkspaceModule(() => import("./components/NoteEditor.jsx"));
-const WorkspaceCalendar = lazyWorkspaceModule(() => import("./components/WorkspaceCalendar.jsx"));
+const BovedaInicio = React.lazy(
+  () => import("./modules/vault/BovedaInicio.jsx")
+);
 
-/* WORKSPACE LAZY MODULES V1 */
-function lazyWorkspaceModule(loader) {
-  const Component = React.lazy(loader);
+function BovedaSesion({ user, active }) {
+  const [visited, setVisited] = useState(active);
 
-  return function WorkspaceModule(props) {
-    return (
-      <React.Suspense fallback={
-        <div
-          role="status"
-          style={{
-            minHeight: 180,
-            display: "grid",
-            placeItems: "center",
-            color: "#8290a5",
-            fontSize: 13
-          }}
-        >
-          Cargando herramienta
-        </div>
-      }>
-        <Component {...props} />
-      </React.Suspense>
-    );
-  };
+  useEffect(() => {
+    if (active) setVisited(true);
+  }, [active]);
+
+  if (!visited && !active) return null;
+
+  return (
+    <React.Suspense fallback={
+      active ? <div role="status">Cargando herramienta...</div> : null
+    }>
+      <BovedaInicio user={user} active={active}/>
+    </React.Suspense>
+  );
 }
+
+const WorkspaceHabits = lazyWorkspaceModule(() => import("./modules/habits/WorkspaceHabits.jsx"));
+const KanbanBoard = lazyWorkspaceModule(() => import("./modules/projects/kanban/KanbanBoard.jsx"));
+const NoteEditor = lazyWorkspaceModule(() => import("./modules/notes/NoteEditor.jsx"));
+const WorkspaceCalendar = lazyWorkspaceModule(() => import("./modules/calendar/WorkspaceCalendar.jsx"));
+
+
 
 const TABLES = {
   projects: "workspace_projects",
@@ -84,24 +89,7 @@ const LANES = [
   { id: "done", title: "Terminado" }
 ];
 
-const Icon = ({ name, size = 20 }) => {
-  const paths = {
-    grid: <><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></>,
-    board: <><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M15 4v16"/></>,
-    folder: <path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10H3Z"/>,
-    arrow: <path d="m9 18 6-6-6-6"/>,
-    back: <path d="m15 18-6-6 6-6"/>,
-    plus: <path d="M12 5v14M5 12h14"/>,
-    lock: <><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></>,
-    logout: <><path d="M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5"/><path d="m14 8 4 4-4 4M9 12h9"/></>,
-    trash: <><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14"/></>
-  };
-  return <svg width={size} height={size} viewBox="0 0 24 24"
-    fill="none" stroke="currentColor" strokeWidth="1.8"
-    strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    {paths[name] || paths.grid}
-  </svg>;
-};
+
 
 function formatError(error) {
   return error?.message || "No se pudo completar la operación.";
@@ -120,7 +108,7 @@ export default function PrivateApp() {
   /* WORKSPACE ROUTE PERSISTENCE V1 */
   const [view, setView] = useState(() => {
     const route = new URLSearchParams(window.location.search).get("vista");
-    return ["calendar", "projects", "habits"].includes(route) ? route : "home";
+    return ["calendar", "projects", "habits", "vault"].includes(route) ? route : "home";
   });
   const [projects, setProjects] = useState([]);
   const [boards, setBoards] = useState([]);
@@ -362,7 +350,7 @@ export default function PrivateApp() {
     const nextView = params.get("vista");
     const projectId = params.get("proyecto");
     const boardId = params.get("tablero");
-    if (["calendar", "projects", "habits"].includes(nextView)) {
+    if (["calendar", "projects", "habits", "vault"].includes(nextView)) {
       setView(nextView);
       return;
     }
@@ -425,6 +413,16 @@ export default function PrivateApp() {
     setSideOpen(false);
   }
 
+  function openVault() {
+    leaveWorkspaceNote();
+    rememberWorkspaceRoute("vault");
+    setView("vault");
+    setProject(null);
+    setBoard(null);
+    setError("");
+    setSideOpen(false);
+  }
+
   function openCalendar() {
     leaveWorkspaceNote();
     rememberWorkspaceRoute("calendar");
@@ -477,6 +475,7 @@ export default function PrivateApp() {
   }
 
   async function signOut() {
+    window.dispatchEvent(new Event("boveda:lock"));
     clearWorkspaceAccess(user?.id);
     clearCachedProjectServices();
     clearCachedTasks(); clearHabitsCache();
@@ -755,111 +754,34 @@ export default function PrivateApp() {
     }
   }
 
-  if (!supabase) return (
-    <div className="private-root">
-      <div className="private-login">
-        <Icon name="lock" size={30}/>
-        <h1>Configuración pendiente</h1>
-        <p>Configura VITE_SUPABASE_URL y la clave publicable en .env.local.</p>
-        <a href="/">Volver al portafolio</a>
-      </div>
-    </div>
-  );
-
-  if (!ready) return <div className="private-root private-loading">Cargando...</div>;
-
-  if (!user) return (
-    <main className="private-root private-login-page">
-      <div className="private-login">
-        <div className="private-brand"><Icon name="lock"/> ESPACIO PERSONAL</div>
-        <h1>Tu espacio, tus proyectos.</h1>
-        <p>Un panel privado para organizar todo lo que construyes.</p>
-        <form onSubmit={signIn}>
-          <label>Correo electrónico
-            <input type="email" required autoComplete="username"
-              value={email} onChange={e=>setEmail(e.target.value)}/>
-          </label>
-          <label>Contraseña
-            <input type="password" required autoComplete="current-password"
-              value={password} onChange={e=>setPassword(e.target.value)}/>
-          </label>
-          {error && <p className="private-error" role="alert">{error}</p>}
-          <button className="private-primary" disabled={busy}>
-            {busy ? "Ingresando..." : "Entrar a mi espacio"}
-          </button>
-        </form>
-        <a href="/"> Volver al portafolio</a>
-      </div>
-    </main>
-  );
-
-  if (authorized === null) return (
-    <main className="private-root private-login-page">
-      <div className="private-login" role="status">
-        <h1>Verificando acceso...</h1>
-        <p>Estamos comprobando tu sesión y permisos.</p>
-      </div>
-    </main>
-  );
-
-  if (!authorized) return (
-    <main className="private-root private-login-page">
-      <div className="private-login">
-        <Icon name="lock" size={30}/>
-        <h1>Acceso restringido</h1>
-        <p>Esta cuenta no está autorizada o falta configurar el propietario en Supabase.</p>
-        {error && <p className="private-error">{error}</p>}
-        <button className="private-primary" onClick={signOut}>Cerrar sesión</button>
-      </div>
-    </main>
-  );
+  if (!supabase || !ready || !user || !authorized) {
+    return (
+      <WorkspaceAccess
+        ready={ready}
+        user={user}
+        authorized={authorized}
+        email={email}
+        setEmail={setEmail}
+        password={password}
+        setPassword={setPassword}
+        busy={busy}
+        error={error}
+        signIn={signIn}
+        signOut={signOut}
+      />
+    );
+  }
 
   return (
     <div className="private-root">
       <WorkspaceToasts key={user.id} />
-      <header className="private-topbar">
-        <div className="private-header-group">
-  <span className="private-topbar-title">Panel personal</span>
-<div className="private-top-left">
-          <button
-            type="button"
-            className="private-menu-toggle"
-            onClick={() => setSideOpen(value => !value)}
-            aria-label={sideOpen ? "Cerrar menu" : "Abrir menu"}
-            aria-expanded={sideOpen}
-            aria-controls="workspace-sidebar"
-          >
-            <svg width="21" height="21" viewBox="0 0 24 24"
-              fill="none" stroke="currentColor" strokeWidth="2"
-              strokeLinecap="round">
-              <path d="M4 7h16M4 12h16M4 17h16"/>
-            </svg>
-          </button>
-          <button
-            type="button"
-            className="private-desktop-toggle"
-            onClick={() => setSideCollapsed(value => !value)}
-            title="Expandir o contraer menu"
-            aria-label="Expandir o contraer menu"
-          >
-            <svg width="19" height="19" viewBox="0 0 24 24"
-              fill="none" stroke="currentColor" strokeWidth="1.8"
-              strokeLinecap="round">
-              <rect x="3" y="4" width="18" height="16" rx="2"/>
-              <path d="M9 4v16"/>
-            </svg>
-          </button>
-        </div>
-</div>
-
-
-        <div className="private-top-actions">
-
-          <WorkspaceTheme key={user.id} userId={user.id}/>
-          <SystemNotifications userId={user?.id} />
-          <button onClick={signOut}><Icon name="logout" size={17}/> Salir</button>
-        </div>
-      </header>
+      <WorkspaceHeader
+        user={user}
+        sideOpen={sideOpen}
+        setSideOpen={setSideOpen}
+        setSideCollapsed={setSideCollapsed}
+        signOut={signOut}
+      />
 
       <div className={`private-workspace-layout ${sideCollapsed ? "is-collapsed" : ""}`}>
         {sideOpen && (
@@ -871,197 +793,36 @@ export default function PrivateApp() {
           />
         )}
 
-        <aside
-          id="workspace-sidebar"
-          className={`private-sidebar ${sideOpen ? "is-open" : ""}`}
-          aria-label="Navegacion del espacio privado"
-        >
-          <div className="private-sidebar-scroll">
-
-          {/* WORKSPACE BRAND TOGGLE V1 */}
-          <button
-            type="button"
-            className="private-sidebar-brand"
-            aria-label="Alternar menú lateral"
-            title="Plegar o desplegar menú"
-            onClick={() => {
-              if (window.matchMedia("(max-width: 800px)").matches) {
-                setSideOpen(value => !value);
-              } else {
-                setSideCollapsed(value => !value);
-              }
-            }}
-          >
-            <span className="private-sidebar-mark">
-              <Icon name="grid" size={22}/>
-            </span>
-            <span className="private-sidebar-brand-copy">
-              <strong>Mi Workspace</strong>
-              <small>Espacio personal</small>
-            </span>
-          
-          </button>
-
-          <div className="private-sidebar-group-label">GENERAL</div>
-
-          <nav className="private-sidebar-nav">
-            <button
-              type="button"
-              className={`private-sidebar-link ${view === "home" ? "active" : ""}`}
-              onClick={() => {
-                openHome();
-                setSideOpen(false);
-              }}
-              title="Dashboard"
-            >
-              <Icon name="grid" size={19}/>
-              <span>Dashboard</span>
-            </button>
-
-            <button
-              type="button"
-              className={`private-sidebar-link ${["projects", "project", "board"].includes(view) ? "active" : ""}`}
-              onClick={() => {
-                openProjects();
-                setSideOpen(false);
-              }}
-              title="Proyectos"
-            >
-              <Icon name="board" size={19}/>
-              <span>Proyectos</span>
-            </button>
-            <button type="button"
-              className={`private-sidebar-link ${view === "calendar" ? "active" : ""}`}
-              onClick={openCalendar} title="Calendario">
-              <CalendarDays size={19}/><span>Calendario</span>
-            </button>
-                      <button
-              type="button"
-              className={`private-sidebar-link ${view === "habits" ? "active" : ""}`}
-              onClick={openHabits}
-              title="Hábitos"
-            >
-              <Target size={19}/>
-              <span>Hábitos</span>
-            </button>
-          </nav>
-
-          <div className="private-sidebar-group-label">PROYECTOS</div>
-
-          <div className="private-sidebar-projects">
-            {projects.map(item => (
-              <button
-                type="button"
-                key={item.id}
-                style={{
-                  "--folder-accent":
-                    projectCovers[item.id]?.folderColor || "#0a84ff"
-                }}
-                className={`private-sidebar-link private-project-link ${
-                  project?.id === item.id ? "active-project" : ""
-                }`}
-                title={item.title}
-                onClick={() => {
-                  openProject(item);
-                  setSideOpen(false);
-                }}
-              >
-                <Icon name="folder" size={17}/>
-                <span>{item.title}</span>
-              </button>
-            ))}
-
-            <button
-              type="button"
-              className="private-sidebar-link private-add-link"
-              onClick={() => {
-                openProjects();
-                setSideOpen(false);
-              }}
-            >
-              <Icon name="plus" size={17}/>
-              <span>Gestionar proyectos</span>
-            </button>
-          </div>
-
-          
-<div className="private-sidebar-group-label">PROXIMAMENTE</div>
-            <div className="private-sidebar-upcoming">
-              <Icon name="plus" size={18}/>
-              <span>Mas modulos</span>
-            </div>
-          </div>
-
-          <div className="private-sidebar-bottom">
-<button
-              type="button"
-              className="private-sidebar-logout"
-              onClick={signOut}
-            >
-              <Icon name="logout" size={17}/>
-              <span>Cerrar sesion</span>
-            </button>
-          </div>
-        </aside>
+        <WorkspaceSidebar
+          sideOpen={sideOpen}
+          setSideOpen={setSideOpen}
+          setSideCollapsed={setSideCollapsed}
+          view={view}
+          openHome={openHome}
+          openProjects={openProjects}
+          openCalendar={openCalendar}
+          openHabits={openHabits}
+          openVault={openVault}
+          projects={projects}
+          projectCovers={projectCovers}
+          project={project}
+          openProject={openProject}
+          signOut={signOut}
+        />
 
         <div className="private-content">
           <main className="private-main">
 
 {/* WORKSPACE NOTE BREADCRUMB V2 */}
-        <div className="workspace-breadcrumb-slot">
-          <nav
-          className="workspace-pathbar"
-          aria-label="Ruta de navegacion"
-        >
-          <button
-            type="button"
-            className="workspace-pathbar-home"
-            onClick={openHome}
-          >
-            Inicio
-          </button>
-
-          {view === "habits" ? (
-            <><span className="workspace-pathbar-separator" aria-hidden="true">›</span><span className="workspace-pathbar-current">Hábitos</span></>
-          ) : view === "calendar" ? (
-            <><span className="workspace-pathbar-separator" aria-hidden="true">›</span><span className="workspace-pathbar-current">Calendario</span></>
-          ) : view !== "home" && (
-            <>
-              <span className="workspace-pathbar-separator" aria-hidden="true">›</span>
-              <button type="button" className="workspace-pathbar-projects" onClick={openProjects}>Proyectos</button>
-            </>
-          )}
-
-          {project && (
-            <>
-              <span className="workspace-pathbar-separator" aria-hidden="true">›</span>
-              <button
-                type="button"
-                className="workspace-pathbar-project"
-                onClick={() => openProject(project)}
-                title={project.title}
-              >
-                {project.title}
-              </button>
-            </>
-          )}
-
-          {board && !noteId && (
-            <>
-              <span className="workspace-pathbar-separator" aria-hidden="true">›</span>
-              <span className="workspace-pathbar-current" title={board.title}>
-                {board.title}
-              </span>
-            </>
-          )}
-        {noteId && (
-              <>
-                <span className="workspace-pathbar-separator" aria-hidden="true">›</span>
-                <span className="workspace-pathbar-current">Bloc de notas</span>
-              </>
-            )}
-          </nav>
-        </div>
+        <WorkspaceBreadcrumbs
+          view={view}
+          project={project}
+          board={board}
+          noteId={noteId}
+          openHome={openHome}
+          openProjects={openProjects}
+          openProject={openProject}
+        />
 
         {noteId && (
   <>
@@ -1089,6 +850,12 @@ export default function PrivateApp() {
           <button onClick={()=>setError("")}>Cerrar</button>
         </div>}
 
+        <BovedaSesion
+          key={user.id}
+          user={user}
+          active={!noteId && view === "vault"}
+        />
+
         {!noteId && view === "habits" && (
           <WorkspaceHabits key={user.id} user={user}/>
         )}
@@ -1109,133 +876,29 @@ export default function PrivateApp() {
 
         {!noteId && view === "projects" && <>
 
-            {coverEditing && (
-              <ProjectCoverEditor
-                key={coverEditing.id}
-                project={coverEditing}
-                initial={projectCovers[coverEditing.id]}
-                onClose={() => setCoverEditing(null)}
-                onSave={saveProjectCover}
-              />
-            )}
-
-            <WorkspaceDialog
-              mode={projectDialog?.mode}
-              item={projectDialog?.item}
-              value={projectName}
-              onChange={setProjectName}
+            <WorkspaceProjects
+              coverEditing={coverEditing}
+              projectCovers={projectCovers}
+              setCoverEditing={setCoverEditing}
+              saveProjectCover={saveProjectCover}
+              projectDialog={projectDialog}
+              projectName={projectName}
+              setProjectName={setProjectName}
               error={error}
-              onClose={closeProjectDialog}
-              onConfirm={confirmProjectAction}
-              busy={projectBusy}
-              closing={projectDialogClosing}
+              closeProjectDialog={closeProjectDialog}
+              confirmProjectAction={confirmProjectAction}
+              projectBusy={projectBusy}
+              projectDialogClosing={projectDialogClosing}
+              createProject={createProject}
+              newName={newName}
+              setNewName={setNewName}
+              busy={busy}
+              projects={projects}
+              projectRemovingId={projectRemovingId}
+              openProject={openProject}
+              showProjectRename={showProjectRename}
+              showProjectDelete={showProjectDelete}
             />
-
-          <div className="private-page-heading">
-            <div>
-              <span className="private-kicker">MIS PROYECTOS</span>
-              <h1>Mis proyectos</h1>
-              <p>Organiza tus proyectos, tableros y documentos.</p>
-            </div>
-          </div>
-          <form className="private-create" onSubmit={createProject}>
-            <input aria-label="Nombre del proyecto" placeholder="Nombre del nuevo proyecto"
-              value={newName} onChange={e=>setNewName(e.target.value)} required/>
-            <button className="private-primary" disabled={busy}>
-              <Icon name="plus" size={17}/> Crear proyecto
-            </button>
-          </form>
-          <div className="private-cards">
-
-            {projects.map(item => (
-              <article
-                key={item.id}
-                className={
-                  "private-card pux-project-card" +
-                  (projectRemovingId === item.id ? " pux-removing" : "") + ((projectCovers[item.id]?.color || projectCovers[item.id]?.image) ? " pux-with-cover" : "")
-                }
-                style={(projectCovers[item.id]?.color || projectCovers[item.id]?.image) ? {
-                  backgroundColor: projectCovers[item.id].color,
-                  backgroundImage: projectCovers[item.id].image
-                    ? `linear-gradient(180deg,rgba(7,18,36,.12),rgba(7,18,36,.85)),url("${projectCovers[item.id].image}")`
-                    : "linear-gradient(180deg,rgba(7,18,36,.08),rgba(7,18,36,.65))"
-                } : undefined}
-                role="link"
-                tabIndex={0}
-                aria-label={`Abrir proyecto ${item.title}`}
-                onClick={() => {
-                  if (projectRemovingId !== item.id) {
-                    openProject(item);
-                  }
-                }}
-                onKeyDown={event => {
-                  if (event.target !== event.currentTarget) return;
-
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    if (projectRemovingId !== item.id) {
-                      openProject(item);
-                    }
-                  }
-                }}
-              >
-                <span
-                  className="private-card-icon"
-                  style={{
-                    "--folder-accent":
-                      projectCovers[item.id]?.folderColor || "#805ad5"
-                  }}
-                >
-                  <Icon name="folder"/>
-                </span>
-
-                <h3>{item.title}</h3>
-                <p>Espacio de proyecto</p>
-
-                <div className="private-card-actions pux-actions">
-                  <button
-                    type="button"
-                    className="pux-cover-button"
-                    title="Personalizar fondo"
-                    aria-label={`Personalizar ${item.title}`}
-                    onClick={event => {
-                      event.stopPropagation();
-                      setCoverEditing(item);
-                    }}
-                  >
-                    <Palette size={17}/>
-                  </button>
-                  <button
-                    type="button"
-                    className="pux-edit"
-                    title="Editar nombre"
-                    aria-label={`Editar ${item.title}`}
-                    onClick={event => {
-                      event.stopPropagation();
-                      showProjectRename(item);
-                    }}
-                  >
-                    <Pencil size={17}/>
-                  </button>
-
-                  <button
-                    type="button"
-                    className="pux-delete"
-                    title="Eliminar proyecto"
-                    aria-label={`Eliminar ${item.title}`}
-                    onClick={event => {
-                      event.stopPropagation();
-                      showProjectDelete(item);
-                    }}
-                  >
-                    <Trash2 size={17}/>
-                  </button>
-                </div>
-              </article>
-            ))}
-
-          </div>
-          {!projects.length && <p className="private-empty">Crea tu primer proyecto para comenzar.</p>}
         </>}
 
         {!noteId && view === "project" && project && (

@@ -7,7 +7,7 @@ import './style.css';
 import './portfolio-responsive.css';
 import './labs-responsive.css';
 
-const SharedNotePage = lazyWorkspacePage(() => import("./private/shared/SharedNotePage.jsx"));
+const SharedNotePage = lazyWorkspacePage(() => import("./private/modules/notes/sharing/SharedNotePage.jsx"));
 const PrivateApp = lazyWorkspacePage(() => import("./private/PrivateApp.jsx"));
 const LabsPage = lazyWorkspacePage(() => import("./labs/LabsPage.tsx"));
 
