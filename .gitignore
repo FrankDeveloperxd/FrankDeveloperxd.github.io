@@ -42,4 +42,6 @@ workspace-*-patch.js
 *.7z
 *.rar
 *.rej
-*~
+*~/supabase/migrations/
+*.kdbx
+*.old
