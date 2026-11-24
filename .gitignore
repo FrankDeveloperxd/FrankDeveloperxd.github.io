@@ -45,3 +45,14 @@ workspace-*-patch.js
 *~/supabase/migrations/
 *.kdbx
 *.old
+
+/supabase/migrations/
+*.bak
+*.backup
+*.zip
+*.kdbx
+*.old
+*.tmp
+.env
+.env.local
+.env.*.local
