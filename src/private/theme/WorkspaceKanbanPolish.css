@@ -1,22 +1,442 @@
-/* Kanban: flat solid surfaces, visible column identity and compact controls. */
-html[data-workspace-theme] body .private-root .kb-root .kb-column { --lane:#4779ed; border-top:3px solid var(--lane); border-radius:14px; }
-html[data-workspace-theme] body .private-root .kb-root .kb-doing { --lane:#d7941e; }
-html[data-workspace-theme] body .private-root .kb-root .kb-done { --lane:#129675; }
-html[data-workspace-theme] body .private-root .kb-root .kb-column-head { padding-bottom:13px; margin-bottom:12px; border-bottom:1px solid #dce3ee; color:#26364d; font-size:14px; }
-html[data-workspace-theme] body .private-root .kb-root .kb-column-dot { background:var(--lane); }
-html[data-workspace-theme] body .private-root .kb-root .kb-count { background:var(--lane); color:#fff; border-radius:6px; padding:3px 8px; }
-html[data-workspace-theme="tinta"] body .private-root .kb-root .kb-column { background:#17181c; border-right-color:#31333c; border-bottom-color:#31333c; border-left-color:#31333c; }
-html[data-workspace-theme="tinta"] body .private-root .kb-root .kb-column-head { border-bottom-color:#343740; color:#eef0f7; }
-html[data-workspace-theme="tinta"] body .private-root .kb-root .kb-card { background:#2c2f38; border-top-color:#494e5c; border-right-color:#494e5c; border-bottom-color:#494e5c; box-shadow:none; }
-html[data-workspace-theme="tinta"] body .private-root .kb-root .kb-card:hover { background:#333743; border-top-color:#68738a; border-right-color:#68738a; border-bottom-color:#68738a; box-shadow:none; }
-html[data-workspace-theme] body .private-root .kb-root .kb-card-title { font-size:14px; line-height:1.5; font-weight:650; }
-html[data-workspace-theme="tinta"] body .private-root .kb-root .kb-card-title { color:#f3f4fa; }
-html[data-workspace-theme="tinta"] body .private-root .kb-root :is(.kb-empty-time,.kb-estimate,.kb-grip) { color:#bcc2d0; }
-html[data-workspace-theme] body .private-root .kb-root .kb-actions { gap:6px; }
-html[data-workspace-theme] body .private-root .kb-root .kb-actions button[title="Cambiar prioridad"] { background:#7449ad; color:#fff; border:0; }
-html[data-workspace-theme] body .private-root .kb-root .kb-actions button[title="Editar tarea"] { background:#16834a; color:#fff; border:0; }
-html[data-workspace-theme] body .private-root .kb-root .kb-actions button[title="Eliminar tarea"] { background:#bd3f58; color:#fff; border:0; }
-html[data-workspace-theme] body .private-root .kb-root .kb-actions button svg { stroke:currentColor; opacity:1; }
+/* KANBAN: SOLID STATUS COLORS */
+/* HYBRID PREMIUM */
+
+html body .private-root .kb-root {
+  --kb-status-todo: #2458c6;
+  --kb-status-doing: #925b08;
+  --kb-status-done: #087653;
+
+  --kb-priority-high: #c83249;
+  --kb-priority-medium: #9c6206;
+  --kb-priority-low: #117b53;
+
+  --kb-lane-surface: #e7ebf2;
+  --kb-lane-border: #d4dce7;
+
+  --kb-card-bg: #ffffff;
+  --kb-card-hover: #f9fbfd;
+  --kb-card-line: #d4dce7;
+  --kb-card-text: #1b2b43;
+  --kb-card-muted: #65748a;
+
+  --kb-control-bg: #edf1f6;
+  --kb-control-hover: #e3e9f2;
+
+  --kb-edit: #15803d;
+  --kb-delete: #c83249;
+
+  --kb-time-active: #925b08;
+  --kb-time-done: #087653;
+}
+
+html[data-workspace-theme="tinta"] body
+.private-root .kb-root {
+  --kb-lane-surface: #1d1f25;
+  --kb-lane-border: #343943;
+
+  --kb-card-bg: #363b45;
+  --kb-card-hover: #3c424d;
+  --kb-card-line: #494f5c;
+  --kb-card-text: #f2f4f8;
+  --kb-card-muted: #c0c8d5;
+
+  --kb-control-bg: #424854;
+  --kb-control-hover: #4b5361;
+
+  --kb-priority-high: #ff8598;
+  --kb-priority-medium: #f2bd62;
+  --kb-priority-low: #7eddb4;
+
+  --kb-edit: #73d4a4;
+  --kb-delete: #ff8598;
+
+  --kb-time-active: #f2bd62;
+  --kb-time-done: #8ce1c4;
+}
+
+/* COLUMNAS */
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-column.kb-todo {
+  --lane: var(--kb-status-todo);
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-column.kb-doing {
+  --lane: var(--kb-status-doing);
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-column.kb-done {
+  --lane: var(--kb-status-done);
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-column {
+  min-width: 0;
+  padding: 8px;
+  background: var(--kb-lane-surface);
+  border: 1px solid var(--kb-lane-border);
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-column-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  margin: 0 0 9px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--lane);
+  color: #ffffff;
+  font-size: 13px;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-column-head strong {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-column-dot {
+  width: 7px;
+  height: 7px;
+  background: #ffffff;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-column .kb-count {
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  margin-left: auto;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--lane);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-stack {
+  padding: 0 0 3px;
+  gap: 8px;
+  min-height: 125px;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-column.kb-over {
+  outline: 2px solid var(--lane);
+  outline-offset: 2px;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-placeholder {
+  min-height: 125px;
+  border: 1px dashed var(--kb-card-line);
+  border-radius: 8px;
+  background: var(--kb-lane-surface);
+  color: var(--kb-card-muted);
+  font-size: 12px;
+}
+
+/* TARJETAS */
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card {
+  min-height: 0;
+  padding: 12px;
+  border: 1px solid var(--kb-card-line) !important;
+  border-radius: 9px;
+  background: var(--kb-card-bg) !important;
+  color: var(--kb-card-text);
+  box-shadow: none !important;
+  backdrop-filter: none;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root
+.kb-card:not(.kb-dragging):not(.kb-removing):hover {
+  background: var(--kb-card-hover) !important;
+  border-color: var(--lane, var(--kb-card-line)) !important;
+  box-shadow: none !important;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card-title {
+  color: var(--kb-card-text) !important;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card-head {
+  align-items: flex-start;
+  gap: 8px;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-grip {
+  color: var(--kb-card-muted);
+  opacity: 1;
+}
+
+/* INFORMACION Y ACCIONES */
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 9px;
+  margin-top: 10px;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card-info {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card .kb-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--kb-card-muted) !important;
+  font-size: 12px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-doing .kb-card .kb-time {
+  color: var(--kb-time-active) !important;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-done .kb-card .kb-time {
+  color: var(--kb-time-done) !important;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card
+:is(.kb-empty-time,.kb-estimate) {
+  color: var(--kb-card-muted);
+  font-size: 12px;
+}
+
+/* PRIORIDAD SIN BORDE LATERAL */
+
+html body .private-root .kb-root .kb-priority-high {
+  --task-priority: var(--kb-priority-high);
+}
+
+html body .private-root .kb-root .kb-priority-medium {
+  --task-priority: var(--kb-priority-medium);
+}
+
+html body .private-root .kb-root .kb-priority-low {
+  --task-priority: var(--kb-priority-low);
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card .kb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 5px;
+  padding-top: 8px;
+  border-top: 1px solid var(--kb-card-line);
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card .kb-actions > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: var(--kb-control-bg) !important;
+  color: var(--kb-card-muted) !important;
+  box-shadow: none;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card
+.kb-actions > button[title="Editar tarea"] {
+  color: var(--kb-edit) !important;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card
+.kb-actions > button[title="Eliminar tarea"] {
+  color: var(--kb-delete) !important;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card
+.kb-actions > button:hover {
+  background: var(--kb-control-hover) !important;
+}
+
+/* BOTON DE PRIORIDAD */
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card
+.kb-actions > .kb-priority-control {
+  margin-right: auto;
+  max-width: 100%;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card
+.kb-priority-control > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  width: auto !important;
+  min-width: 0;
+  height: 30px;
+  padding: 5px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--kb-control-bg) !important;
+  color: var(--task-priority, var(--kb-priority-medium)) !important;
+  box-shadow: none;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-priority-label {
+  color: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card .kb-actions svg {
+  color: inherit;
+  stroke: currentColor;
+  opacity: 1;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card
+.kb-priority-control > button:hover {
+  background: var(--kb-control-hover) !important;
+}
+
+/* MENU DE PRIORIDADES */
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card:has(.kb-priority-menu) {
+  z-index: 10;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-priority-menu {
+  left: 0;
+  right: auto;
+  width: 145px;
+  padding: 5px;
+  background: var(--kb-card-bg);
+  border-color: var(--kb-card-line);
+  border-radius: 9px;
+  box-shadow: none;
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root
+.kb-priority-menu .kb-priority-option {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  height: 34px;
+  background: var(--kb-card-bg) !important;
+  color: var(--kb-card-text) !important;
+  border: 1px solid var(--kb-card-bg);
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root
+.kb-priority-menu .kb-priority-option:hover,
+html[data-workspace-theme] body
+.private-root .kb-root
+.kb-priority-menu .kb-priority-option[aria-pressed="true"] {
+  background: var(--kb-control-bg) !important;
+  border-color: var(--kb-card-line);
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-green {
+  background: var(--kb-priority-low);
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-yellow {
+  background: var(--kb-priority-medium);
+}
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-red {
+  background: var(--kb-priority-high);
+}
+
+/* ACCESIBILIDAD */
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-card button:focus-visible {
+  outline: 2px solid var(--lane, #4779ed);
+  outline-offset: 2px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+  html[data-workspace-theme] body
+  .private-root .kb-root .kb-column {
+    padding: 7px;
+  }
+
+  html[data-workspace-theme] body
+  .private-root .kb-root .kb-card {
+    padding: 10px;
+  }
+
+  html[data-workspace-theme] body
+  .private-root .kb-root .kb-card-title {
+    font-size: 13px;
+  }
+
+  html[data-workspace-theme] body
+  .private-root .kb-root .kb-card .kb-actions > button {
+    width: 33px;
+    height: 33px;
+  }
+}
+
+
 /* Theme switches immediately; only two tiny SVG layers animate. No page snapshots or repainting transitions. */
 html[data-workspace-theme] body .private-root,
 html[data-workspace-theme] body .private-root .private-topbar,

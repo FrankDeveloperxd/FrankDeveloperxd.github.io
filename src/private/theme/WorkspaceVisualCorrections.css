@@ -33,25 +33,6 @@ html body .private-root .ps-dialog .ps-close {
 }
 html body .private-root .ps-dialog .ps-close svg { display:block !important; width:18px; height:18px; visibility:visible; opacity:1; stroke:currentColor; }
 html[data-workspace-theme="tinta"] body .private-root .ps-dialog .ps-close { color:#f0f1f7; background:#303139; border-color:#42444f; }
-/* Dark notification panel: solid surfaces, readable badges, neutral separators. */
-html[data-workspace-theme="tinta"] body .private-root .system-notifications-panel { background:#1d1e22; border:1px solid #393b44; box-shadow:0 8px 22px #08090b; }
-html[data-workspace-theme="tinta"] body .private-root .system-notifications-header { background:#1d1e22; border-color:#34363e; }
-html[data-workspace-theme="tinta"] body .private-root .system-notifications-header h2 { color:#f1f2f7; }
-html[data-workspace-theme="tinta"] body .private-root .system-notifications-header p { color:#a7a8b3; }
-html[data-workspace-theme="tinta"] body .private-root :is(.system-notifications-close,.system-notifications-read-all) { color:#fff; background:#32343d; border:1px solid #444650; }
-html[data-workspace-theme="tinta"] body .private-root .system-notifications-close svg { color:#fff; stroke:currentColor; }
-html[data-workspace-theme="tinta"] body .private-root .system-notifications-list { background:#18191d; scrollbar-color:#52545f #18191d; }
-html[data-workspace-theme="tinta"] body .private-root .system-notifications-list .system-notification-item:nth-child(n) { background:#24262d; border-color:#363944; }
-html[data-workspace-theme="tinta"] body .private-root .system-notifications-list .system-notification-item.is-unread { background:#292b33; border-color:#4b3d46; }
-html[data-workspace-theme="tinta"] body .private-root .system-notifications-list .system-notification-item.is-unread:hover { background:#30323b; border-color:#735161; }
-html[data-workspace-theme="tinta"] body .private-root .system-notifications-list .system-notification-item.is-read { background:#202126; border-color:#34363e; }
-html[data-workspace-theme="tinta"] body .private-root .system-notification-item.is-read .system-notification-content { opacity:1; }
-html[data-workspace-theme="tinta"] body .private-root .system-notification-meta>span:first-child { color:#fff; background:#315cb8; }
-html[data-workspace-theme="tinta"] body .private-root .system-notification-meta time { color:#afb1bf; }
-html[data-workspace-theme="tinta"] body .private-root .system-notification-title { color:#f0f1f7; }
-html[data-workspace-theme="tinta"] body .private-root .system-notification-description { color:#b8bac7; }
-html[data-workspace-theme="tinta"] body .private-root .system-notifications-list .system-notification-item .system-notification-indicator { background:#e54860; }
-html[data-workspace-theme="tinta"] body .private-root .system-notifications-list .system-notification-item.is-read .system-notification-indicator { background:#7e8191; }
 /* Activity: restore the blue scale, without a grey/lavender tint. */
 html[data-workspace-theme="tinta"] body .private-root .wa-root .wa-heading h2 { color:#9bbcff; }
 html[data-workspace-theme="tinta"] body .private-root .wa-root .wa-level-0 { background:#2b2d34; }

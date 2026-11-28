@@ -877,6 +877,7 @@ export default function PrivateApp() {
         {!noteId && view === "projects" && <>
 
             <WorkspaceProjects
+              userId={user.id}
               coverEditing={coverEditing}
               projectCovers={projectCovers}
               setCoverEditing={setCoverEditing}

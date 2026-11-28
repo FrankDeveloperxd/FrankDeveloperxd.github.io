@@ -13,6 +13,9 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "../../../shared/services/client";
 import { notifyWorkspace } from "../../../shared/notifications/WorkspaceToasts";
 import "./ProjectServices.css";
+import "../ProjectViewModes.css";
+import ViewModeSelector from "../../../shared/components/view-mode/ViewModeSelector.jsx";
+import useViewMode from "../../../shared/components/view-mode/useViewMode.js";
 
 /* PROJECT TASK COUNTERS V1 */
 /* PROJECT COUNTERS INSTANT CACHE V2 */
@@ -150,6 +153,7 @@ function ProjectTaskCounters({ boardId, ownerId }) {
     <div className="ps-task-counts" role="group" aria-label="Tareas del tablero">
       <span
         className="ps-task-count ps-task-count-todo"
+        data-label="Por hacer"
         title={counts ? `${counts.todo} tareas por hacer` : "Conteo no disponible"}
         aria-label={counts ? `${counts.todo} tareas por hacer` : "Por hacer: conteo no disponible"}
       >
@@ -158,6 +162,7 @@ function ProjectTaskCounters({ boardId, ownerId }) {
       </span>
       <span
         className="ps-task-count ps-task-count-doing"
+        data-label="En proceso"
         title={counts ? `${counts.doing} tareas en proceso` : "Conteo no disponible"}
         aria-label={counts ? `${counts.doing} tareas en proceso` : "En proceso: conteo no disponible"}
       >
@@ -184,6 +189,10 @@ const OPTIONS = [
 ];
 
 export default function ProjectServices({ project, user, onOpenBoard, onOpenNote }) {
+  const [viewMode, setViewMode] = useViewMode(
+    user.id,
+    "project:" + project.id
+  );
   /* PROJECT SERVICES CACHE V2 */
 
   const [boards, setBoards] = useState(() =>
@@ -457,23 +466,22 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
 
   return (
     <section className="ps-root">
-      <div className="ps-heading">
+      <div className="ps-heading wvm-heading">
         <div>
           <span className="ps-eyebrow">ESPACIO DE PROYECTO</span>
           <h1>{project.title}</h1>
           <p>Organiza las herramientas que necesita este proyecto.</p>
         </div>
-        <button
-          type="button"
-          className="ps-add"
-          onClick={createModal}
-        >
-          <span aria-hidden="true">＋</span> Añadir servicio
-        </button>
+        <div className="wvm-heading-actions">
+          <ViewModeSelector value={viewMode} onChange={setViewMode}/>
+          <button type="button" className="ps-add" onClick={createModal}>
+            <Plus size={17}/> Añadir servicio
+          </button>
+        </div>
       </div>
 
       {loading ? (
-        <div className="ps-empty"><div className="ps-loading-grid" aria-label="Cargando servicios">
+        <div className="ps-empty"><div className={"ps-loading-grid" + (viewMode === "list" ? " wvm-loading-list" : "")} aria-label="Cargando servicios">
   {[1, 2, 3].map(item => (
     <div className="ps-loading-card" key={item} aria-hidden="true">
       <span className="ps-loading-icon ps-shimmer" />
@@ -493,7 +501,22 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
           </button>
         </div>
       ) : (
-        <div className="ps-grid">
+        <div className={"ps-grid" + (viewMode === "list" ? " wvm-service-list" : "")}>
+          {viewMode === "list" && (
+            <div className="ps-service-list-head" aria-hidden="true">
+              <span>Servicio</span>
+
+              <div className="ps-list-status-head">
+                <span>Por hacer</span>
+                <span>En proceso</span>
+              </div>
+
+              <span className="ps-list-actions-head">
+                Acciones
+              </span>
+            </div>
+          )}
+
           {services.map(item => (
             <article
               className={`ps-card ps-card-${item.kind}`}
@@ -537,9 +560,15 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
 
               </button>
 
-              {item.kind === "kanban" && (
+              {item.kind === "kanban" ? (
                 <ProjectTaskCounters boardId={item.id} ownerId={user.id} />
-              )}
+              ) : viewMode === "list" ? (
+                <div className="ps-list-not-applicable"
+                  aria-label="No aplica a blocs de notas">
+                  <span aria-hidden="true">—</span>
+                  <span aria-hidden="true">—</span>
+                </div>
+              ) : null}
 
               <div className="ps-card-actions">
   {/* PROJECT SERVICES ICON FIX V1 */}
@@ -571,6 +600,7 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
 </div>
             </article>
           ))}
+          {viewMode !== "list" && (
           <button
             type="button"
             className="ps-card ps-new-card"
@@ -580,6 +610,7 @@ export default function ProjectServices({ project, user, onOpenBoard, onOpenNote
             <strong>Nuevo servicio</strong>
             <small>Kanban o Bloc de notas</small>
           </button>
+          )}
         </div>
       )}
 

@@ -1,0 +1,115 @@
+.private-root .wvm-selector,
+.private-root .kb-list {
+  --wvm-surface: #ffffff;
+  --wvm-soft: #edf1f7;
+  --wvm-line: #dbe3ee;
+  --wvm-text: #203149;
+  --wvm-muted: #62748d;
+  --wvm-accent: #2563eb;
+  --wvm-selected: #e7efff;
+}
+
+html[data-workspace-theme="tinta"] .private-root
+:is(.wvm-selector, .kb-list) {
+  --wvm-surface: #23262e;
+  --wvm-soft: #1a1d24;
+  --wvm-line: #3c4350;
+  --wvm-text: #eef1f7;
+  --wvm-muted: #a5afc0;
+  --wvm-accent: #9bbcff;
+  --wvm-selected: #2c3b58;
+}
+
+html body .private-root .wvm-heading {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.private-root .wvm-heading > div:first-child {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.private-root .wvm-heading-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: 100%;
+}
+
+html body .private-root .wvm-selector {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  width: max-content;
+  padding: 4px;
+  gap: 3px;
+  border: 1px solid var(--wvm-line);
+  border-radius: 12px;
+  background: var(--wvm-soft);
+}
+
+html body .private-root .wvm-selector button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 35px;
+  padding: 7px 13px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--wvm-muted);
+  box-shadow: none;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .16s, color .16s, border-color .16s;
+}
+
+html body .private-root .wvm-selector button[aria-pressed="true"] {
+  background: var(--wvm-surface);
+  border-color: var(--wvm-line);
+  color: var(--wvm-accent);
+  box-shadow: 0 2px 4px rgba(0,0,0,.06);
+}
+
+html body .private-root .wvm-selector button:hover:not(:disabled) {
+  color: var(--wvm-accent);
+}
+
+.private-root .wvm-selector button:focus-visible {
+  outline: 2px solid var(--wvm-accent);
+  outline-offset: 2px;
+}
+
+.private-root .wvm-selector button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  html body .private-root .wvm-selector button {
+    min-height: 38px;
+    padding: 7px 10px;
+    gap: 6px;
+  }
+
+  .private-root .wvm-heading-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .private-root .wvm-selector button {
+    transition: none !important;
+  }
+}

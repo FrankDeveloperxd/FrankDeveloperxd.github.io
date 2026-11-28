@@ -1,0 +1,710 @@
+/* KANBAN PROFESSIONAL LIST V2 */
+
+.private-root .kb-list.kbl-jira {
+  --kbl-surface: #ffffff;
+  --kbl-header: #edf1f7;
+  --kbl-hover: #eef4ff;
+  --kbl-stripe: #fafbfd;
+  --kbl-line: #d9e1ed;
+  --kbl-text: #1b2b43;
+  --kbl-muted: #5c6f88;
+  --kbl-accent: #2563eb;
+  --kbl-active: #e3edff;
+  --kbl-input: #ffffff;
+  --kbl-shadow: rgba(21,37,60,.13);
+
+  --kbl-high: #c83249;
+  --kbl-medium: #9c6206;
+  --kbl-low: #117b53;
+
+  container-type: inline-size;
+  container-name: kanban-list;
+
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  background: var(--kbl-surface);
+  color: var(--kbl-text);
+  border: 1px solid var(--kbl-line);
+  border-radius: 13px;
+}
+
+html[data-workspace-theme="tinta"]
+.private-root .kb-list.kbl-jira {
+  --kbl-surface: #20232b;
+  --kbl-header: #282e39;
+  --kbl-hover: #2b3547;
+  --kbl-stripe: #232731;
+  --kbl-line: #3b4555;
+  --kbl-text: #edf2f9;
+  --kbl-muted: #abb8cb;
+  --kbl-accent: #99baff;
+  --kbl-active: #2c3c59;
+  --kbl-input: #191d25;
+  --kbl-shadow: rgba(0,0,0,.4);
+
+  --kbl-high: #ff8598;
+  --kbl-medium: #f2bd62;
+  --kbl-low: #7eddb4;
+}
+
+.private-root .kbl-jira *,
+.private-root .kbl-jira *::before,
+.private-root .kbl-jira *::after {
+  box-sizing: border-box;
+}
+
+/* SELECTOR TABLERO / LISTA */
+
+html body .private-root .kb-root
+.wvm-selector button[aria-pressed="true"] {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+  box-shadow: 0 2px 5px rgba(37,99,235,.18);
+}
+
+
+/* BUSQUEDA Y FILTROS DIRECTOS */
+
+.private-root .kbl-jira .kbl-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 13px 15px;
+  border-bottom: 1px solid var(--kbl-line);
+}
+
+.private-root .kbl-jira .kbl-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 220px;
+  min-width: 0;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--kbl-line);
+  border-radius: 9px;
+  background: var(--kbl-input);
+  color: var(--kbl-muted);
+}
+
+.private-root .kbl-jira .kbl-search input {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  background: none;
+  color: var(--kbl-text);
+  font: inherit;
+  font-size: 14px;
+}
+
+.private-root .kbl-jira .kbl-search input::placeholder {
+  color: var(--kbl-muted);
+}
+
+.private-root .kbl-jira
+.kbl-search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.private-root .kbl-jira .kbl-search button {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: var(--kbl-header);
+  color: var(--kbl-muted);
+  cursor: pointer;
+}
+
+.private-root .kbl-jira .kbl-search:focus-within {
+  border-color: var(--kbl-accent);
+}
+
+.private-root .kbl-jira .kbl-status-tabs {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex: 0 1 auto;
+  gap: 4px;
+  max-width: 100%;
+  padding: 4px;
+  border: 1px solid var(--kbl-line);
+  border-radius: 10px;
+  background: var(--kbl-header);
+}
+
+.private-root .kbl-jira .kbl-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--kbl-header);
+  color: var(--kbl-text);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+
+.private-root .kbl-jira .kbl-tab-all {
+  --tab-color: #334155;
+}
+
+.private-root .kbl-jira .kbl-tab-todo {
+  --tab-color: var(--kb-status-todo);
+}
+
+.private-root .kbl-jira .kbl-tab-doing {
+  --tab-color: var(--kb-status-doing);
+}
+
+.private-root .kbl-jira .kbl-tab-done {
+  --tab-color: var(--kb-status-done);
+}
+
+.private-root .kbl-jira .kbl-tab-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: var(--tab-color);
+}
+
+.private-root .kbl-jira .kbl-tab small {
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.private-root .kbl-jira .kbl-tab:hover {
+  background: var(--kbl-surface);
+}
+
+.private-root .kbl-jira .kbl-tab[aria-pressed="true"] {
+  background: var(--tab-color);
+  color: #fff;
+}
+
+.private-root .kbl-jira
+.kbl-tab[aria-pressed="true"] .kbl-tab-dot {
+  background: #fff;
+}
+
+html[data-workspace-theme="tinta"]
+.private-root .kbl-jira
+.kbl-tab:not([aria-pressed="true"]).kbl-tab-todo
+.kbl-tab-dot {
+  background: #78a3ff;
+}
+
+html[data-workspace-theme="tinta"]
+.private-root .kbl-jira
+.kbl-tab:not([aria-pressed="true"]).kbl-tab-doing
+.kbl-tab-dot {
+  background: #f2bd62;
+}
+
+html[data-workspace-theme="tinta"]
+.private-root .kbl-jira
+.kbl-tab:not([aria-pressed="true"]).kbl-tab-done
+.kbl-tab-dot {
+  background: #65d3aa;
+}
+
+/* TABLA */
+
+.private-root .kbl-jira .kbl-table-scroll {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  max-height: min(65vh,720px);
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.private-root .kbl-jira .kbl-table {
+  width: 100%;
+  min-width: 720px;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: inherit;
+  color: var(--kbl-text);
+}
+
+.private-root .kbl-jira .kbl-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  height: 44px;
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--kbl-line);
+  background: var(--kbl-header);
+  color: var(--kbl-text);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.private-root .kbl-jira .kbl-table td {
+  height: 61px;
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--kbl-line);
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+.private-root .kbl-jira
+.kbl-table tbody tr:nth-child(even) {
+  background: var(--kbl-stripe);
+}
+
+.private-root .kbl-jira
+.kbl-table tbody tr:hover {
+  background: var(--kbl-hover);
+}
+
+.private-root .kbl-jira
+.kbl-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.private-root .kbl-jira .kbl-state-cell {
+  width: 144px;
+}
+
+.private-root .kbl-jira .kbl-priority-cell {
+  width: 112px;
+}
+
+.private-root .kbl-jira .kbl-time-cell {
+  width: 130px;
+}
+
+.private-root .kbl-jira .kbl-actions-cell {
+  width: 126px;
+  text-align: right !important;
+}
+
+/* NOMBRE Y PRIORIDAD VISUAL */
+
+.private-root .kbl-jira .kbl-level-high {
+  --kbl-priority: var(--kbl-high);
+}
+
+.private-root .kbl-jira .kbl-level-medium {
+  --kbl-priority: var(--kbl-medium);
+}
+
+.private-root .kbl-jira .kbl-level-low {
+  --kbl-priority: var(--kbl-low);
+}
+
+.private-root .kbl-jira .kbl-task {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+.private-root .kbl-jira .kbl-task-marker {
+  align-self: stretch;
+  flex: 0 0 4px;
+  min-height: 30px;
+  border-radius: 4px;
+  background: var(--kbl-priority);
+}
+
+.private-root .kbl-jira .kbl-task-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.private-root .kbl-jira .kbl-task strong {
+  display: block;
+  color: var(--kbl-text);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* ESTADOS CON COLORES SOLIDOS */
+
+.private-root .kbl-jira .kbl-state-todo {
+  background: var(--kb-status-todo);
+}
+
+.private-root .kbl-jira .kbl-state-doing {
+  background: var(--kb-status-doing);
+}
+
+.private-root .kbl-jira .kbl-state-done {
+  background: var(--kb-status-done);
+}
+
+.private-root .kbl-jira .kbl-state-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.private-root .kbl-jira .kbl-state-control select {
+  appearance: none;
+  width: 100%;
+  min-width: 0;
+  min-height: 32px;
+  padding: 7px 23px 7px 9px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.private-root .kbl-jira .kbl-state-control > svg {
+  position: absolute;
+  right: 8px;
+  pointer-events: none;
+}
+
+/* PRIORIDAD COMPACTA */
+
+.private-root .kbl-jira .kbl-priority-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 32px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--kbl-priority);
+}
+
+.private-root .kbl-jira
+.kbl-priority-control > svg:first-child {
+  flex: 0 0 18px;
+  width: 18px;
+}
+
+.private-root .kbl-jira .kbl-priority-control select {
+  appearance: none;
+  width: 100%;
+  min-width: 0;
+  min-height: 30px;
+  padding: 5px 12px 5px 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.private-root .kbl-jira
+.kbl-priority-control > svg:last-child {
+  position: absolute;
+  right: 0;
+  pointer-events: none;
+}
+
+.private-root .kbl-jira select option {
+  background: var(--kbl-surface);
+  color: var(--kbl-text);
+}
+
+/* TEMPORIZADOR */
+
+.private-root .kbl-jira .kbl-time {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--kbl-muted);
+}
+
+.private-root .kbl-jira .kbl-time > span,
+.private-root .kbl-jira .kbl-inline-time {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.private-root .kbl-jira .kbl-time small,
+.private-root .kbl-jira .kbl-inline-time small {
+  font-size: 11px;
+  color: var(--kbl-muted);
+}
+
+.private-root .kbl-jira .kbl-inline-time {
+  display: none;
+  flex-wrap: wrap;
+  margin-top: 4px;
+  color: var(--kbl-muted);
+}
+
+/* ACCIONES */
+
+.private-root .kbl-jira .kbl-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.private-root .kbl-jira .kbl-actions button {
+  display: grid;
+  place-items: center;
+  flex: 0 0 29px;
+  width: 29px;
+  min-width: 29px;
+  height: 29px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  color: #fff;
+  cursor: pointer;
+  transition: filter .15s, transform .15s;
+}
+
+.private-root .kbl-jira .kbl-action-pause {
+  background: #53657e;
+}
+
+.private-root .kbl-jira .kbl-action-edit {
+  background: #15803d;
+}
+
+.private-root .kbl-jira .kbl-action-delete {
+  background: #d92f48;
+}
+
+.private-root .kbl-jira
+.kbl-actions button:hover:not(:disabled) {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+.private-root .kbl-jira :is(
+  button,
+  select
+):disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.private-root .kbl-jira :is(
+  button,
+  select,
+  .kbl-table-scroll
+):focus-visible {
+  outline: 2px solid var(--kbl-accent);
+  outline-offset: 2px;
+}
+
+.private-root .kbl-jira
+.kbl-state-control:focus-within {
+  outline: 2px solid var(--kbl-accent);
+  outline-offset: 2px;
+}
+
+/* PAGINACION */
+
+.private-root .kbl-jira .kbl-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 55px;
+  padding: 12px 15px;
+  border-top: 1px solid var(--kbl-line);
+  border-radius: 0 0 12px 12px;
+  background: var(--kbl-header);
+  color: var(--kbl-muted);
+  font-size: 12px;
+}
+
+.private-root .kbl-jira .kbl-pagination {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--kbl-text);
+}
+
+.private-root .kbl-jira .kbl-pagination button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--kbl-line);
+  border-radius: 7px;
+  background: var(--kbl-surface);
+  color: var(--kbl-text);
+  cursor: pointer;
+}
+
+/* ESTADO VACIO */
+
+.private-root .kbl-jira .kbl-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 42px 18px;
+  color: var(--kbl-muted);
+  text-align: center;
+  font-size: 13px;
+}
+
+.private-root .kbl-jira .kbl-empty strong {
+  color: var(--kbl-text);
+  font-size: 16px;
+}
+
+.private-root .kbl-jira .kbl-empty-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: var(--kbl-active);
+  color: var(--kbl-accent);
+}
+
+.private-root .kbl-jira .kbl-empty button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 7px;
+  padding: 9px 13px;
+  border: 1px solid var(--kbl-line);
+  border-radius: 7px;
+  background: var(--kbl-surface);
+  color: var(--kbl-accent);
+  font: inherit;
+  cursor: pointer;
+}
+
+.private-root .kbl-jira .kbl-action-error {
+  padding: 12px 15px;
+  color: var(--kbl-high);
+  font-size: 13px;
+}
+
+/* RESPONSIVE SEGUN ESPACIO DISPONIBLE */
+
+/* Mantener una tabla aunque se expanda el sidebar. */
+
+@container kanban-list (max-width: 780px) {
+  .private-root .kbl-jira .kbl-time-cell {
+    display: none;
+  }
+
+  .private-root .kbl-jira .kbl-inline-time {
+    display: flex;
+  }
+
+  .private-root .kbl-jira .kbl-table {
+    min-width: 555px;
+  }
+
+  .private-root .kbl-jira .kbl-table :is(th,td) {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .private-root .kbl-jira .kbl-state-cell {
+    width: 132px;
+  }
+
+  .private-root .kbl-jira .kbl-priority-cell {
+    width: 100px;
+  }
+
+  .private-root .kbl-jira .kbl-actions-cell {
+    width: 114px;
+  }
+
+
+}
+
+
+@container kanban-list (max-width: 740px) {
+  .private-root .kbl-jira .kbl-search {
+    flex: 1 1 100%;
+  }
+
+  .private-root .kbl-jira .kbl-status-tabs {
+    flex: 1 1 100%;
+  }
+
+  .private-root .kbl-jira .kbl-tab {
+    flex: 1;
+  }
+}
+
+@container kanban-list (max-width: 490px) {
+  .private-root .kbl-jira .kbl-toolbar {
+    padding: 11px;
+    gap: 9px;
+  }
+
+  .private-root .kbl-jira .kbl-status-tabs {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .private-root .kbl-jira .kbl-tab {
+    flex: 1 1 auto;
+    padding: 7px 8px;
+    min-height: 35px;
+    font-size: 11px;
+  }
+
+  .private-root .kbl-jira .kbl-table {
+    min-width: 520px;
+  }
+
+  .private-root .kbl-jira .kbl-task strong {
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .private-root .kbl-jira * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -13,12 +13,16 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
-  Plus, Pencil, Trash2, Clock3, Play, Pause, Palette,
+  Plus, Pencil, Trash2, Clock3, Play, Pause,
+  ChevronsUp, ChevronsDown, Equal,
   Check, GripVertical, X
 } from "lucide-react";
 import { supabase } from "../../../shared/services/client";
 import "./KanbanBoard.css";
 import "./KanbanIndependentScroll.css";
+import KanbanList from "./KanbanList.jsx";
+import ViewModeSelector from "../../../shared/components/view-mode/ViewModeSelector.jsx";
+import useViewMode from "../../../shared/components/view-mode/useViewMode.js";
 
 const stages = [
   { id: "todo", title: "Por hacer" },
@@ -89,10 +93,25 @@ function CardBody({ task, now, onEdit, onDelete, onPause, onPriority, priorityOp
               onPointerDown={e => e.stopPropagation()}
               onTouchStart={e => e.stopPropagation()}>
               <button type="button" title="Cambiar prioridad"
-                aria-label="Cambiar prioridad"
+                aria-label={"Cambiar prioridad: " + (
+                  task.priority === "high" ? "Alta" :
+                  task.priority === "low" ? "Baja" : "Media"
+                )}
                 aria-expanded={priorityOpenId === task.id}
                 onClick={() => onTogglePriority(task.id)}>
-                <Palette size={15}/>
+                {task.priority === "high"
+                  ? <ChevronsUp size={19} strokeWidth={2.5}/>
+                  : task.priority === "low"
+                    ? <ChevronsDown size={19} strokeWidth={2.5}/>
+                    : <Equal size={18} strokeWidth={2.5}/>}
+                
+              <span className="kb-priority-label">
+                  {task.priority === "high"
+                    ? "Alta"
+                    : task.priority === "low"
+                      ? "Baja"
+                      : "Media"}
+                </span>
               </button>
               {priorityOpenId === task.id && (
                 <div className="kb-priority-menu"
@@ -104,6 +123,7 @@ function CardBody({ task, now, onEdit, onDelete, onPause, onPriority, priorityOp
                   ].map(([value, label, color]) => (
                     <button key={value} type="button"
                       className="kb-priority-option"
+                      aria-pressed={(task.priority || "medium") === value}
                       onClick={() => onPriority(task, value)}>
                       <span className={"kb-priority-dot " + color}/>
                       {label}
@@ -240,6 +260,10 @@ function kanbanCollision(args) {
   return closestCorners(args);
 }
 export default function KanbanBoard({ board, user }) {
+  const [viewMode, setViewMode] = useViewMode(
+    user.id,
+    "kanban:" + board.id
+  );
   const [tasks, setTasks] = useState(() => readCachedTasks(user.id, board.id) || []);
   const [newTitle, setNewTitle] = useState("");
   const [loading, setLoading] = useState(() => readCachedTasks(user.id, board.id) === null);
@@ -252,6 +276,145 @@ export default function KanbanBoard({ board, user }) {
   const [editTitle, setEditTitle] = useState("");
   const [editHours, setEditHours] = useState("");
   const [activeId, setActiveId] = useState(null);
+  const kanbanScrollRef = useRef(null);
+
+  /* KANBAN SCROLL CHAINING START */
+
+  useEffect(() => {
+    const root = kanbanScrollRef.current;
+
+    if (!root) return;
+
+    function canScroll(element, delta) {
+      const limit =
+        element.scrollHeight - element.clientHeight;
+
+      if (limit <= 1) return false;
+
+      if (delta < 0) {
+        return element.scrollTop > 1;
+      }
+
+      return element.scrollTop < limit - 1;
+    }
+
+    function findOuterScroller(stack, delta) {
+      const columns = stack.closest(".kb-columns");
+
+      let parent = columns
+        ? columns.parentElement
+        : stack.parentElement;
+
+      const page = document.scrollingElement;
+
+      while (parent && parent !== page) {
+        const style = window.getComputedStyle(parent);
+
+        const scrollable =
+          /^(auto|scroll|overlay)$/.test(style.overflowY);
+
+        if (
+          scrollable &&
+          canScroll(parent, delta)
+        ) {
+          return parent;
+        }
+
+        parent = parent.parentElement;
+      }
+
+      if (page && canScroll(page, delta)) {
+        return page;
+      }
+
+      return null;
+    }
+
+    function handleWheel(event) {
+      // No intervenir durante el arrastre.
+      if (activeId !== null) return;
+
+      // Respetar zoom y desplazamiento horizontal.
+      if (
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.deltaY === 0 ||
+        Math.abs(event.deltaX) >= Math.abs(event.deltaY)
+      ) {
+        return;
+      }
+
+      if (event.defaultPrevented || !event.cancelable) {
+        return;
+      }
+
+      if (!(event.target instanceof Element)) {
+        return;
+      }
+
+      // No interferir con controles de formulario.
+      if (event.target.closest("select, textarea")) {
+        return;
+      }
+
+      const stack = event.target.closest(
+        ".kb-columns .kb-stack"
+      );
+
+      if (!stack || !root.contains(stack)) {
+        return;
+      }
+
+      let delta = event.deltaY;
+
+      // Normalizar distintos tipos de rueda.
+      if (event.deltaMode === 1) {
+        const lineHeight = parseFloat(
+          window.getComputedStyle(stack).lineHeight
+        );
+
+        delta *= Number.isFinite(lineHeight)
+          ? lineHeight
+          : 16;
+      } else if (event.deltaMode === 2) {
+        delta *= stack.clientHeight;
+      }
+
+      // Si la columna todavia puede desplazarse,
+      // dejar que el navegador trabaje normalmente.
+      if (canScroll(stack, delta)) {
+        return;
+      }
+
+      // La columna llego a uno de sus limites.
+      const outer = findOuterScroller(stack, delta);
+
+      if (!outer) return;
+
+      // Transferir el desplazamiento sin duplicarlo.
+      event.preventDefault();
+
+      outer.scrollBy({
+        top: delta,
+        behavior: "instant"
+      });
+    }
+
+    root.addEventListener(
+      "wheel",
+      handleWheel,
+      { passive: false }
+    );
+
+    return () => {
+      root.removeEventListener(
+        "wheel",
+        handleWheel
+      );
+    };
+  }, [activeId]);
+
+  /* KANBAN SCROLL CHAINING END */
   const [priorityOpenId, setPriorityOpenId] = useState(null);
 
   // Protege los movimientos y eliminaciones mientras
@@ -769,13 +932,27 @@ export default function KanbanBoard({ board, user }) {
   const activeTask = tasks.find(t => t.id === activeId);
 
   return (
-    <div className="kb-root">
-      <header className="kb-heading">
+    <div className="kb-root" ref={kanbanScrollRef}>
+      <header className="kb-heading wvm-heading">
         <div>
           <span className="kb-eyebrow">TABLERO KANBAN</span>
           <h1>{board.title}</h1>
-          <p>Arrastra las tarjetas para organizar tus actividades.</p>
+          <p>
+            {viewMode === "list"
+              ? "Busca, filtra y administra tus tareas."
+              : "Arrastra las tarjetas para organizar tus actividades."}
+          </p>
         </div>
+
+        <ViewModeSelector
+          variant="board"
+          value={viewMode}
+          disabled={working || deleteBusy || !!activeId}
+          onChange={value => {
+            setPriorityOpenId(null);
+            setViewMode(value);
+          }}
+        />
       </header>
 
       <form className="kb-create" onSubmit={createTask}>
@@ -794,6 +971,36 @@ export default function KanbanBoard({ board, user }) {
 
       {loading ? (
         <p>Cargando tareas...</p>
+      ) : viewMode === "list" ? (
+        <KanbanList
+          tasks={stages.flatMap(stage => ordered(stage.id))}
+          busy={working || deleteBusy}
+          deletingId={deletingId}
+          formatTime={task => {
+            const total = elapsed(task, now);
+
+            return task.status === "todo" && total === 0
+              ? "Sin iniciar"
+              : displayTime(total);
+          }}
+          onStatus={(task, status) => {
+            if (
+              working ||
+              deleteBusy ||
+              mutationRef.current ||
+              task.status === status
+            ) return;
+
+            return moveCard({
+              active: { id: task.id },
+              over: { id: "column:" + status }
+            });
+          }}
+          onPriority={changePriority}
+          onPause={pauseTask}
+          onEdit={openEdit}
+          onDelete={deleteTask}
+        />
       ) : (
         <DndContext
           sensors={sensors}

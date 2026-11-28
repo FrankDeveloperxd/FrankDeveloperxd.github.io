@@ -1,0 +1,460 @@
+/* La vista de tarjetas existente no se modifica. */
+
+html body .private-root .private-cards.wvm-project-list,
+html body .private-root .private-main .ps-grid.wvm-service-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-auto-rows: auto !important;
+  gap: 8px;
+}
+
+html body .private-root .wvm-project-list > .pux-project-card {
+  display: grid;
+  grid-template-columns: 42px minmax(0,1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 13px;
+  row-gap: 2px;
+  min-height: 76px !important;
+  height: auto !important;
+  padding: 12px 15px !important;
+  border-radius: 12px;
+}
+
+html[data-workspace-theme] body .private-root
+.wvm-project-list > .private-card.pux-project-card > .private-card-icon {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  width: 42px !important;
+  height: 42px !important;
+  margin: 0 !important;
+  background-color: var(--wvm-cover-color) !important;
+  background-image: var(--wvm-cover-image) !important;
+  background-size: cover !important;
+  background-position: center !important;
+  color: #fff !important;
+  border-radius: 10px;
+}
+
+html[data-workspace-theme] body .private-root
+.wvm-project-list > .pux-project-card > .private-card-icon svg {
+  color: #fff !important;
+  stroke: currentColor !important;
+  width: 23px !important;
+  height: 23px !important;
+}
+
+html body .private-root .wvm-project-list > .pux-project-card > h3 {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: end;
+  margin: 0 !important;
+  font-size: 14px;
+}
+
+html body .private-root .wvm-project-list > .pux-project-card > p {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: start;
+  margin: 0 !important;
+  font-size: 12px;
+}
+
+html body .private-root .wvm-project-list > .pux-project-card > .pux-actions {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  position: static !important;
+  transform: none !important;
+  justify-content: flex-end;
+}
+
+html body .private-root .wvm-project-list > .pux-project-card:hover {
+  transform: none;
+  border-color: #7298ed;
+}
+
+.private-root .wvm-loading-list {
+  grid-template-columns: minmax(0,1fr) !important;
+}
+
+.private-root .wvm-loading-list .ps-loading-card {
+  min-height: 70px;
+}
+
+@media (max-width: 540px) {
+  html body .private-root .wvm-project-list > .pux-project-card {
+    grid-template-columns: 34px minmax(0,1fr) auto;
+    column-gap: 9px;
+    padding: 10px !important;
+  }
+
+  html body .private-root .wvm-project-list .pux-actions button {
+    width: 29px;
+    height: 29px;
+    min-width: 29px;
+    min-height: 29px;
+    flex-basis: 29px;
+  }
+
+
+}
+
+
+/* PROJECT SERVICES - PROFESSIONAL DETAIL LIST */
+
+html body .private-root .private-main .ps-grid.wvm-service-list {
+  --psl-surface: #ffffff;
+  --psl-header: #e9eef5;
+  --psl-hover: #f4f7fc;
+  --psl-line: #d5deea;
+  --psl-text: #1b2b43;
+  --psl-muted: #64748b;
+  --psl-control: #edf1f6;
+  --psl-control-hover: #dfe7f2;
+  --psl-edit: #15803d;
+  --psl-delete: #c83249;
+  --psl-todo: #2458c6;
+  --psl-doing: #925b08;
+  --psl-todo-text: #2458c6;
+  --psl-doing-text: #925b08;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-auto-rows: auto !important;
+  align-items: stretch;
+  gap: 0 !important;
+
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--psl-line);
+  border-radius: 12px;
+  background: var(--psl-surface);
+  overflow: hidden;
+
+  container-type: inline-size;
+  container-name: service-list;
+}
+
+html[data-workspace-theme="tinta"] body
+.private-root .private-main .ps-grid.wvm-service-list {
+  --psl-surface: #202329;
+  --psl-header: #2a2e36;
+  --psl-hover: #292e38;
+  --psl-line: #383d47;
+  --psl-text: #f2f4f8;
+  --psl-muted: #abb5c6;
+  --psl-control: #343b44;
+  --psl-control-hover: #444d5a;
+  --psl-edit: #73d4a4;
+  --psl-delete: #ff8598;
+  --psl-todo-text: #9bbcff;
+  --psl-doing-text: #f2bd62;
+}
+
+/* Estructura comun para encabezado y filas. */
+
+html body .private-root .wvm-service-list
+:is(.ps-service-list-head, .ps-card:not(.ps-new-card)) {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(170px, 28%)
+    84px;
+
+  align-items: center;
+  column-gap: 12px;
+  box-sizing: border-box;
+}
+
+/* Encabezado de la tabla. */
+
+.private-root .wvm-service-list .ps-service-list-head {
+  min-height: 43px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--psl-line);
+  background: var(--psl-header);
+  color: var(--psl-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.private-root .wvm-service-list .ps-list-status-head {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+
+.private-root .wvm-service-list
+.ps-list-status-head > span:first-child {
+  color: var(--psl-todo-text);
+}
+
+.private-root .wvm-service-list
+.ps-list-status-head > span:last-child {
+  color: var(--psl-doing-text);
+}
+
+.private-root .wvm-service-list .ps-list-actions-head {
+  text-align: center;
+}
+
+/* Filas compactas. No tarjetas estiradas. */
+
+html[data-workspace-theme] body .private-root .private-main
+.wvm-service-list > .ps-card:not(.ps-new-card) {
+  position: relative;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 70px !important;
+  height: auto !important;
+  max-height: none !important;
+
+  padding: 0 16px !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--psl-line) !important;
+  border-radius: 0 !important;
+
+  background: var(--psl-surface) !important;
+  color: var(--psl-text);
+
+  box-shadow: none !important;
+  transform: none !important;
+  backdrop-filter: none;
+}
+
+html[data-workspace-theme] body .private-root .private-main
+.wvm-service-list > .ps-card:last-child {
+  border-bottom: 0 !important;
+}
+
+html[data-workspace-theme] body .private-root .private-main
+.wvm-service-list > .ps-card:hover {
+  background: var(--psl-hover) !important;
+}
+
+/* Nombre e icono del servicio. */
+
+html body .private-root .wvm-service-list
+.ps-card > .ps-card-open {
+  grid-column: 1;
+  grid-row: 1;
+
+  display: flex;
+  justify-content: center;
+
+  width: 100%;
+  min-width: 0;
+  height: auto !important;
+  min-height: 68px !important;
+
+  padding: 10px 0 !important;
+  background: none;
+  text-align: left;
+}
+
+html body .private-root .wvm-service-list
+.ps-card .ps-card-head {
+  display: flex;
+  flex-direction: row !important;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+html body .private-root .wvm-service-list
+.ps-card .ps-card-icon {
+  order: -1;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  margin: 0 !important;
+  border-radius: 9px;
+}
+
+html body .private-root .wvm-service-list
+.ps-card .ps-card-copy {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: 4px;
+  margin: 0 !important;
+}
+
+html[data-workspace-theme] body .private-root
+.wvm-service-list .ps-card-copy strong {
+  color: var(--psl-text);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+html[data-workspace-theme] body .private-root
+.wvm-service-list .ps-card-copy small {
+  color: var(--psl-muted);
+  font-size: 12px;
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* Contadores alineados por estado. */
+
+html body .private-root .wvm-service-list
+.ps-card > :is(.ps-task-counts, .ps-list-not-applicable) {
+  grid-column: 2;
+  grid-row: 1;
+
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  justify-items: center;
+  align-items: center;
+
+  gap: 8px;
+  width: 100%;
+  margin: 0 !important;
+  padding: 0;
+}
+
+html body .private-root .wvm-service-list
+.ps-task-counts .ps-task-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 34px;
+  min-height: 28px;
+
+  padding: 4px 9px;
+  border-radius: 6px;
+
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+
+.private-root .wvm-service-list .ps-task-count-todo {
+  background: var(--psl-todo);
+}
+
+.private-root .wvm-service-list .ps-task-count-doing {
+  background: var(--psl-doing);
+}
+
+.private-root .wvm-service-list .ps-task-count-dot {
+  display: none;
+}
+
+.private-root .wvm-service-list .ps-list-not-applicable {
+  color: var(--psl-muted);
+  font-size: 13px;
+}
+
+/* Acciones discretas y consistentes con Kanban Premium. */
+
+html body .private-root .wvm-service-list
+.ps-card > .ps-card-actions {
+  grid-column: 3;
+  grid-row: 1;
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 6px;
+  margin: 0 !important;
+}
+
+html[data-workspace-theme] body .private-root .private-main
+.wvm-service-list .ps-card .ps-card-actions button {
+  width: 31px;
+  min-width: 31px;
+  height: 31px;
+  min-height: 31px;
+  border: 0 !important;
+  border-radius: 7px;
+  padding: 0;
+  background: var(--psl-control) !important;
+  box-shadow: none;
+}
+
+html[data-workspace-theme] body .private-root .private-main
+.wvm-service-list .ps-card .ps-edit-button {
+  color: var(--psl-edit) !important;
+}
+
+html[data-workspace-theme] body .private-root .private-main
+.wvm-service-list .ps-card .ps-delete-button {
+  color: var(--psl-delete) !important;
+}
+
+html[data-workspace-theme] body .private-root .private-main
+.wvm-service-list .ps-card .ps-card-actions button:hover {
+  background: var(--psl-control-hover) !important;
+}
+
+.private-root .wvm-service-list button:focus-visible {
+  outline: 2px solid #4779ed;
+  outline-offset: -2px;
+}
+
+/* Responsive segun el espacio real del proyecto. */
+
+@container service-list (max-width: 510px) {
+  .private-root .wvm-service-list .ps-service-list-head {
+    display: none !important;
+  }
+
+  html body .private-root .wvm-service-list
+  > .ps-card:not(.ps-new-card) {
+    grid-template-columns: minmax(0, 1fr) 74px;
+    column-gap: 8px;
+    row-gap: 0;
+  }
+
+  html body .private-root .wvm-service-list
+  .ps-card > .ps-card-actions {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  html body .private-root .wvm-service-list
+  .ps-card > .ps-task-counts {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-items: start;
+    grid-template-columns: auto auto;
+    justify-content: start;
+    padding: 0 0 12px 0;
+  }
+
+  html body .private-root .wvm-service-list
+  .ps-task-counts .ps-task-count {
+    gap: 7px;
+    min-height: 26px;
+    font-size: 11px;
+  }
+
+  .private-root .wvm-service-list .ps-task-count::before {
+    content: attr(data-label);
+    font-weight: 500;
+  }
+
+  html body .private-root .wvm-service-list
+  .ps-card > .ps-list-not-applicable {
+    display: none;
+  }
+}

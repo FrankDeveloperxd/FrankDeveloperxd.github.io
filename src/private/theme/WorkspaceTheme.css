@@ -45,14 +45,6 @@ html[data-workspace-theme="tinta"] body .private-root :is(.private-sidebar-brand
 html[data-workspace-theme="tinta"] body .private-root :is(.private-page-heading h1,.private-section-title,.private-loading) { color:var(--t-ink); }
 html[data-workspace-theme="tinta"] body .private-root :is(.private-page-heading p,.private-empty) { color:var(--t-muted); }
 /* Neutral surfaces. User-selected covers are deliberately excluded. */
-html[data-workspace-theme="tinta"] body .private-root :is(
- .wd-card,.wa-root,.wa-scroll,.wa-detail,.ps-card,.ps-empty,.ps-loading-card,
- .wc-panel,.wc-event,.wc-export,.gcs,.gcs-agenda,.gcs-event,.hv-surface,.hv-empty,
- .private-card:not(.pux-with-cover),.private-module,.private-create,
- .ps-dialog,.wc-dialog,.gcs-dialog,.gcs-confirm-dialog,.kb-modal,.kb-delete-dialog,
- .pce-dialog,.ns-dialog,.hv-dialog,.wkd-dialog,.system-notifications-panel) {
-  background:var(--t-surface); color:var(--t-ink); border-color:var(--t-line); box-shadow:none;
-}
 html[data-workspace-theme="tinta"] body .private-root :is(.ps-root,.gcs,.wc-export) { color-scheme:dark; --ps-ink:var(--t-ink); --ps-muted:var(--t-muted); }
 html[data-workspace-theme="tinta"] body .private-root .wd-dashboard { --wd-ink:var(--t-ink); --wd-muted:var(--t-muted); }
 html[data-workspace-theme="tinta"] body .private-root .wd-card { --module-soft:#2b3247; --module-ink:#afbdff; }
@@ -116,8 +108,6 @@ html[data-workspace-theme="tinta"] body .private-root :is(.kb-task-title,.kb-car
 /* Calendar selection. */
 html[data-workspace-theme="tinta"] body .private-root :is(.wc-day.is-selected,.gcs-day.gcs-selected) { background:#343947; color:#e5efff; border-color:#648ad0; }
 /* Notifications and contextual navigation. */
-html[data-workspace-theme="tinta"] body .private-root .system-notifications-list .system-notification-item:nth-child(n) { background:var(--t-raised); color:var(--t-ink); border-color:var(--t-line); }
-html[data-workspace-theme="tinta"] body .private-root .system-notification-title { color:var(--t-ink); }
 html[data-workspace-theme="tinta"] body .private-root .workspace-pathbar :is(button,a,span):not(.workspace-pathbar-separator) { color:var(--t-blue); }
 html[data-workspace-theme="tinta"] body .private-root .workspace-pathbar button { background:#253a57 !important; border-color:#3b5273 !important; }
 /* Editor chrome is themed; the authored document keeps its own paper and colors. */
@@ -181,8 +171,6 @@ html[data-workspace-theme="tinta"] body .private-root .private-card:not(.pux-wit
 html[data-workspace-theme="tinta"] body .private-root .private-card.pux-project-card .pux-actions .pux-edit { color:#9cd2ae !important; background:#253c31 !important; border-color:#405e4b !important; }
 html[data-workspace-theme="tinta"] body .private-root .private-card.pux-project-card .pux-actions .pux-delete { color:#eeb1c1 !important; background:#3d2c34 !important; border-color:#664652 !important; }
 html[data-workspace-theme="tinta"] body .private-root .private-card.pux-project-card .pux-actions .pux-cover-button { color:#c6b5f1 !important; background:#342d43 !important; border-color:#524560 !important; }
-html[data-workspace-theme="tinta"] body .private-root .system-notifications .system-notifications-trigger { background:#33282f; border-color:#503841; color:#eeb1c1; }
-html[data-workspace-theme="tinta"] body .private-root .system-notifications .system-notifications-trigger>svg { color:#eeb1c1; }
 html[data-workspace-theme="tinta"] body .private-root .wd-card { --module-soft:#2a3143; --module-ink:#afbdff; }
 html[data-workspace-theme="tinta"] body .private-root .wd-card-calendar { --module-soft:#342d43; --module-ink:#c6b5f1; }
 html[data-workspace-theme="tinta"] body .private-root .wd-card-habits { --module-soft:#243c35; --module-ink:#91d0be; }
@@ -226,11 +214,6 @@ html[data-workspace-theme] body .private-root :is(.hv-actions,.ps-card-actions,.
   color:inherit !important; stroke:currentColor !important; opacity:1 !important;
 }
 /* Notifications and logout use the same solid action language. */
-html[data-workspace-theme] body .private-root .system-notifications .system-notifications-trigger {
-  background:#bd3f58 !important; border-color:#bd3f58 !important; color:#fff !important;
-}
-html[data-workspace-theme] body .private-root .system-notifications .system-notifications-trigger>svg { color:#fff !important; stroke:currentColor !important; }
-html[data-workspace-theme] body .private-root .system-notifications-badge { background:#fff; color:#bd3f58; border-color:#bd3f58; }
 html[data-workspace-theme] body .private-root #workspace-sidebar .private-sidebar-logout {
   background:#b83d55 !important; border-color:#b83d55 !important; color:#fff !important;
 }

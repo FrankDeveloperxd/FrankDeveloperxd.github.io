@@ -1,5 +1,13 @@
+import NotificationGuide, {
+  getKind,
+  cleanTitle
+} from "./NotificationGuide.jsx";
 import React, { useEffect, useRef, useState } from "react";
-import { Bell, CheckCheck, X } from "lucide-react";
+import {
+  Bell, CheckCheck, X, Sparkles,
+  Image as ImageIcon, Activity,
+  CalendarDays, ShieldCheck, Columns3
+} from "lucide-react";
 import { supabase } from "../services/client";
 import "./SystemNotifications.css";
 
@@ -10,16 +18,17 @@ import "./SystemNotifications.css";
  */
 
 
-function formatDate(value) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
 
-  return new Intl.DateTimeFormat("es-PE", {
-    day: "numeric",
-    month: "short",
-    year: "numeric"
-  }).format(date);
-}
+
+
+
+
+
+
+
+
+
+
 
 /* NOTIFICATION STATE CACHE V1 */
 function readCachedNotificationIds(userId) {
@@ -60,6 +69,37 @@ function readCachedNotifications(userId) {
     return null;
   }
 }
+/* NOTIFICATION MODAL V2 */
+
+function readMotionPreference(key) {
+  try {
+    return localStorage.getItem(key) !== "off";
+  } catch {
+    return true;
+  }
+}
+
+function formatNoticeDate(value) {
+  const date = new Date(value);
+
+  return Number.isNaN(date.getTime())
+    ? value
+    : new Intl.DateTimeFormat("es-PE", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      }).format(date);
+}
+
+const NOTICE_ICONS = {
+  kanban: Columns3,
+  notes: ImageIcon,
+  activity: Activity,
+  calendar: CalendarDays,
+  vault: ShieldCheck,
+  general: Bell
+};
+
 export default function SystemNotifications({ userId }) {
   const [notifications, setNotifications] = useState(
     () => readCachedNotifications(userId) || []
@@ -68,6 +108,36 @@ export default function SystemNotifications({ userId }) {
     () => readCachedNotifications(userId) !== null
   );
   const [open, setOpen] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
+
+  const motionKey = "workspace-notification-motion:" + userId;
+
+  const [motionPreference, setMotionPreference] = useState(() => ({
+    key: motionKey,
+    enabled: readMotionPreference(motionKey)
+  }));
+
+  const animate = motionPreference.key === motionKey
+    ? motionPreference.enabled
+    : readMotionPreference(motionKey);
+
+  function toggleMotion() {
+    const next = !animate;
+
+    setMotionPreference({
+      key: motionKey,
+      enabled: next
+    });
+
+    try {
+      localStorage.setItem(motionKey, next ? "on" : "off");
+    } catch {
+      // La preferencia sigue funcionando durante la sesion.
+    }
+  }
+  
+
+  
   const [readIds, setReadIds] = useState(
     () => new Set(readCachedNotificationIds(userId) || [])
   );
@@ -178,32 +248,15 @@ export default function SystemNotifications({ userId }) {
       window.removeEventListener("focus", onFocus);
     };
   }, [userId]);
-  useEffect(() => {
-    if (!open) return undefined;
-
-    function onPointerDown(event) {
-      if (!rootRef.current?.contains(event.target)) setOpen(false);
-    }
-
-    function onKeyDown(event) {
-      if (event.key === "Escape") setOpen(false);
-    }
-
-    document.addEventListener("pointerdown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      document.removeEventListener("pointerdown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [open]);
+  
 
   const unreadCount = notifications.filter(
     item => !readIds.has(item.id)
   ).length;
 
   async function markAsRead(notificationId) {
-    if (!userId || readIds.has(notificationId)) return;
+    if (!userId) return false;
+    if (readIds.has(notificationId)) return true;
 
     setSaving(true);
     setError("");
@@ -224,7 +277,7 @@ export default function SystemNotifications({ userId }) {
     if (saveError) {
       console.error("No se pudo guardar la lectura:", saveError);
       setError("No se pudo marcar el aviso como leído.");
-      return;
+      return false;
     }
 
     setReadIds(current => {
@@ -232,6 +285,7 @@ export default function SystemNotifications({ userId }) {
       saveCachedNotificationIds(userId, next);
       return next;
     });
+    return true;
   }
 
   async function markAllAsRead() {
@@ -273,8 +327,58 @@ export default function SystemNotifications({ userId }) {
     });
   }
 
+  
+
+
+
+  function closePanel() {
+    setGuideOpen(false);
+    setOpen(false);
+  }
+
+  function openNotice(item) {
+
+    if (!readIds.has(item.id) && !saving) {
+      void markAsRead(item.id).catch(() => {
+        setSaving(false);
+        setError("No se pudo guardar la lectura.");
+      });
+    }
+  }
+
+  useEffect(() => {
+    if (!open || guideOpen) return;
+
+    function outside(event) {
+      if (!rootRef.current?.contains(event.target)) {
+        closePanel();
+      }
+    }
+
+    function keyboard(event) {
+      if (event.key === "Escape") {
+        closePanel();
+      }
+    }
+
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("keydown", keyboard);
+
+    return () => {
+      document.removeEventListener("pointerdown", outside);
+      document.removeEventListener("keydown", keyboard);
+    };
+  }, [open, guideOpen]);
+
+  useEffect(() => {
+    setGuideOpen(false);
+    setOpen(false);
+  }, [userId]);
+
   return (
-    <div className="system-notifications" ref={rootRef}>
+    <div className="system-notifications"
+      ref={rootRef}
+      data-motion={animate ? "on" : "off"}>
       <button
         type="button"
         className="system-notifications-trigger"
@@ -300,94 +404,147 @@ export default function SystemNotifications({ userId }) {
         <section
           className="system-notifications-panel"
           role="dialog"
-          aria-label="Notificaciones del sistema"
+          aria-label="Notificaciones"
         >
           <header className="system-notifications-header">
-            <div>
-              <span className="system-notifications-eyebrow">NOVEDADES</span>
+
+            <div className="system-notifications-heading">
               <h2>Notificaciones</h2>
-              <p>
-                {!readStateReady
-                  ? (error || "Comprobando avisos...")
-                  : unreadCount === 0
-                    ? "Estás al día."
-                    : `${unreadCount} aviso${unreadCount === 1 ? "" : "s"} sin leer`}
-              </p>
+
+              {readStateReady && unreadCount > 0 && (
+                <p>{unreadCount} sin leer</p>
+              )}
             </div>
 
             <div className="system-notifications-header-actions">
-              {notificationsReady && readStateReady && unreadCount > 0 && (
-                <button
-                  type="button"
-                  className="system-notifications-read-all"
-                  onClick={markAllAsRead}
-                  disabled={saving}
-                >
-                  <CheckCheck size={15} aria-hidden="true" />
-                  <span>Marcar todos</span>
-                </button>
-              )}
+
+              <button
+                type="button"
+                className="system-notifications-close"
+                title="Descubrir Mi Workspace"
+                aria-label="Abrir guía de novedades"
+                onClick={() => setGuideOpen(true)}
+              >
+                <Sparkles size={19}/>
+              </button>
+
+              {readStateReady &&
+                notificationsReady &&
+                unreadCount > 0 && (
+                  <button
+                    type="button"
+                    className="system-notifications-read-all"
+                    title="Marcar todas como leídas"
+                    aria-label="Marcar todas como leídas"
+                    onClick={markAllAsRead}
+                    disabled={saving}
+                  >
+                    <CheckCheck size={19}/>
+                  </button>
+                )}
+
               <button
                 type="button"
                 className="system-notifications-close"
                 aria-label="Cerrar notificaciones"
-                onClick={() => setOpen(false)}
+                onClick={closePanel}
               >
-                <X size={18} aria-hidden="true" />
+                <X size={19}/>
               </button>
+
             </div>
+
           </header>
 
           {error && (
-            <p className="system-notifications-error" role="alert">{error}</p>
+            <p className="system-notifications-error" role="alert">
+              {error}
+            </p>
           )}
 
-          {loading ? (
-            <p className="system-notifications-empty">Cargando avisos...</p>
+          {loading && notifications.length === 0 ? (
+            <p className="system-notifications-empty">
+              Cargando avisos...
+            </p>
           ) : (
             <div className="system-notifications-list">
-              {/* NOTIFICATION EMPTY V5 */}
+
               {notifications.length === 0 && (
                 <div className="system-notifications-zero">
                   <span className="system-notifications-zero-icon">
-                    <Bell size={25} strokeWidth={1.7} aria-hidden="true" />
+                    <Bell size={25}/>
                   </span>
                   <strong>Todo al día</strong>
                   <span>Las próximas novedades aparecerán aquí.</span>
                 </div>
               )}
+
               {notifications.map(item => {
                 const isRead = readIds.has(item.id);
+                const title = cleanTitle(item.title);
+                const Icon = NOTICE_ICONS[getKind(item)] || Bell;
 
                 return (
                   <button
                     type="button"
                     key={item.id}
-                    className={`system-notification-item${isRead ? " is-read" : " is-unread"}`}
-                    onClick={() => markAsRead(item.id)}
-                    aria-pressed={isRead}
-                    aria-label={`${item.type}: ${item.title}. ${isRead ? "Leído" : "Marcar como leído"}`}
+                    className={
+                      "system-notification-item" +
+                      (isRead ? " is-read" : " is-unread")
+                    }
+                    aria-label={
+                      title + (isRead ? ". Leído" : ". Sin leer")
+                    }
                     disabled={saving}
+                    onClick={() => openNotice(item)}
                   >
-                    <span className="system-notification-indicator" aria-hidden="true" />
+                    <span className="system-notification-icon">
+                      <Icon size={21} strokeWidth={1.8}/>
+                    </span>
+
                     <span className="system-notification-content">
-                      <span className="system-notification-meta">
-                        <span className="system-notification-category">{item.type}</span>
-                        <time dateTime={item.publishedAt}>
-                          {formatDate(item.publishedAt)}
-                        </time>
+                      <span className="system-notification-title">
+                        {title}
                       </span>
-                      <span className="system-notification-title">{item.title}</span>
+
                       <span className="system-notification-description">
                         {item.description}
                       </span>
+
+                      <time
+                        className="system-notification-date"
+                        dateTime={item.publishedAt}
+                      >
+                        {formatNoticeDate(item.publishedAt)}
+                      </time>
                     </span>
+
+                    <span className="sn-row-end">
+                      {!isRead && (
+                        <span
+                          className="system-notification-indicator"
+                          aria-hidden="true"
+                        />
+                      )}
+
+                    </span>
+
                   </button>
                 );
               })}
+
             </div>
           )}
+
         </section>
+      )}
+
+      {open && guideOpen && (
+        <NotificationGuide
+          animate={animate}
+          onToggleMotion={toggleMotion}
+          onClose={() => setGuideOpen(false)}
+        />
       )}
     </div>
   );

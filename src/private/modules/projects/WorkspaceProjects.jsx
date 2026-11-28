@@ -1,10 +1,14 @@
 import React from "react";
+import ViewModeSelector from "../../shared/components/view-mode/ViewModeSelector.jsx";
+import useViewMode from "../../shared/components/view-mode/useViewMode.js";
+import "./ProjectViewModes.css";
 import { Palette, Pencil, Trash2 } from "lucide-react";
 import Icon from "../../shared/components/WorkspaceIcon.jsx";
 import WorkspaceDialog from "../../shared/feedback/WorkspaceDialog.jsx";
 import ProjectCoverEditor from "./appearance/ProjectCoverEditor.jsx";
 
-export default function WorkspaceProjects({ coverEditing, projectCovers, setCoverEditing, saveProjectCover, projectDialog, projectName, setProjectName, error, closeProjectDialog, confirmProjectAction, projectBusy, projectDialogClosing, createProject, newName, setNewName, busy, projects, projectRemovingId, openProject, showProjectRename, showProjectDelete }) {
+export default function WorkspaceProjects({ userId, coverEditing, projectCovers, setCoverEditing, saveProjectCover, projectDialog, projectName, setProjectName, error, closeProjectDialog, confirmProjectAction, projectBusy, projectDialogClosing, createProject, newName, setNewName, busy, projects, projectRemovingId, openProject, showProjectRename, showProjectDelete }) {
+  const [viewMode, setViewMode] = useViewMode(userId, "projects");
   return (
     <>
             {coverEditing && (
@@ -29,12 +33,13 @@ export default function WorkspaceProjects({ coverEditing, projectCovers, setCove
               closing={projectDialogClosing}
             />
 
-          <div className="private-page-heading">
+          <div className="private-page-heading wvm-heading">
             <div>
               <span className="private-kicker">MIS PROYECTOS</span>
               <h1>Mis proyectos</h1>
               <p>Organiza tus proyectos, tableros y documentos.</p>
             </div>
+            <ViewModeSelector value={viewMode} onChange={setViewMode}/>
           </div>
           <form className="private-create" onSubmit={createProject}>
             <input aria-label="Nombre del proyecto" placeholder="Nombre del nuevo proyecto"
@@ -43,16 +48,26 @@ export default function WorkspaceProjects({ coverEditing, projectCovers, setCove
               <Icon name="plus" size={17}/> Crear proyecto
             </button>
           </form>
-          <div className="private-cards">
+          <div className={"private-cards" + (viewMode === "list" ? " wvm-project-list" : "")}>
 
             {projects.map(item => (
               <article
                 key={item.id}
                 className={
                   "private-card pux-project-card" +
-                  (projectRemovingId === item.id ? " pux-removing" : "") + ((projectCovers[item.id]?.color || projectCovers[item.id]?.image) ? " pux-with-cover" : "")
+                  (projectRemovingId === item.id ? " pux-removing" : "") + ((viewMode === "cards" && (projectCovers[item.id]?.color || projectCovers[item.id]?.image)) ? " pux-with-cover" : "")
                 }
-                style={(projectCovers[item.id]?.color || projectCovers[item.id]?.image) ? {
+                style={viewMode === "list" ? {
+                  "--wvm-cover-color":
+                    projectCovers[item.id]?.color ||
+                    projectCovers[item.id]?.folderColor ||
+                    "#805ad5",
+                  "--wvm-cover-image":
+                    projectCovers[item.id]?.image
+                      ? "linear-gradient(rgba(0,0,0,.15),rgba(0,0,0,.4)),url(" +
+                        JSON.stringify(projectCovers[item.id].image) + ")"
+                      : "none"
+                } : (projectCovers[item.id]?.color || projectCovers[item.id]?.image) ? {
                   backgroundColor: projectCovers[item.id].color,
                   backgroundImage: projectCovers[item.id].image
                     ? `linear-gradient(180deg,rgba(7,18,36,.12),rgba(7,18,36,.85)),url("${projectCovers[item.id].image}")`

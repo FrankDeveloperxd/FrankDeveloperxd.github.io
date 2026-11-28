@@ -1,40 +1,126 @@
-/* KANBAN INDEPENDENT SCROLL V1 */
-/* Cada columna permanece alineada con las otras. */
+/* KANBAN INDEPENDENT SCROLL - REFINED */
 
-.kb-root .kb-columns {
+/* Columnas alineadas y altura limitada. */
+
+html body .private-root .kb-root .kb-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(260px, 1fr));
   align-items: stretch;
+  gap: 13px;
+
+  width: 100%;
+  height: auto;
+  min-width: 0;
+
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: auto;
+
+  padding-bottom: 10px;
 }
 
-.kb-root .kb-column {
+/* Cada columna conserva su propia altura. */
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-column {
   display: flex;
   flex-direction: column;
+
   height: clamp(420px, calc(100dvh - 270px), 780px);
-  min-height: 0;
+  min-height: 0 !important;
+  min-width: 0;
+
   overflow: hidden;
 }
 
-.kb-root .kb-column-head {
+/* Encabezado siempre visible dentro de la columna. */
+
+html body .private-root .kb-root .kb-column-head {
   flex: 0 0 auto;
 }
 
-.kb-root .kb-stack {
+/* Scroll independiente con continuidad hacia la pagina. */
+
+html[data-workspace-theme] body
+.private-root .kb-root .kb-column > .kb-stack {
+  display: flex;
+  flex-direction: column;
   flex: 1 1 auto;
-  min-height: 0;
+
+  height: auto;
+  min-height: 0 !important;
+  min-width: 0;
+
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 2px 4px 12px 2px;
-  overscroll-behavior-y: contain;
+
+  overscroll-behavior-y: auto;
+  overscroll-behavior-x: auto;
+
   scrollbar-width: thin;
-  scrollbar-color: #b7c7df transparent;
+  scrollbar-gutter: auto;
+  scrollbar-color: #aebbd0 transparent;
+
+  padding: 0 4px 5px 0;
+  gap: 8px;
 }
 
-.kb-root .kb-card {
+/* Evitar que las tarjetas se compriman. */
+
+html body .private-root .kb-root .kb-card {
   flex: 0 0 auto;
+}
+
+/* Barras discretas en navegadores Chromium. */
+
+.kb-root .kb-stack::-webkit-scrollbar {
+  width: 5px;
+}
+
+.kb-root .kb-stack::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.kb-root .kb-stack::-webkit-scrollbar-thumb {
+  background: #aebbd0;
+  border-radius: 8px;
+}
+
+.kb-root .kb-stack::-webkit-scrollbar-thumb:hover {
+  background: #8394ad;
+}
+
+/* Tema oscuro. */
+
+html[data-workspace-theme="tinta"] body
+.private-root .kb-root .kb-column > .kb-stack {
+  scrollbar-color: #505764 transparent;
+}
+
+html[data-workspace-theme="tinta"]
+.kb-root .kb-stack::-webkit-scrollbar-thumb {
+  background: #505764;
+}
+
+html[data-workspace-theme="tinta"]
+.kb-root .kb-stack::-webkit-scrollbar-thumb:hover {
+  background: #788292;
+}
+
+/* Responsive. */
+
+@media (max-width: 700px) {
+  html body .private-root .kb-root .kb-columns {
+    grid-template-columns:
+      repeat(3, minmax(min(82vw, 350px), 1fr)) !important;
+
+    gap: 10px;
+  }
 }
 
 @media (max-width: 600px) {
-  .kb-root .kb-column {
+  html[data-workspace-theme] body
+  .private-root .kb-root .kb-column {
     height: clamp(380px, calc(100dvh - 230px), 680px);
-    min-height: 0;
   }
 }
